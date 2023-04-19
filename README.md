@@ -195,3 +195,10 @@ npx nest g service prisma --no-spec
 
 yarn add class-validator class-transformer
 yarn add argon2
+
+yarn add @nestjs/passport passport @nestjs/jtw passport-jwt
+yarn add -d @types/passport-jwt
+
+yarn add @nestjs/jtw passport-jwt
+
+yarn add @types
