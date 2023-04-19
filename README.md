@@ -137,3 +137,61 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
   Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Notizen Watec Backend
+Anforderungen:
+- Verbindung der nestJS Applikation zur mySQL Datenbanken (lokal) / Google Datenbanken (Cloud)
+- 
+// {
+//     "type": "mysql",
+//     "host": "34.141.117.32",
+//     "port": 3306,
+//     "username": "root",
+//     "password": "-/wWYKTB,'_Xi9E",
+//     "database": "watec-mysql",
+//     "entities": [
+//       "src/entities/**/*.ts"
+//     ],
+//     "synchronize": true
+//   }
+
+  imports: [DbModule, 
+    TypeOrmModule.forRoot({
+      "type": "mysql",
+      "host": "34.141.117.32",
+      "port": 3306,
+      "username": "root",
+      "password": "secret",
+      "database": "mysql",
+      "entities": [
+        "src/entities/*.ts"
+      ],
+      "synchronize": true
+    })
+  ],
+
+DOCKER EINRICHTUNG: 
+commands:
+docker ps
+docker -version : Docker Version
+docker compose up dev-db: Erstellt Container und DB
+
+docker compose up dev-db -d - Erstellt einen Docker Container und die DB
+-> dev-db ist definiert in der YML-Datei, Name kann beliebig angepasst werden
+
+docker-compose.yml - YML-Datei für die Konfiguration von Docker und Datenbanken
+
+PRISMA - OARM - Schnittstelle zwischen Datenbanken und Backend System 
+
+commands:
+yarn add -D prisma
+yarn add @prisma/client
+
+npx prisma init - Projekt wird initiert und ein Prisma Projekt wird ergaenzt
+npx prisma studio - Öffnet lokalen Server für NPX Prisma Studio http://localhost:5555
+
+npx nest g module prisma
+npx nest g service prisma --no-spec
+
+yarn add class-validator class-transformer
+yarn add argon2
