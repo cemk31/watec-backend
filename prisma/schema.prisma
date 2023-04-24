@@ -21,7 +21,9 @@ model User {
   firstName String?
   lastName  String?
 
-  bookmarks Bookmark[]
+  bookmarks   Bookmark[]
+  //erstellte Adressen vom Nutzer
+  adresse_sst Adresse_SST[]
 
   @@map("users")
 }
@@ -254,8 +256,11 @@ model Adresse_SST {
   strasse    String
   hausnummer String        @db.VarChar(10)
   ort        String        @db.VarChar(40)
-  land       Land
+  land       Land?
   gebaeude   Gebaeude_SST?
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
 
   @@map("adresse_sst")
 }
@@ -353,5 +358,9 @@ enum Etage {
 
 enum Land {
   DE // Deutschland
-  // Weitere Ländercodes können hier hinzugefügt werden.
+  AT
+  CH
+  NL
+  DK
+  PL // Weitere Ländercodes können hier hinzugefügt werden.
 }
