@@ -85,13 +85,15 @@ export class AuthService {
     const token = await this.jwt.signAsync(
       payload,
       {
-        expiresIn: '15m',
+        expiresIn: '60m',
         secret: secret,
       },
     );
 
     return {
       access_token: token,
-    };
+      email: email,
+      userId: userId
+    } as { access_token: string, email: string, userId: number };
   }
 }

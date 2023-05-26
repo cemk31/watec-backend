@@ -10,6 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// MODELS
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -20,6 +22,8 @@ model User {
 
   firstName String?
   lastName  String?
+
+  auftraege   Auftrag[]
 
   bookmarks   Bookmark[]
   //erstellte Adressen vom Nutzer
@@ -275,6 +279,8 @@ model Druckstucke_SST {
   @@map("druckstucke_sst")
 }
 
+// ENUMERATIONS
+
 enum Auftragsstatus {
   Eingegangen
   Kundenkontakt_nicht_moeglich
@@ -363,4 +369,73 @@ enum Land {
   NL
   DK
   PL // Weitere Ländercodes können hier hinzugefügt werden.
+}
+
+
+model Auftrag {
+  id                   Int       @id @default(autoincrement())
+
+  createdAt            DateTime  @default(now())
+
+  updatedAt            DateTime  @updatedAt
+  
+  emailEingang         DateTime? 
+  terminiertZum        DateTime?
+  uhrzeit              DateTime?
+  datumAushang         DateTime?
+
+  done                 Boolean?
+  bemerkung            String?
+  vorgemerkt           String?
+  liNr                 String?
+  adresseLi            String?
+  plzLi                String?
+  ortLi                String?
+  vwBuro               String?
+  vwMa                 String?
+  mailadresseVw        String?
+  telVw                String?
+  hmName               String?
+  hmTel                String?
+  emailBetreff         String?
+  emailAnhang          String?
+  bestatigungVersendet Boolean?
+  anfrageThema         String?
+  anfrageBestatigt     Boolean?
+  angebotErstellt      Boolean?
+  angebotsnummer       String?
+  angebot              String?
+  auftragbestatigung   Boolean?
+  vwBestatigung        String?
+
+  aushang              Boolean?
+  agInformiert         Boolean?
+  bgb                  Boolean?
+  bgbBericht           Boolean?
+  ssa                  Boolean?
+  bericht              Boolean?
+  umb                  Boolean?
+  ber                  Boolean?
+  reNr                 String?
+  reBetrag             Decimal?
+  reErhalten           Boolean?
+  reNr2                String?
+  reBetrag2            Decimal?
+  reNr2Erhalten        Boolean?
+  dateien              String?
+  mahnung              Boolean?
+  mahnung1             Boolean?
+  mahnungErhaten       Boolean?
+  auftraggeber         String?
+  ap                   String?
+  strasse              String?
+  plz                  String?
+  ort                  String?
+  tel                  String?
+  email                String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("auftraege")
 }

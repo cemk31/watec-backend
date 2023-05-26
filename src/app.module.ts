@@ -7,6 +7,7 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { IsarModule } from './isar/isar.module';
 import { CorsMiddleware } from '@nest-middlewares/cors';
+import { AuftragModule } from './auftrag/auftrag.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { CorsMiddleware } from '@nest-middlewares/cors';
     UserModule,
     BookmarkModule,
     PrismaModule,
-    IsarModule
+    IsarModule,
+    AuftragModule
   ],
 })
 export class AppModule {
