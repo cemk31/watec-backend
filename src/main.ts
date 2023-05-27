@@ -1,22 +1,34 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { ExpressAdapter } from "@nestjs/platform-express";
+import express from "express";
+import { AppModule } from "./app.module";
+import * as serverless from 'serverless-http';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors(); // CORS aktivieren
-
-  // app.use((req, res, next) => {
-  //   res.header("Access-Control-Allow-Origin", "*");
-  //   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH");
-  //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  //   next();
-  // });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-    }),
-  );
-  await app.listen(3000);
+  if (process.env.IS_VERCEL) {
+    const server = express();
+    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+    app.enableCors();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+      }),
+    );
+    await app.init();
+    const handler = serverless(app);
+    module.exports.main = async (req, res) => {
+      return await handler(req, res);
+    };
+  } else {
+    const app = await NestFactory.create(AppModule);
+    app.enableCors();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+      }),
+    );
+    await app.listen(3000);
+  }
 }
 bootstrap();
