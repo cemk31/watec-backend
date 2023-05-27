@@ -1,7 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { ExpressAdapter } from "@nestjs/platform-express";
-import express from "express";
+import * as express from "express";
 import { AppModule } from "./app.module";
 import * as serverless from 'serverless-http';
 
@@ -16,7 +16,7 @@ async function bootstrap() {
       }),
     );
     await app.init();
-    const handler = serverless(app);
+    const handler = serverless(server); // Pass the Express server instance here
     module.exports.main = async (req, res) => {
       return await handler(req, res);
     };
