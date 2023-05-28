@@ -27,12 +27,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "pretest:e2e": "yarn db:test:restart",
-    "test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-e2e.json"
+    "test:e2e": "dotenv -e .env.test -- jest --watch --no-cache --config ./test/jest-e2e.json",
+    "vercel-build": "prisma generate"
   },
   "dependencies": {
     "@nest-middlewares/cors": "^7.0.1",
     "@nestjs/common": "^9.4.0",
-    "@nestjs/config": "^1.1.6",
+    "@nestjs/config": "^1.2.1",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.1.0",

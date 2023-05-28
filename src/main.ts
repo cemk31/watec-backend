@@ -6,7 +6,7 @@ import { AppModule } from "./app.module";
 import * as serverless from 'serverless-http';
 
 async function bootstrap() {
-  if (process.env.IS_VERCEL) {
+  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
     const server = express();
     const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
     app.enableCors();
@@ -20,7 +20,7 @@ async function bootstrap() {
     module.exports.main = async (req, res) => {
       return await handler(req, res);
     };
-  } else {
+  } else {  // Assuming 'development'
     const app = await NestFactory.create(AppModule);
     app.enableCors();
     app.useGlobalPipes(
@@ -28,7 +28,9 @@ async function bootstrap() {
         whitelist: true,
       }),
     );
-    await app.listen(3000);
+    // Use process.env.PORT if it's available, otherwise default to 3000
+    const port = process.env.PORT || 3000;
+    await app.listen(port);
   }
 }
 bootstrap();
