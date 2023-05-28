@@ -12,7 +12,10 @@ import { AuftragModule } from './auftrag/auftrag.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true, // makes the ConfigService available across the whole project
+      envFilePath: `.env.${process.env.NODE_ENV}`, // use .env.development, .env.test, .env.production, etc.
+      // fallback to .env if the above file doesn't exist
+      fallbackEnvFilePath: '.env',
     }),
     AuthModule,
     UserModule,
