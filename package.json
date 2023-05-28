@@ -31,10 +31,9 @@
     "vercel-build": "prisma generate"
   },
   "dependencies": {
-    "@nest-middlewares/cors": "^7.0.1",
-    "@nestjs/common": "^7.6.13",
+    "@nestjs/common": "^9.4.2",
     "@nestjs/config": "^2.3.2",
-    "@nestjs/core": "^8.0.0",
+    "@nestjs/core": "^9.4.2",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.1.0",
     "@nestjs/platform-express": "^8.4.7",
