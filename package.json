@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@nest-middlewares/cors": "^7.0.1",
-    "@nestjs/common": "^8.4.7",
+    "@nestjs/common": "^7.6.13",
     "@nestjs/config": "^2.3.2",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^8.0.0",
