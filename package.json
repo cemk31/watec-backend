@@ -31,10 +31,10 @@
     "vercel-build": "prisma generate"
   },
   "dependencies": {
-    "@nestjs/common": "9.4.2",
+    "@nestjs/common": "^8.0.0",
     "@nestjs/config": "2.3.2",
     "@nestjs/core": "9.4.2",
-    "@nestjs/jwt": "8.0.0",
+    "@nestjs/jwt": "^10.0.3",
     "@nestjs/passport": "8.1.0",
     "@nestjs/platform-express": "9.4.2",
     "@prisma/client": "4.13.0",
