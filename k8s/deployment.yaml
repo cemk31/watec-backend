@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watec-cluster-100
+spec:
+  selector:
+    matchLabels:
+      app: watec-cluster-100
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: watec-cluster-100
+    spec:
+      containers:
+        - name: watec-cluster-100
+          image: cemk31/watec-backend
+          ports:
+            - containerPort: 3000
