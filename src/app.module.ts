@@ -6,7 +6,7 @@ import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { IsarModule } from './isar/isar.module';
-// import { CorsMiddleware } from '@nest-middlewares/cors';
+import { CorsMiddleware } from '@nest-middlewares/cors';
 import { AuftragModule } from './auftrag/auftrag.module';
 import { existsSync } from 'fs';
 import { join } from 'path';
