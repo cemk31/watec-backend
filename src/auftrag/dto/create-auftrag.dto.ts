@@ -6,7 +6,7 @@ export class CreateAuftragDTO {
   @IsOptional()
   done: boolean = false;
 
-  @IsDateString({ message: 'emailEingang must be a valid date string' })
+  @IsDateString()
   @IsOptional()
   emailEingang: Date;
 
