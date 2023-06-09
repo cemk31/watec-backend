@@ -10,6 +10,7 @@ import { CorsMiddleware } from '@nest-middlewares/cors';
 import { AuftragModule } from './auftrag/auftrag.module';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { join } from 'path';
     BookmarkModule,
     PrismaModule,
     IsarModule,
-    AuftragModule
+    AuftragModule,
+    CustomerModule
   ],
 })
 export class AppModule {
