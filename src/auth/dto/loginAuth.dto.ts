@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class AuthDto {
+export class LoginAuthDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty()
@@ -16,14 +16,4 @@ export class AuthDto {
   @IsNotEmpty()
   @ApiProperty()
   password: string;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  firstName: string;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  lastName: string;
 }

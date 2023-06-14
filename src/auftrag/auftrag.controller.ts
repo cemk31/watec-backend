@@ -4,7 +4,9 @@ import { JwtGuard } from "src/auth/guard";
 import { AuftragService } from "src/auftrag/auftrag.service";
 import { CreateAuftragDTO } from "./dto/create-auftrag.dto";
 import { EditAuftragDTO } from "./dto/edit-auftrag.dto";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Auftrag')
 @UseGuards(JwtGuard)
 @Controller('auftrag')
 export class AuftragController {

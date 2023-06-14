@@ -23,12 +23,13 @@ model User {
   firstName String?
   lastName  String?
 
-  auftraege   Auftrag[]
+  auftraege Auftrag[]
 
-  bookmarks   Bookmark[]
+  bookmarks    Bookmark[]
   //erstellte Adressen vom Nutzer
-  adresse_sst Adresse_SST[]
-  customer    Customer[]
+  adresse_sst  Adresse_SST[]
+  customer     Customer[]
+  auftraggeber Auftraggeber[]
 
   @@map("users")
 }
@@ -264,7 +265,7 @@ model Adresse_SST {
   land       Land?
   gebaeude   Gebaeude_SST?
 
-  userId Int?
+  userId Int
   user   User? @relation(fields: [userId], references: [id])
 
   @@map("adresse_sst")
@@ -281,15 +282,15 @@ model Druckstucke_SST {
 }
 
 model Customer {
-  id                       Int                              @id @default(autoincrement())
-  firstName String?
-  lastName  String?
-  email String?
+  id          Int     @id @default(autoincrement())
+  firstName   String?
+  lastName    String?
+  email       String?
   phoneNumber String?
-  street String?
-  zipCode String?
-  place String?
-  country String?
+  street      String?
+  zipCode     String?
+  place       String?
+  country     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -391,18 +392,17 @@ enum Land {
   PL // Weitere Ländercodes können hier hinzugefügt werden.
 }
 
-
 model Auftrag {
-  id                   Int       @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  createdAt            DateTime  @default(now())
+  createdAt DateTime @default(now())
 
-  updatedAt            DateTime  @updatedAt
-  
-  emailEingang         DateTime? 
-  terminiertZum        DateTime?
-  uhrzeit              DateTime?
-  datumAushang         DateTime?
+  updatedAt DateTime @updatedAt
+
+  emailEingang  DateTime?
+  terminiertZum DateTime?
+  uhrzeit       DateTime?
+  datumAushang  DateTime?
 
   done                 Boolean?
   bemerkung            String?
@@ -428,34 +428,51 @@ model Auftrag {
   auftragbestatigung   Boolean?
   vwBestatigung        String?
 
-  aushang              Boolean?
-  agInformiert         Boolean?
-  bgb                  Boolean?
-  bgbBericht           Boolean?
-  ssa                  Boolean?
-  bericht              Boolean?
-  umb                  Boolean?
-  ber                  Boolean?
-  reNr                 String?
-  reBetrag             Decimal?
-  reErhalten           Boolean?
-  reNr2                String?
-  reBetrag2            Decimal?
-  reNr2Erhalten        Boolean?
-  dateien              String?
-  mahnung              Boolean?
-  mahnung1             Boolean?
-  mahnungErhaten       Boolean?
-  auftraggeber         String?
-  ap                   String?
-  strasse              String?
-  plz                  String?
-  ort                  String?
-  tel                  String?
-  email                String
+  aushang        Boolean?
+  agInformiert   Boolean?
+  bgb            Boolean?
+  bgbBericht     Boolean?
+  ssa            Boolean?
+  bericht        Boolean?
+  umb            Boolean?
+  ber            Boolean?
+  reNr           String?
+  reBetrag       Decimal?
+  reErhalten     Boolean?
+  reNr2          String?
+  reBetrag2      Decimal?
+  reNr2Erhalten  Boolean?
+  dateien        String?
+  mahnung        Boolean?
+  mahnung1       Boolean?
+  mahnungErhaten Boolean?
+  auftraggeber   String?
+  ap             String?
+  strasse        String?
+  plz            String?
+  ort            String?
+  tel            String?
+  email          String
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
   @@map("auftraege")
+}
+
+model Auftraggeber {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  auftraggeber String
+  ap           String
+  strasse      String
+  plz          Int
+  ort          String
+  tel          String
+  email        String   @unique
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("auftraggeber")
 }

@@ -4,6 +4,7 @@ import { ExpressAdapter } from "@nestjs/platform-express";
 import * as express from "express";
 import { AppModule } from "./app.module";
 import * as serverless from 'serverless-http';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
@@ -30,6 +31,17 @@ async function bootstrap() {
     );
     // Use process.env.PORT if it's available, otherwise default to 3000
     const port = process.env.PORT || 3000;
+
+    const config = new DocumentBuilder()
+    .setTitle('WATEC Backend')
+    .setDescription('WATEC Backend API Description')
+    .setVersion('1.0')
+    .addTag('watec')
+    .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+
     await app.listen(port);
   }
 }

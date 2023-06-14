@@ -203,4 +203,4 @@ yarn add @nestjs/jtw passport-jwt
 
 yarn add @types
 
-    // "heroku-postbuild": "npm install --production --unsafe-perm --legacy-peer-deps && npm prisma generate && npm prisma migrate deploy"
+// "heroku-postbuild": "npm install --production --unsafe-perm --legacy-peer-deps && npm prisma generate && npm prisma migrate deploy"

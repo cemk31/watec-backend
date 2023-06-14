@@ -11,6 +11,8 @@ import { AuftragModule } from './auftrag/auftrag.module';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { CustomerModule } from './customer/customer.module';
+import { AuftraggeberModule } from './auftraggeber/auftraggeber.module';
+import { AdresseModule } from './adresse/adresse.module';
 
 @Module({
   imports: [
@@ -24,7 +26,9 @@ import { CustomerModule } from './customer/customer.module';
     PrismaModule,
     IsarModule,
     AuftragModule,
-    CustomerModule
+    CustomerModule,
+    AuftraggeberModule,
+    AdresseModule
   ],
 })
 export class AppModule {
