@@ -1,0 +1,309 @@
+model Installationsauftrag_SST {
+  id               Int                 @id @default(autoincrement())
+  nummer           Int
+  bemerkungExtern  String?
+  auftragsstatus   Auftragsstatus_SST?
+  auftragsstatusId Int?                @unique
+
+  @@map("installationsauftrag_sst")
+}
+
+model Auftragsstatus_SST {
+  id                             Int                               @id @default(autoincrement())
+  auftragStatusArt               Auftragsstatus
+  gesetztAm                      DateTime
+  installationsauftrag           Installationsauftrag_SST?         @relation(fields: [installationsauftragId], references: [id])
+  installationsauftragId         Int                               @unique
+  abgeschlossenVertragspartner   AbgeschlossenVertragspartner_SST?
+  abgeschlossenVertragspartnerId Int                               @unique
+
+  @@map("auftragsstatus_sst")
+}
+
+model Liegenschaft_SST {
+  id                                Int                               @id @default(autoincrement())
+  warmwasserversorgungArt_zentral   Boolean
+  warmwasserversorgungArt_dezentral Boolean
+  abgeschlossenVertragspartner      AbgeschlossenVertragspartner_SST?
+  abgeschlossenVertragspartnerId    Int
+
+  @@map("liegenschaft_sst")
+}
+
+model Leistungen_SST {
+  id                             Int                               @id @default(autoincrement())
+  artikelnummer_ista             Int
+  menge                          Float
+  einheit                        Einheit
+  sonderaufwand                  Boolean
+  verkaufspreis_GC               Float
+  einkaufspreis_ista             Float
+  artikelnummer_GC               String
+  gewaehrleistung                Boolean
+  artikelBezeichnung_GC          Boolean
+  leistungErbrachtInId           Int
+  leistungErbrachtIn             Gebaeude_SST?                     @relation(fields: [leistungErbrachtInId], references: [id])
+  probeEntnahmeStelleId          Int
+  probeEntnahmeStelle            Probeentnahmestelle_SST?          @relation(fields: [probeEntnahmeStelleId], references: [id])
+  abgeschlossenVertragspartner   AbgeschlossenVertragspartner_SST? @relation(fields: [abgeschlossenVertragspartnerId], references: [id])
+  abgeschlossenVertragspartnerId Int
+
+  @@map("leistungen_sst")
+}
+
+model Trinkwasseranlage_SST {
+  id                                     Int                                @id @default(autoincrement())
+  laufendeNummer                         Int
+  nutzungArt                             NutzungArtGebaeude?
+  nutzungArtSonstige                     String?                            @db.VarChar(40)
+  anzahlVersorgteNutzeinheiten           Int?
+  anzahlTrinkwassererwaermer             Int?
+  summeVolumenLiter                      Int?
+  leitungssystemArt_Zirkulation          Boolean?
+  leitungssystemArt_Stichleitung         Boolean?
+  leitungssystemArt_Rohrbegleitheizung   Boolean?
+  leitungsVolumenGr3Liter                Boolean?
+  totleitungBekannt                      Boolean?
+  lageTotleitungen                       String?                            @db.VarChar(240)
+  anzahlSteigstraenge                    Int?
+  aerosolbildung                         Boolean?                           @default(true)
+  erlaeuterung                           String?                            @db.VarChar(240)
+  anzahlVersorgtePersonen                Int?                               @db.Integer
+  leitungsschemaVorhanden                Boolean?
+  anzahlKaltwasserstraenge               Int?
+  anzahlWarmwasserstraenge               Int?
+  temperaturZirkulationTWE_A             Int?
+  temperaturZirkulationTWE_B             Int?
+  waermetauschersystem_zentral           Boolean?
+  waermetauschersystem_fernwaerme        Boolean?
+  waermetauschersystem_durchflussprinzip Boolean?
+  trinkwassererwaermer                   Trinkwassererwaermer_SST[]
+  aufgenommeneEntnahmeStelleId           Int?
+  aufgenommeneEntnahmeStelle             Probeentnahmestelle_SST[]
+  steigstrang                            Steigstrang[]
+  nutzEinheit                            Nutzeinheit_SST?
+  nutzEinheitId                          Int?
+  abgeschlossenVertragspartner           AbgeschlossenVertragspartner_SST[]
+
+  @@map("trinkwasseranlage_sst")
+}
+
+model Trinkwassererwaermer_SST {
+  id                                Int                   @id @default(autoincrement())
+  laufendeNummer                    Int
+  temperaturAnzeigeEingangVorhanden Boolean?
+  temperaturEingang                 Int?
+  temperaturAnzeigeAusgangVorhanden Boolean?
+  temperaturAusgang                 Int?
+  rohrDMAusgang                     Rohrdurchmesser?
+  rohrMaterialartAusgang            Rohrmaterial?
+  volumenLiter                      Int?
+  raumTyp                           Raumbezeichnung?
+  lageRaum                          Int?
+  lageDetail                        String?               @db.VarChar(20)
+  trinkwasseranlageId               Int
+  trinkwasseranlage                 Trinkwasseranlage_SST @relation(fields: [trinkwasseranlageId], references: [id])
+  nutzeinheit                       Nutzeinheit_SST[]
+
+  @@map("trinkwassererwaermer_sst")
+}
+
+model Probeentnahmestelle_SST {
+  id                      Int                    @id @default(autoincrement())
+  laufendeNummer          Int
+  nummerInstallation      String?                @db.VarChar(30)
+  nummerObjektEinbauort   Int?
+  leitungssystemArt       Leitungssystemart
+  entfernteEntnahmestelle Boolean
+  raumTyp                 Raumbezeichnung?
+  lageRaum                Int?
+  lageDetail              String?                @db.VarChar(100)
+  trinkwasseranlageId     Int
+  trinkwasseranlage       Trinkwasseranlage_SST? @relation(fields: [trinkwasseranlageId], references: [id])
+  leistungen              Leistungen_SST[]
+  nutzeinheitId           Int                    @unique
+  nutzeinheit             Nutzeinheit_SST?
+
+  @@map("probeentnahmestelle_sst")
+}
+
+model AbgeschlossenVertragspartner_SST {
+  id                      Int                     @id @default(autoincrement())
+  maengelBeschreibung     String
+  anmeldungGesundheitsAmt DateTime
+  sonderaufwandGrund      String
+  gesundheitsamtId        Int
+  gesundheitsamt          Gesundheitsamt_SST      @relation(fields: [gesundheitsamtId], references: [id])
+  auftragsstatusId        Int                     @unique
+  auftragsstatus          Auftragsstatus_SST      @relation(fields: [auftragsstatusId], references: [id])
+  liegenschaft            Liegenschaft_SST        @relation(fields: [liegenschaftId], references: [id])
+  liegenschaftId          Int                     @unique
+  druckstucke             Druckstucke_SST[]
+  leistungen              Leistungen_SST[]
+  aufgenommenesSystem     Trinkwasseranlage_SST[]
+
+  @@map("abgeschlossenvertragspartner_sst")
+}
+
+model Gesundheitsamt_SST {
+  id                            Int                                @id @default(autoincrement())
+  name1                         String
+  name2                         String
+  plz                           Int
+  ort                           String
+  strasse_hausnummer            String
+  telefon                       String
+  telefax                       String
+  mail                          String
+  abgeschlosseneVertragspartner AbgeschlossenVertragspartner_SST[]
+
+  @@map("gesundheitsamt_sst")
+}
+
+model Nutzeinheit_SST {
+  id                     Int                        @id @default(autoincrement())
+  stockwerk              Int
+  etage                  Etage
+  lage                   Int?
+  nutzerName             String?
+  allgemeineNutzeinheit  Boolean
+  gebaeude               Gebaeude_SST               @relation(fields: [gebaeudeId], references: [id])
+  gebaeudeId             Int                        @unique
+  trinkwassererwaermer   Trinkwassererwaermer_SST[]
+  trinkwassererwaermerId Int
+  trinkwasseranlage      Trinkwasseranlage_SST      @relation(fields: [trinkwasseranlageId], references: [id])
+  trinkwasseranlageId    Int                        @unique
+  probeEntnahmeStelle    Probeentnahmestelle_SST    @relation(fields: [probeEntnahmeStelleId], references: [id])
+  probeEntnahmeStelleId  Int                        @unique
+
+  @@map("nutzeinheit_sst")
+}
+
+model Steigstrang {
+  id                                    Int                    @id @default(autoincrement())
+  laufendeNummer                        Int?
+  temperaturVorlauf                     Int?
+  temperaturZirkulation                 Int?
+  rohrDM                                Rohrdurchmesser
+  rohrMaterialart                       Rohrmaterial
+  temperaturAnzeigeSteigstrangVorhanden Boolean
+  temperaturAnzeigeZirkulationVorhanden Boolean
+  trinkwasserAnlageId                   Int?
+  trinkwasserAnlage                     Trinkwasseranlage_SST? @relation(fields: [trinkwasserAnlageId], references: [id])
+
+  @@map("steigstrang")
+}
+
+model Gebaeude_SST {
+  id            Int              @id @default(autoincrement())
+  leistungenId  Int
+  leistungen    Leistungen_SST[]
+  adresse       Adresse_SST      @relation(fields: [adresseId], references: [id])
+  adresseId     Int              @unique
+  nutzEinheit   Nutzeinheit_SST?
+  nutzEinheitId Int              @unique
+
+  @@map("gebaeude_sst")
+}
+
+model Adresse_SST {
+  id         Int           @id @default(autoincrement())
+  strasse    String
+  hausnummer String        @db.VarChar(10)
+  ort        String        @db.VarChar(40)
+  land       Land?
+  gebaeude   Gebaeude_SST?
+
+  userId Int
+  user   User? @relation(fields: [userId], references: [id])
+
+  @@map("adresse_sst")
+}
+
+model Druckstucke_SST {
+  id                       Int                              @id @default(autoincrement())
+  art                      Druckstueckart
+  inhalt                   String                           @db.Text
+  gelieferteDruckstueckeId Int
+  gelieferteDruckstuecke   AbgeschlossenVertragspartner_SST @relation(fields: [gelieferteDruckstueckeId], references: [id])
+
+  @@map("druckstucke_sst")
+}
+
+enum Druckstueckart {
+  Anmeldung_Gesundheitsamt
+  Foto
+}
+
+enum Einheit {
+  Stck // Stück
+  m // Meter
+  kg // Kilogramm
+  l // Liter
+  h // Stunden
+  km // Kilometer
+}
+
+enum NutzungArtGebaeude {
+  gewerblich
+  oeffentlich
+  sonstiges
+}
+
+enum Leitungssystemart {
+  Stichleitung
+  Kaltwasser
+  Zirkulation
+  Rohrbegleitheizung
+  TWE_Eingang
+  TWE_Ausgang
+  WW_Steigstrang
+  WW_Verteilleitung
+}
+
+enum Raumbezeichnung {
+  Keller
+  Treppenhaus
+  Bad
+  Kinderzimmer
+  // Weitere Raumbezeichnungen können hier hinzugefügt werden.
+}
+
+enum Rohrmaterial {
+  verzinkter_Stahl
+  unbekannt_Kunststoff
+  Blei
+  Kupfer
+  Edelstahl
+}
+
+enum Rohrdurchmesser {
+  DN10
+  DN15
+  DN20
+  DN25
+  DN32
+  DN40
+  DN50
+  DN65
+  DN80_greater
+  DN80
+  DN12
+}
+
+enum Etage {
+  Erdgeschoss
+  Obergeschoss
+  Untergeschoss
+  Zwischengeschoss
+  Aussenanlage
+}
+
+enum Land {
+  DE // Deutschland
+  AT
+  CH
+  NL
+  DK
+  PL // Weitere Ländercodes können hier hinzugefügt werden.
+}
