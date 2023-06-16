@@ -13,6 +13,7 @@ import { join } from 'path';
 import { CustomerModule } from './customer/customer.module';
 import { AuftraggeberModule } from './auftraggeber/auftraggeber.module';
 import { AdresseModule } from './adresse/adresse.module';
+import { IstaModule } from './ista/ista.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { AdresseModule } from './adresse/adresse.module';
     AuftragModule,
     CustomerModule,
     AuftraggeberModule,
-    AdresseModule
+    AdresseModule,
+    IstaModule
   ],
 })
 export class AppModule {
