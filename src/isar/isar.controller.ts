@@ -13,15 +13,15 @@ export class IsarController {
 
     }
 
-    @Get("addresses/:id")
-        async getAllAddress(@GetUser('id') userId: number) {
-            return this.isarService.getAllAddresses(userId);
-        }
+    // @Get("addresses/:id")
+    //     async getAllAddress(@GetUser('id') userId: number) {
+    //         return this.isarService.getAllAddresses(userId);
+    //     }
 
-    @Post("address")
-    async createAddress(@GetUser('id') userId: number, @Body() dto: CreateAddressDTO) {
-        return this.isarService.createAddress(userId, dto);
-    }
+    // @Post("address")
+    // async createAddress(@GetUser('id') userId: number, @Body() dto: CreateAddressDTO) {
+    //     return this.isarService.createAddress(userId, dto);
+    // }
 
     // @Patch()
 

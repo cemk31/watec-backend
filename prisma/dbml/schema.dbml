@@ -1,0 +1,583 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  email String [unique, not null]
+  hash String [not null]
+  firstName String
+  lastName String
+  auftraege auftraege [not null]
+  bookmarks bookmarks [not null]
+  customer Customer [not null]
+  auftraggeber auftraggeber [not null]
+}
+
+Table bookmarks {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  title String [not null]
+  description String
+  link String [not null]
+  userId Int [not null]
+  user users [not null]
+}
+
+Table Customer {
+  id Int [pk, increment]
+  firstName String
+  lastName String
+  email String
+  phoneNumber String
+  street String
+  zipCode String
+  place String
+  country String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId Int
+  user users
+}
+
+Table auftraege {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  emailEingang DateTime
+  terminiertZum DateTime
+  uhrzeit DateTime
+  datumAushang DateTime
+  done Boolean
+  bemerkung String
+  vorgemerkt String
+  liNr String
+  adresseLi String
+  plzLi String
+  ortLi String
+  vwBuro String
+  vwMa String
+  mailadresseVw String
+  telVw String
+  hmName String
+  hmTel String
+  emailBetreff String
+  emailAnhang String
+  bestatigungVersendet Boolean
+  anfrageThema String
+  anfrageBestatigt Boolean
+  angebotErstellt Boolean
+  angebotsnummer String
+  angebot String
+  auftragbestatigung Boolean
+  vwBestatigung String
+  aushang Boolean
+  agInformiert Boolean
+  bgb Boolean
+  bgbBericht Boolean
+  ssa Boolean
+  bericht Boolean
+  umb Boolean
+  ber Boolean
+  reNr String
+  reBetrag Decimal
+  reErhalten Boolean
+  reNr2 String
+  reBetrag2 Decimal
+  reNr2Erhalten Boolean
+  dateien String
+  mahnung Boolean
+  mahnung1 Boolean
+  mahnungErhaten Boolean
+  auftraggeber String
+  ap String
+  strasse String
+  plz String
+  ort String
+  tel String
+  email String [not null]
+  userId Int [not null]
+  user users [not null]
+}
+
+Table auftraggeber {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  auftraggebername String [not null]
+  ap String [not null]
+  strasse String [not null]
+  plz Int [not null]
+  ort String [not null]
+  tel String [not null]
+  email String [unique, not null]
+  userId Int [not null]
+  user users [not null]
+}
+
+Table Order {
+  id Int [pk, increment]
+  number String [not null]
+  remarkExternal String
+  createdAt DateTime [default: `now()`, not null]
+  status OrderStatus [not null]
+  customerContacts CustomerContact [not null]
+  NotPossible NotPossible [not null]
+  Postponed Postponed [not null]
+  Cancelled Cancelled [not null]
+  Rejected Rejected [not null]
+  ClosedContractPartner ClosedContractPartner [not null]
+  Planned Planned [not null]
+  Received Received [not null]
+}
+
+Table OrderStatus {
+  id Int [pk, increment]
+  type String [not null]
+  setOn DateTime [not null]
+  executionOnSiteDone Boolean [not null]
+  orderId Int [not null]
+  order Order [not null]
+}
+
+Table CustomerContact {
+  id Int [pk, increment]
+  contactAttemptOn DateTime [not null]
+  contactPersonCustomer String
+  agentCP String [not null]
+  result String [not null]
+  remark String
+  orderId Int [not null]
+  order Order [not null]
+  ClosedContractPartner ClosedContractPartner [not null]
+  planned Planned
+  plannedId Int
+  received Received
+  receivedId Int
+}
+
+Table ReportOrderStatusRequest {
+  id Int [pk, increment]
+  environment String [not null]
+  language String [not null]
+  consumer String [not null]
+  closedContractPartner ClosedContractPartner [not null]
+  closedContractPartnerId Int [not null]
+}
+
+Table ClosedContractPartner {
+  id Int [pk, increment]
+  order Order [not null]
+  orderId Int [not null]
+  orderstatusType Int [not null]
+  setOn DateTime [not null]
+  customerContact CustomerContact [not null]
+  customerContactId Int [not null]
+  deficiencyDescription String
+  registrationHealthAuthoritiesOn DateTime
+  extraordinaryExpenditureReason String
+  suppliedDocuments SuppliedDocuments [not null]
+  recordedSystem RecordedSystem [not null]
+  ReportOrderStatusRequest ReportOrderStatusRequest [not null]
+}
+
+Table SuppliedDocuments {
+  id Int [pk, increment]
+  document Document
+  ClosedContractPartner ClosedContractPartner
+  closedContractPartnerId Int
+  documentId Int
+}
+
+Table Document {
+  id Int [pk, increment]
+  type String [not null]
+  content String [not null]
+  SuppliedDocuments SuppliedDocuments [not null]
+}
+
+Table RecordedSystem {
+  id Int [pk, increment]
+  drinkingWaterFacility DrinkingWaterFacility [not null]
+  property Property
+  propertyId Int
+  services Service [not null]
+  ClosedContractPartner ClosedContractPartner
+  closedContractPartnerId Int
+  drinkingWaterFacilityId Int [not null]
+}
+
+Table Property {
+  id Int [pk, increment]
+  hotwatersupplyType_central Boolean [not null]
+  hotwatersupplyType_decentral Boolean [not null]
+  RecordedSystem RecordedSystem [not null]
+}
+
+Table Service {
+  id Int [pk, increment]
+  articleNumber_ista Int [not null]
+  quantity Int [not null]
+  unit String [not null]
+  extraordinaryExpenditure Boolean [not null]
+  purchasePrice_ista Float
+  warranty Boolean
+  serviceRenderedIn Address [not null]
+  addressId Int [not null]
+  RecordedSystem RecordedSystem
+  recordedSystemId Int
+}
+
+Table DrinkingWaterFacility {
+  id Int [pk, increment]
+  consecutiveNumber Int [not null]
+  usageType String
+  usageTypeOthers String
+  numberSuppliedUnits Int
+  numberDrinkingWaterHeater Int
+  totalVolumeLitres Int
+  pipingSystemType_Circulation Boolean
+  pipingSystemType_Waterbranchline Boolean
+  pipingSystemType_Pipetraceheater Boolean
+  pipingVolumeGr3Litres Boolean
+  deadPipeKnown Boolean
+  deadPipesPosition String
+  numberAscendingPipes Int
+  aerosolformation Boolean
+  explanation String
+  numberSuppliedPersons Int
+  pipeworkSchematicsAvailable Boolean
+  numberColdWaterLegs Int
+  numberHotWaterLegs Int
+  temperatureCirculationDWH_A Int
+  temperatureCirculationDWH_B Int
+  heatExchangerSystem_central Boolean
+  heatExchangerSystem_districtheating Boolean
+  heatExchangerSystem_continuousflowprinciple Boolean
+  drinkingWaterHeaters DrinkingWaterHeater [not null]
+  ascendingPipes AscendingPipe [not null]
+  samplingPoints SamplingPoint [not null]
+  RecordedSystem RecordedSystem [not null]
+}
+
+Table DrinkingWaterHeater {
+  id Int [pk, increment]
+  consecutiveNumber Int [not null]
+  inletTemperatureDisplayPresent Boolean
+  inletTemperature Int
+  outletTemperatureDisplayPresent Boolean
+  outletTemperature Int
+  pipeDiameterOutlet String
+  pipeMaterialtypeOutlet String
+  volumeLitre Int
+  roomType String
+  roomPosition Int
+  positionDetail String
+  unit Unit [not null]
+  unitId Int [not null]
+  DrinkingWaterFacility DrinkingWaterFacility [not null]
+  drinkingWaterFacilityId Int [not null]
+}
+
+Table AscendingPipe {
+  id Int [pk, increment]
+  consecutiveNumber Int [not null]
+  ascendingPipeTemperatureDisplayPresent Boolean [not null]
+  flowTemperature Int
+  circulationTemperatureDisplayPresent Boolean [not null]
+  circulationTemperature Int
+  pipeDiameter String [not null]
+  pipeMaterialtype String [not null]
+  DrinkingWaterFacility DrinkingWaterFacility [not null]
+  drinkingWaterFacilityId Int [not null]
+}
+
+Table SamplingPoints {
+  id Int [pk, increment]
+  samplingPoint SamplingPoint [not null]
+}
+
+Table SamplingPoint {
+  id Int [pk, increment]
+  consecutiveNumber Int [not null]
+  installationNumber Int
+  numberObjectInstallationLocation Int
+  pipingSystemType String
+  remoteSamplingPoint Boolean
+  roomType String
+  roomPosition Int
+  positionDetail String [not null]
+  unit Unit [not null]
+  unitId Int [not null]
+  DrinkingWaterFacility DrinkingWaterFacility [not null]
+  drinkingWaterFacilityId Int [not null]
+  SamplingPoints SamplingPoints
+  samplingPointsId Int
+}
+
+Table Unit {
+  id Int [pk, increment]
+  floor Int [not null]
+  storey String [not null]
+  position Int
+  userName String
+  generalUnit Boolean [not null]
+  building Building [not null]
+  buildingId Int [not null]
+  DrinkingWaterHeater DrinkingWaterHeater [not null]
+  SamplingPoint SamplingPoint [not null]
+}
+
+Table Building {
+  id Int [pk, increment]
+  address Address [not null]
+  addressId Int [not null]
+  Unit Unit [not null]
+}
+
+Table Address {
+  id Int [pk, increment]
+  street String [not null]
+  streetnumber String
+  postcode String [not null]
+  city String [not null]
+  country String
+  building Building [not null]
+  Service Service [not null]
+}
+
+Table Envelope {
+  id Int [pk, increment]
+  Header Header [not null]
+  headerId Int [unique, not null]
+  Body Body [not null]
+  bodyId Int [unique, not null]
+}
+
+Table Header {
+  id Int [pk, increment]
+  Envelope Envelope
+}
+
+Table Body {
+  id Int [pk, increment]
+  Envelope Envelope
+  Request Request [not null]
+  requestId Int [unique, not null]
+}
+
+Table Request {
+  id Int [pk, increment]
+  Body Body
+  environment String [not null]
+  language String [not null]
+  consumer String [not null]
+  Rejected Rejected
+  rejectedId Int
+  NotPossible NotPossible
+  notPossibleId Int
+  Postponed Postponed
+  postponedId Int
+  Cancelled Cancelled
+  cancelledId Int
+  Planned Planned
+  plannedId Int
+  Received Received
+}
+
+Table Postponed {
+  id Int [pk, increment]
+  Request Request [not null]
+  requestId Int [unique, not null]
+  Order Order [not null]
+  orderId Int [not null]
+  statusType String [not null]
+  setOn DateTime [not null]
+  Contact Contact [not null]
+  nextContactAttemptOn DateTime [not null]
+  postponedReason String [not null]
+}
+
+Table Rejected {
+  id Int [pk, increment]
+  Request Request [not null]
+  requestId Int [unique, not null]
+  Order Order [not null]
+  orderId Int [not null]
+  statusType Int [not null]
+  setOn DateTime [not null]
+  Contact Contact [not null]
+  reason String [not null]
+  reasonText String
+}
+
+Table NotPossible {
+  id Int [pk, increment]
+  Request Request [not null]
+  requestId Int [unique, not null]
+  Order Order [not null]
+  orderId Int [not null]
+  statusType String [not null]
+  setOn DateTime [not null]
+  Contact Contact [not null]
+}
+
+Table Contact {
+  id Int [pk, increment]
+  contactAttemptOn DateTime [not null]
+  contactPerson String
+  agentCP String [not null]
+  result String [not null]
+  remark String
+  NotPossible NotPossible [not null]
+  notPossibleId Int [not null]
+  Rejected Rejected [not null]
+  rejectedId Int [not null]
+  Postponed Postponed [not null]
+  postponedId Int [not null]
+  Cancelled Cancelled [not null]
+  cancelledId Int [not null]
+}
+
+Table Cancelled {
+  id Int [pk, increment]
+  Request Request [not null]
+  requestId Int [unique, not null]
+  Order Order [not null]
+  orderId Int [not null]
+  statusType String [not null]
+  setOn DateTime [not null]
+  Contact Contact [not null]
+  cancellationReason String [not null]
+}
+
+Table Planned {
+  id Int [pk, increment]
+  Order Order [not null]
+  orderId Int [not null]
+  orderstatusType String [not null]
+  setOn DateTime [not null]
+  CustomerContact CustomerContact [not null]
+  detailedScheduleDate DateTime [not null]
+  detailedScheduleTimeFrom DateTime
+  detailedScheduleTimeTo DateTime
+  detailedScheduleDelayReason String
+  Request Request [not null]
+  requestId Int [unique, not null]
+}
+
+Table Received {
+  id Int [pk, increment]
+  Order Order [not null]
+  orderId Int [not null]
+  orderstatusType String [not null]
+  setOn DateTime [not null]
+  CustomerContact CustomerContact [not null]
+  Request Request [not null]
+  requestId Int [unique, not null]
+}
+
+Enum Auftragsstatus {
+  Eingegangen
+  Kundenkontakt_nicht_moeglich
+  Kundenkontakt_verschoben
+  Geplant
+  Ausfuehrung_vor_Ort_erfolgt
+  Ausfuehrung_vor_Ort_nicht_moeglich
+  Abgeschlossen_Vertragspartner
+  Abgelehnt
+  Storniert
+}
+
+Ref: bookmarks.userId > users.id
+
+Ref: Customer.userId > users.id
+
+Ref: auftraege.userId > users.id
+
+Ref: auftraggeber.userId > users.id
+
+Ref: OrderStatus.orderId > Order.id
+
+Ref: CustomerContact.orderId > Order.id
+
+Ref: CustomerContact.plannedId > Planned.id
+
+Ref: CustomerContact.receivedId > Received.id
+
+Ref: ReportOrderStatusRequest.closedContractPartnerId > ClosedContractPartner.id
+
+Ref: ClosedContractPartner.orderId > Order.id
+
+Ref: ClosedContractPartner.customerContactId > CustomerContact.id
+
+Ref: SuppliedDocuments.documentId > Document.id
+
+Ref: SuppliedDocuments.closedContractPartnerId > ClosedContractPartner.id
+
+Ref: RecordedSystem.drinkingWaterFacilityId > DrinkingWaterFacility.id
+
+Ref: RecordedSystem.propertyId > Property.id
+
+Ref: RecordedSystem.closedContractPartnerId > ClosedContractPartner.id
+
+Ref: Service.addressId > Address.id
+
+Ref: Service.recordedSystemId > RecordedSystem.id
+
+Ref: DrinkingWaterHeater.unitId > Unit.id
+
+Ref: DrinkingWaterHeater.drinkingWaterFacilityId > DrinkingWaterFacility.id
+
+Ref: AscendingPipe.drinkingWaterFacilityId > DrinkingWaterFacility.id
+
+Ref: SamplingPoint.unitId > Unit.id
+
+Ref: SamplingPoint.drinkingWaterFacilityId > DrinkingWaterFacility.id
+
+Ref: SamplingPoint.samplingPointsId > SamplingPoints.id
+
+Ref: Unit.buildingId > Building.id
+
+Ref: Building.addressId > Address.id
+
+Ref: Envelope.headerId - Header.id
+
+Ref: Envelope.bodyId - Body.id
+
+Ref: Body.requestId - Request.id
+
+Ref: Postponed.requestId - Request.id
+
+Ref: Postponed.orderId > Order.id
+
+Ref: Rejected.requestId - Request.id
+
+Ref: Rejected.orderId > Order.id
+
+Ref: NotPossible.requestId - Request.id
+
+Ref: NotPossible.orderId > Order.id
+
+Ref: Contact.notPossibleId > NotPossible.id
+
+Ref: Contact.rejectedId > Rejected.id
+
+Ref: Contact.postponedId > Postponed.id
+
+Ref: Contact.cancelledId > Cancelled.id
+
+Ref: Cancelled.requestId - Request.id
+
+Ref: Cancelled.orderId > Order.id
+
+Ref: Planned.orderId > Order.id
+
+Ref: Planned.requestId - Request.id
+
+Ref: Received.orderId > Order.id
+
+Ref: Received.requestId - Request.id

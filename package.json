@@ -10,6 +10,7 @@
     "npm": "9.x"
   },
   "scripts": {
+    "json-to-prisma": "json-to-prisma-schema-convertor convert --inputPath='./prisma/schema.json' --outputPath='./prisma/schemaJSON.prisma'",
     "prisma:dev:deploy": "prisma migrate deploy",
     "db:dev:rm": "docker compose rm dev-db -s -f -v",
     "db:dev:up": "docker compose up dev-db -d",
@@ -54,6 +55,7 @@
     "class-validator": "^0.14.0",
     "cors": "2.8.5",
     "express": "4.18.2",
+    "json-to-prisma-schema-convertor": "^0.1.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "0.1.13",
@@ -81,6 +83,7 @@
     "pactum": "^3.1.3",
     "prettier": "^2.3.2",
     "prisma": "^4.14.1",
+    "prisma-dbml-generator": "^0.10.0",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
     "ts-jest": "^27.0.3",

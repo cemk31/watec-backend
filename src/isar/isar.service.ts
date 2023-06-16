@@ -8,19 +8,19 @@ export class IsarService {
 
     }
 
-    async createAddress(
-        userId: number, 
-        dto: CreateAddressDTO,
-        ) {
-        const adresse_SST =
-            await this.prisma.adresse_SST.create({
-              data: {
-                userId,
-                ...dto,
-              },
-            });
-        return adresse_SST;
-    }
+    // async createAddress(
+    //     userId: number, 
+    //     dto: CreateAddressDTO,
+    //     ) {
+    //     const adresse_SST =
+    //         await this.prisma.adresse_SST.create({
+    //           data: {
+    //             userId,
+    //             ...dto,
+    //           },
+    //         });
+    //     return adresse_SST;
+    // }
 
     async updateAddress(addressId: number, addressData: any): Promise<any> {
     // Implementieren Sie hier die Logik, um eine Adresse in der Datenbank zu aktualisieren
@@ -30,11 +30,11 @@ export class IsarService {
     // Implementieren Sie hier die Logik, um eine Adresse aus der Datenbank zu löschen
     }
 
-    async getAllAddresses(userId: number) {
-    return this.prisma.adresse_SST.findMany({
-            where: {
-              userId,
-            },
-        });
-    }
+    // async getAllAddresses(userId: number) {
+    // return this.prisma.adresse_SST.findMany({
+    //         where: {
+    //           userId,
+    //         },
+    //     });
+    // }
 }

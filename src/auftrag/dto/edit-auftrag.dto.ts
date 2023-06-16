@@ -166,47 +166,47 @@ export class EditAuftragDTO {
   @IsOptional()
   reNr2Erhalten?: boolean;
 
-    // Continuing the EditAuftragDTO
-    @IsOptional()
-    dateien?: string;
+  // Continuing the EditAuftragDTO
+  @IsOptional()
+  dateien?: string;
 
-    @IsBoolean()
-    @IsOptional()
-    mahnung?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  mahnung?: boolean;
 
-    @IsBoolean()
-    @IsOptional()
-    mahnung1?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  mahnung1?: boolean;
 
-    @IsBoolean()
-    @IsOptional()
-    mahnungErhaten?: boolean;
+  @IsBoolean()
+  @IsOptional()
+  mahnungErhaten?: boolean;
 
-    @IsString()
-    @IsOptional()
-    auftraggeber?: string;
+  @IsString()
+  @IsOptional()
+  auftraggeber?: string;
 
-    @IsString()
-    @IsOptional()
-    ap?: string;
+  @IsString()
+  @IsOptional()
+  ap?: string;
 
-    @IsString()
-    @IsOptional()
-    strasse?: string;
+  @IsString()
+  @IsOptional()
+  strasse?: string;
 
-    @IsString()
-    @IsOptional()
-    plz?: string;
+  @IsString()
+  @IsOptional()
+  plz?: string;
 
-    @IsString()
-    @IsOptional()
-    ort?: string;
+  @IsString()
+  @IsOptional()
+  ort?: string;
 
-    @IsString()
-    @IsOptional()
-    tel?: string;
+  @IsString()
+  @IsOptional()
+  tel?: string;
 
-    @IsString()
-    @IsOptional()
-    email?: string;
+  @IsString()
+  @IsOptional()
+  email?: string;
 }

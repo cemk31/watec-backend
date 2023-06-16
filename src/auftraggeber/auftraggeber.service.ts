@@ -1,22 +1,26 @@
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateAuftraggeberDto } from "./dto";
-import { NotFoundException } from "@nestjs/common";
-import { Auftraggeber } from "@prisma/client";
-import { UpdateAuftraggeberDto } from "./dto/update-auftraggeber.dto";
+import { CreateAuftraggeberDto } from './dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Auftraggeber } from '@prisma/client';
+import { UpdateAuftraggeberDto } from './dto/update-auftraggeber.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
+@Injectable()
 export class AuftraggeberService {
-    constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
-    async createAuftraggeber(userId: number, dto : CreateAuftraggeberDto,) {
-      const auftraggeber =
-      await this.prisma.auftraggeber.create({
-        data: {
-          userId,
-          ...dto,
+  async createAuftraggeber(userId: number, dto: CreateAuftraggeberDto) {
+    const auftraggeber = await this.prisma.auftraggeber.create({
+      data: {
+        ...dto,
+        user: {
+          connect: {
+            id: userId,
+          },
         },
-      });
-          return auftraggeber;
-    }
+      },
+    });
+    return auftraggeber;
+  }
 
     async getAuftraggeber(id: number): Promise<Auftraggeber> {
       const auftraggeber = await this.prisma.auftraggeber.findUnique({
@@ -59,14 +63,18 @@ export class AuftraggeberService {
       });
     }
 
-    async search(auftraggeber: string): Promise<Auftraggeber[]> {
+    async search(auftraggebername: string): Promise<Auftraggeber[]> {
       return this.prisma.auftraggeber.findMany({
         where: {
-          auftraggeber: {
-            contains: auftraggeber,
+          auftraggebername: {
+            contains: auftraggebername,
           },
         },
       });
+    }
+
+    async getAllAuftraggeber(): Promise<Auftraggeber[]> {
+      return this.prisma.auftraggeber.findMany();
     }
     
 }

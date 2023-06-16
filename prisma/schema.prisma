@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -27,7 +31,6 @@ model User {
 
   bookmarks    Bookmark[]
   //erstellte Adressen vom Nutzer
-  adresse_sst  Adresse_SST[]
   customer     Customer[]
   auftraggeber Auftraggeber[]
 
@@ -49,238 +52,6 @@ model Bookmark {
   @@map("bookmarks")
 }
 
-model Installationsauftrag_SST {
-  id               Int                 @id @default(autoincrement())
-  nummer           Int
-  bemerkungExtern  String?
-  auftragsstatus   Auftragsstatus_SST?
-  auftragsstatusId Int?                @unique
-
-  @@map("installationsauftrag_sst")
-}
-
-model Auftragsstatus_SST {
-  id                             Int                               @id @default(autoincrement())
-  auftragStatusArt               Auftragsstatus
-  gesetztAm                      DateTime
-  installationsauftrag           Installationsauftrag_SST?         @relation(fields: [installationsauftragId], references: [id])
-  installationsauftragId         Int                               @unique
-  abgeschlossenVertragspartner   AbgeschlossenVertragspartner_SST?
-  abgeschlossenVertragspartnerId Int                               @unique
-
-  @@map("auftragsstatus_sst")
-}
-
-model Liegenschaft_SST {
-  id                                Int                               @id @default(autoincrement())
-  warmwasserversorgungArt_zentral   Boolean
-  warmwasserversorgungArt_dezentral Boolean
-  abgeschlossenVertragspartner      AbgeschlossenVertragspartner_SST?
-  abgeschlossenVertragspartnerId    Int
-
-  @@map("liegenschaft_sst")
-}
-
-model Leistungen_SST {
-  id                             Int                               @id @default(autoincrement())
-  artikelnummer_ista             Int
-  menge                          Float
-  einheit                        Einheit
-  sonderaufwand                  Boolean
-  verkaufspreis_GC               Float
-  einkaufspreis_ista             Float
-  artikelnummer_GC               String
-  gewaehrleistung                Boolean
-  artikelBezeichnung_GC          Boolean
-  leistungErbrachtInId           Int
-  leistungErbrachtIn             Gebaeude_SST?                     @relation(fields: [leistungErbrachtInId], references: [id])
-  probeEntnahmeStelleId          Int
-  probeEntnahmeStelle            Probeentnahmestelle_SST?          @relation(fields: [probeEntnahmeStelleId], references: [id])
-  abgeschlossenVertragspartner   AbgeschlossenVertragspartner_SST? @relation(fields: [abgeschlossenVertragspartnerId], references: [id])
-  abgeschlossenVertragspartnerId Int
-
-  @@map("leistungen_sst")
-}
-
-model Trinkwasseranlage_SST {
-  id                                     Int                                @id @default(autoincrement())
-  laufendeNummer                         Int
-  nutzungArt                             NutzungArtGebaeude?
-  nutzungArtSonstige                     String?                            @db.VarChar(40)
-  anzahlVersorgteNutzeinheiten           Int?
-  anzahlTrinkwassererwaermer             Int?
-  summeVolumenLiter                      Int?
-  leitungssystemArt_Zirkulation          Boolean?
-  leitungssystemArt_Stichleitung         Boolean?
-  leitungssystemArt_Rohrbegleitheizung   Boolean?
-  leitungsVolumenGr3Liter                Boolean?
-  totleitungBekannt                      Boolean?
-  lageTotleitungen                       String?                            @db.VarChar(240)
-  anzahlSteigstraenge                    Int?
-  aerosolbildung                         Boolean?                           @default(true)
-  erlaeuterung                           String?                            @db.VarChar(240)
-  anzahlVersorgtePersonen                Int?                               @db.Integer
-  leitungsschemaVorhanden                Boolean?
-  anzahlKaltwasserstraenge               Int?
-  anzahlWarmwasserstraenge               Int?
-  temperaturZirkulationTWE_A             Int?
-  temperaturZirkulationTWE_B             Int?
-  waermetauschersystem_zentral           Boolean?
-  waermetauschersystem_fernwaerme        Boolean?
-  waermetauschersystem_durchflussprinzip Boolean?
-  trinkwassererwaermer                   Trinkwassererwaermer_SST[]
-  aufgenommeneEntnahmeStelleId           Int?
-  aufgenommeneEntnahmeStelle             Probeentnahmestelle_SST[]
-  steigstrang                            Steigstrang[]
-  nutzEinheit                            Nutzeinheit_SST?
-  nutzEinheitId                          Int?
-  abgeschlossenVertragspartner           AbgeschlossenVertragspartner_SST[]
-
-  @@map("trinkwasseranlage_sst")
-}
-
-model Trinkwassererwaermer_SST {
-  id                                Int                   @id @default(autoincrement())
-  laufendeNummer                    Int
-  temperaturAnzeigeEingangVorhanden Boolean?
-  temperaturEingang                 Int?
-  temperaturAnzeigeAusgangVorhanden Boolean?
-  temperaturAusgang                 Int?
-  rohrDMAusgang                     Rohrdurchmesser?
-  rohrMaterialartAusgang            Rohrmaterial?
-  volumenLiter                      Int?
-  raumTyp                           Raumbezeichnung?
-  lageRaum                          Int?
-  lageDetail                        String?               @db.VarChar(20)
-  trinkwasseranlageId               Int
-  trinkwasseranlage                 Trinkwasseranlage_SST @relation(fields: [trinkwasseranlageId], references: [id])
-  nutzeinheit                       Nutzeinheit_SST[]
-
-  @@map("trinkwassererwaermer_sst")
-}
-
-model Probeentnahmestelle_SST {
-  id                      Int                    @id @default(autoincrement())
-  laufendeNummer          Int
-  nummerInstallation      String?                @db.VarChar(30)
-  nummerObjektEinbauort   Int?
-  leitungssystemArt       Leitungssystemart
-  entfernteEntnahmestelle Boolean
-  raumTyp                 Raumbezeichnung?
-  lageRaum                Int?
-  lageDetail              String?                @db.VarChar(100)
-  trinkwasseranlageId     Int
-  trinkwasseranlage       Trinkwasseranlage_SST? @relation(fields: [trinkwasseranlageId], references: [id])
-  leistungen              Leistungen_SST[]
-  nutzeinheitId           Int                    @unique
-  nutzeinheit             Nutzeinheit_SST?
-
-  @@map("probeentnahmestelle_sst")
-}
-
-model AbgeschlossenVertragspartner_SST {
-  id                      Int                     @id @default(autoincrement())
-  maengelBeschreibung     String
-  anmeldungGesundheitsAmt DateTime
-  sonderaufwandGrund      String
-  gesundheitsamtId        Int
-  gesundheitsamt          Gesundheitsamt_SST      @relation(fields: [gesundheitsamtId], references: [id])
-  auftragsstatusId        Int                     @unique
-  auftragsstatus          Auftragsstatus_SST      @relation(fields: [auftragsstatusId], references: [id])
-  liegenschaft            Liegenschaft_SST        @relation(fields: [liegenschaftId], references: [id])
-  liegenschaftId          Int                     @unique
-  druckstucke             Druckstucke_SST[]
-  leistungen              Leistungen_SST[]
-  aufgenommenesSystem     Trinkwasseranlage_SST[]
-
-  @@map("abgeschlossenvertragspartner_sst")
-}
-
-model Gesundheitsamt_SST {
-  id                            Int                                @id @default(autoincrement())
-  name1                         String
-  name2                         String
-  plz                           Int
-  ort                           String
-  strasse_hausnummer            String
-  telefon                       String
-  telefax                       String
-  mail                          String
-  abgeschlosseneVertragspartner AbgeschlossenVertragspartner_SST[]
-
-  @@map("gesundheitsamt_sst")
-}
-
-model Nutzeinheit_SST {
-  id                     Int                        @id @default(autoincrement())
-  stockwerk              Int
-  etage                  Etage
-  lage                   Int?
-  nutzerName             String?
-  allgemeineNutzeinheit  Boolean
-  gebaeude               Gebaeude_SST               @relation(fields: [gebaeudeId], references: [id])
-  gebaeudeId             Int                        @unique
-  trinkwassererwaermer   Trinkwassererwaermer_SST[]
-  trinkwassererwaermerId Int
-  trinkwasseranlage      Trinkwasseranlage_SST      @relation(fields: [trinkwasseranlageId], references: [id])
-  trinkwasseranlageId    Int                        @unique
-  probeEntnahmeStelle    Probeentnahmestelle_SST    @relation(fields: [probeEntnahmeStelleId], references: [id])
-  probeEntnahmeStelleId  Int                        @unique
-
-  @@map("nutzeinheit_sst")
-}
-
-model Steigstrang {
-  id                                    Int                    @id @default(autoincrement())
-  laufendeNummer                        Int?
-  temperaturVorlauf                     Int?
-  temperaturZirkulation                 Int?
-  rohrDM                                Rohrdurchmesser
-  rohrMaterialart                       Rohrmaterial
-  temperaturAnzeigeSteigstrangVorhanden Boolean
-  temperaturAnzeigeZirkulationVorhanden Boolean
-  trinkwasserAnlageId                   Int?
-  trinkwasserAnlage                     Trinkwasseranlage_SST? @relation(fields: [trinkwasserAnlageId], references: [id])
-
-  @@map("steigstrang")
-}
-
-model Gebaeude_SST {
-  id            Int              @id @default(autoincrement())
-  leistungenId  Int
-  leistungen    Leistungen_SST[]
-  adresse       Adresse_SST      @relation(fields: [adresseId], references: [id])
-  adresseId     Int              @unique
-  nutzEinheit   Nutzeinheit_SST?
-  nutzEinheitId Int              @unique
-
-  @@map("gebaeude_sst")
-}
-
-model Adresse_SST {
-  id         Int           @id @default(autoincrement())
-  strasse    String
-  hausnummer String        @db.VarChar(10)
-  ort        String        @db.VarChar(40)
-  land       Land?
-  gebaeude   Gebaeude_SST?
-
-  userId Int
-  user   User? @relation(fields: [userId], references: [id])
-
-  @@map("adresse_sst")
-}
-
-model Druckstucke_SST {
-  id                       Int                              @id @default(autoincrement())
-  art                      Druckstueckart
-  inhalt                   String                           @db.Text
-  gelieferteDruckstueckeId Int
-  gelieferteDruckstuecke   AbgeschlossenVertragspartner_SST @relation(fields: [gelieferteDruckstueckeId], references: [id])
-
-  @@map("druckstucke_sst")
-}
-
 model Customer {
   id          Int     @id @default(autoincrement())
   firstName   String?
@@ -297,6 +68,7 @@ model Customer {
 
   userId Int?
   user   User? @relation(fields: [userId], references: [id])
+
   @@map("Customer")
 }
 
@@ -312,84 +84,6 @@ enum Auftragsstatus {
   Abgeschlossen_Vertragspartner
   Abgelehnt
   Storniert
-}
-
-enum Druckstueckart {
-  Anmeldung_Gesundheitsamt
-  Foto
-}
-
-enum Einheit {
-  Stck // Stück
-  m // Meter
-  kg // Kilogramm
-  l // Liter
-  h // Stunden
-  km // Kilometer
-}
-
-enum NutzungArtGebaeude {
-  gewerblich
-  oeffentlich
-  sonstiges
-}
-
-enum Leitungssystemart {
-  Stichleitung
-  Kaltwasser
-  Zirkulation
-  Rohrbegleitheizung
-  TWE_Eingang
-  TWE_Ausgang
-  WW_Steigstrang
-  WW_Verteilleitung
-}
-
-enum Raumbezeichnung {
-  Keller
-  Treppenhaus
-  Bad
-  Kinderzimmer
-  // Weitere Raumbezeichnungen können hier hinzugefügt werden.
-}
-
-enum Rohrmaterial {
-  verzinkter_Stahl
-  unbekannt_Kunststoff
-  Blei
-  Kupfer
-  Edelstahl
-}
-
-enum Rohrdurchmesser {
-  DN10
-  DN15
-  DN20
-  DN25
-  DN32
-  DN40
-  DN50
-  DN65
-  DN80_greater
-  DN80
-  DN12
-}
-
-enum Etage {
-  Erdgeschoss
-  Obergeschoss
-  Untergeschoss
-  Zwischengeschoss
-  Aussenanlage
-}
-
-enum Land {
-  DE // Deutschland
-  AT
-  CH
-  NL
-  DK
-  PL // Weitere Ländercodes können hier hinzugefügt werden.
 }
 
 model Auftrag {
@@ -461,18 +155,386 @@ model Auftrag {
 }
 
 model Auftraggeber {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  auftraggeber String
-  ap           String
-  strasse      String
-  plz          Int
-  ort          String
-  tel          String
-  email        String   @unique
-  userId       Int
-  user         User     @relation(fields: [userId], references: [id])
+  id               Int      @id @default(autoincrement())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  auftraggebername String
+  ap               String
+  strasse          String
+  plz              Int
+  ort              String
+  tel              String
+  email            String   @unique
+  userId           Int
+  user             User     @relation(fields: [userId], references: [id])
 
   @@map("auftraggeber")
+}
+
+// ORDER API 
+model Order {
+  id                    Int                     @id @default(autoincrement())
+  number                String
+  remarkExternal        String?
+  createdAt             DateTime                @default(now())
+  status                OrderStatus[]
+  customerContacts      CustomerContact[]
+  NotPossible           NotPossible[]
+  Postponed             Postponed[]
+  Cancelled             Cancelled[]
+  Rejected              Rejected[]
+  ClosedContractPartner ClosedContractPartner[]
+  Planned               Planned[]
+  Received              Received[]
+}
+
+model OrderStatus {
+  id                  Int      @id @default(autoincrement())
+  type                String // represents the orderstatusType
+  setOn               DateTime // represents the setOn field
+  executionOnSiteDone Boolean // represents the executionOnSiteDone field
+  orderId             Int // represents the relation to Order
+  order               Order    @relation(fields: [orderId], references: [id])
+}
+
+// model CustomerContacts {
+//   id                     Int    @id @default(autoincrement())
+//   customerContact        CustomerContact[]
+// }
+
+model CustomerContact {
+  id                    Int                     @id @default(autoincrement())
+  contactAttemptOn      DateTime
+  contactPersonCustomer String?
+  agentCP               String
+  result                String
+  remark                String?
+  orderId               Int
+  order                 Order                   @relation(fields: [orderId], references: [id])
+  ClosedContractPartner ClosedContractPartner[]
+  planned               Planned?                @relation(fields: [plannedId], references: [id])
+  plannedId             Int?
+  received              Received?               @relation(fields: [receivedId], references: [id])
+  receivedId            Int?
+}
+
+model ReportOrderStatusRequest {
+  id                      Int                   @id @default(autoincrement())
+  environment             String
+  language                String
+  consumer                String
+  closedContractPartner   ClosedContractPartner @relation(fields: [closedContractPartnerId], references: [id])
+  closedContractPartnerId Int
+}
+
+model ClosedContractPartner {
+  id                              Int                        @id @default(autoincrement())
+  order                           Order                      @relation(fields: [orderId], references: [id])
+  orderId                         Int
+  orderstatusType                 Int
+  setOn                           DateTime
+  customerContact                 CustomerContact            @relation(fields: [customerContactId], references: [id])
+  customerContactId               Int
+  deficiencyDescription           String?
+  registrationHealthAuthoritiesOn DateTime?
+  extraordinaryExpenditureReason  String?
+  suppliedDocuments               SuppliedDocuments[]
+  recordedSystem                  RecordedSystem[]
+  ReportOrderStatusRequest        ReportOrderStatusRequest[]
+}
+
+model SuppliedDocuments {
+  id                      Int                    @id @default(autoincrement())
+  document                Document?              @relation(fields: [documentId], references: [id])
+  ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
+  closedContractPartnerId Int?
+  documentId              Int?
+}
+
+model Document {
+  id                Int                 @id @default(autoincrement())
+  type              String
+  content           String
+  SuppliedDocuments SuppliedDocuments[]
+}
+
+model RecordedSystem {
+  id                      Int                    @id @default(autoincrement())
+  drinkingWaterFacility   DrinkingWaterFacility  @relation(fields: [drinkingWaterFacilityId], references: [id])
+  property                Property?              @relation(fields: [propertyId], references: [id])
+  propertyId              Int?
+  services                Service[]
+  ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
+  closedContractPartnerId Int?
+  drinkingWaterFacilityId Int
+}
+
+model Property {
+  id                           Int              @id @default(autoincrement())
+  hotwatersupplyType_central   Boolean
+  hotwatersupplyType_decentral Boolean
+  RecordedSystem               RecordedSystem[]
+}
+
+model Service {
+  id                       Int             @id @default(autoincrement())
+  articleNumber_ista       Int
+  quantity                 Int
+  unit                     String
+  extraordinaryExpenditure Boolean
+  purchasePrice_ista       Float?
+  warranty                 Boolean?
+  serviceRenderedIn        Address         @relation(fields: [addressId], references: [id])
+  addressId                Int
+  RecordedSystem           RecordedSystem? @relation(fields: [recordedSystemId], references: [id])
+  recordedSystemId         Int?
+}
+
+model DrinkingWaterFacility {
+  id                                          Int                   @id @default(autoincrement())
+  consecutiveNumber                           Int
+  usageType                                   String?
+  usageTypeOthers                             String?
+  numberSuppliedUnits                         Int?
+  numberDrinkingWaterHeater                   Int?
+  totalVolumeLitres                           Int?
+  pipingSystemType_Circulation                Boolean?
+  pipingSystemType_Waterbranchline            Boolean?
+  pipingSystemType_Pipetraceheater            Boolean?
+  pipingVolumeGr3Litres                       Boolean?
+  deadPipeKnown                               Boolean?
+  deadPipesPosition                           String?
+  numberAscendingPipes                        Int?
+  aerosolformation                            Boolean?
+  explanation                                 String?
+  numberSuppliedPersons                       Int?
+  pipeworkSchematicsAvailable                 Boolean?
+  numberColdWaterLegs                         Int?
+  numberHotWaterLegs                          Int?
+  temperatureCirculationDWH_A                 Int?
+  temperatureCirculationDWH_B                 Int?
+  heatExchangerSystem_central                 Boolean?
+  heatExchangerSystem_districtheating         Boolean?
+  heatExchangerSystem_continuousflowprinciple Boolean?
+  drinkingWaterHeaters                        DrinkingWaterHeater[]
+  ascendingPipes                              AscendingPipe[]
+  samplingPoints                              SamplingPoint[]
+  RecordedSystem                              RecordedSystem[]
+}
+
+model DrinkingWaterHeater {
+  id                              Int                   @id @default(autoincrement())
+  consecutiveNumber               Int
+  inletTemperatureDisplayPresent  Boolean?
+  inletTemperature                Int?
+  outletTemperatureDisplayPresent Boolean?
+  outletTemperature               Int?
+  pipeDiameterOutlet              String?
+  pipeMaterialtypeOutlet          String?
+  volumeLitre                     Int?
+  roomType                        String?
+  roomPosition                    Int?
+  positionDetail                  String?
+  unit                            Unit                  @relation(fields: [unitId], references: [id])
+  unitId                          Int
+  DrinkingWaterFacility           DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
+  drinkingWaterFacilityId         Int
+}
+
+model AscendingPipe {
+  id                                     Int                   @id @default(autoincrement())
+  consecutiveNumber                      Int
+  ascendingPipeTemperatureDisplayPresent Boolean
+  flowTemperature                        Int?
+  circulationTemperatureDisplayPresent   Boolean
+  circulationTemperature                 Int?
+  pipeDiameter                           String
+  pipeMaterialtype                       String
+  DrinkingWaterFacility                  DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
+  drinkingWaterFacilityId                Int
+}
+
+model SamplingPoints {
+  id            Int             @id @default(autoincrement())
+  samplingPoint SamplingPoint[]
+}
+
+model SamplingPoint {
+  id                               Int                   @id @default(autoincrement())
+  consecutiveNumber                Int
+  installationNumber               Int?
+  numberObjectInstallationLocation Int?
+  pipingSystemType                 String?
+  remoteSamplingPoint              Boolean?
+  roomType                         String?
+  roomPosition                     Int?
+  positionDetail                   String
+  unit                             Unit                  @relation(fields: [unitId], references: [id])
+  unitId                           Int
+  DrinkingWaterFacility            DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
+  drinkingWaterFacilityId          Int
+  SamplingPoints                   SamplingPoints?       @relation(fields: [samplingPointsId], references: [id])
+  samplingPointsId                 Int?
+}
+
+model Unit {
+  id                  Int                   @id @default(autoincrement())
+  floor               Int
+  storey              String
+  position            Int?
+  userName            String?
+  generalUnit         Boolean
+  building            Building              @relation(fields: [buildingId], references: [id])
+  buildingId          Int
+  DrinkingWaterHeater DrinkingWaterHeater[]
+  SamplingPoint       SamplingPoint[]
+}
+
+model Building {
+  id        Int     @id @default(autoincrement())
+  address   Address @relation(fields: [addressId], references: [id])
+  addressId Int
+  Unit      Unit[]
+}
+
+model Address {
+  id           Int        @id @default(autoincrement())
+  street       String
+  streetnumber String?
+  postcode     String
+  city         String
+  country      String?
+  building     Building[]
+  Service      Service[]
+}
+
+model Envelope {
+  id       Int    @id @default(autoincrement())
+  Header   Header @relation(fields: [headerId], references: [id])
+  headerId Int    @unique
+  Body     Body   @relation(fields: [bodyId], references: [id])
+  bodyId   Int    @unique
+}
+
+model Header {
+  id       Int       @id @default(autoincrement())
+  Envelope Envelope? // one-to-one relation with Envelope
+}
+
+model Body {
+  id        Int       @id @default(autoincrement())
+  Envelope  Envelope? // one-to-one relation with Envelope
+  Request   Request   @relation(fields: [requestId], references: [id])
+  requestId Int       @unique
+}
+
+model Request {
+  id            Int          @id @default(autoincrement())
+  Body          Body? // one-to-one relation with Body
+  environment   String
+  language      String
+  consumer      String
+  Rejected      Rejected?
+  rejectedId    Int?
+  NotPossible   NotPossible?
+  notPossibleId Int?
+  Postponed     Postponed?
+  postponedId   Int?
+  Cancelled     Cancelled?
+  cancelledId   Int?
+  Planned       Planned?
+  plannedId     Int?
+  Received      Received?
+}
+
+model Postponed {
+  id                   Int       @id @default(autoincrement())
+  Request              Request   @relation(fields: [requestId], references: [id])
+  requestId            Int       @unique
+  Order                Order     @relation(fields: [orderId], references: [id])
+  orderId              Int
+  statusType           String
+  setOn                DateTime
+  Contact              Contact[]
+  nextContactAttemptOn DateTime
+  postponedReason      String
+}
+
+model Rejected {
+  id         Int       @id @default(autoincrement())
+  Request    Request   @relation(fields: [requestId], references: [id])
+  requestId  Int       @unique
+  Order      Order     @relation(fields: [orderId], references: [id])
+  orderId    Int
+  statusType Int
+  setOn      DateTime
+  Contact    Contact[]
+  reason     String
+  reasonText String?
+}
+
+model NotPossible {
+  id         Int       @id @default(autoincrement())
+  Request    Request   @relation(fields: [requestId], references: [id])
+  requestId  Int       @unique
+  Order      Order     @relation(fields: [orderId], references: [id])
+  orderId    Int
+  statusType String
+  setOn      DateTime
+  Contact    Contact[]
+}
+
+model Contact {
+  id               Int         @id @default(autoincrement())
+  contactAttemptOn DateTime
+  contactPerson    String?
+  agentCP          String
+  result           String
+  remark           String?
+  NotPossible      NotPossible @relation(fields: [notPossibleId], references: [id])
+  notPossibleId    Int
+  Rejected         Rejected    @relation(fields: [rejectedId], references: [id])
+  rejectedId       Int
+  Postponed        Postponed   @relation(fields: [postponedId], references: [id])
+  postponedId      Int
+  Cancelled        Cancelled   @relation(fields: [cancelledId], references: [id])
+  cancelledId      Int
+}
+
+model Cancelled {
+  id                 Int       @id @default(autoincrement())
+  Request            Request   @relation(fields: [requestId], references: [id])
+  requestId          Int       @unique
+  Order              Order     @relation(fields: [orderId], references: [id])
+  orderId            Int
+  statusType         String
+  setOn              DateTime
+  Contact            Contact[]
+  cancellationReason String
+}
+
+model Planned {
+  id                          Int               @id @default(autoincrement())
+  Order                       Order             @relation(fields: [orderId], references: [id])
+  orderId                     Int
+  orderstatusType             String
+  setOn                       DateTime
+  CustomerContact             CustomerContact[]
+  detailedScheduleDate        DateTime
+  detailedScheduleTimeFrom    DateTime?
+  detailedScheduleTimeTo      DateTime?
+  detailedScheduleDelayReason String?
+  Request                     Request           @relation(fields: [requestId], references: [id])
+  requestId                   Int               @unique
+}
+
+model Received {
+  id              Int               @id @default(autoincrement())
+  Order           Order             @relation(fields: [orderId], references: [id])
+  orderId         Int
+  orderstatusType String
+  setOn           DateTime
+  CustomerContact CustomerContact[]
+  Request         Request           @relation(fields: [requestId], references: [id])
+  requestId       Int               @unique
 }

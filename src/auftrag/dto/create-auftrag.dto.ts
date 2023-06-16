@@ -1,5 +1,6 @@
 // create-auftrag.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
+import { Auftraggeber } from '@prisma/client';
 import { IsBoolean, IsDate, IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateAuftragDTO {
@@ -225,6 +226,10 @@ export class CreateAuftragDTO {
   @IsOptional()
   @ApiProperty()
   mahnungErhaten: boolean = false;
+
+  @IsOptional()
+  @ApiProperty()
+  auftraggeberObject: CreateAuftragDTO;
 
   @IsString()
   @IsOptional()
