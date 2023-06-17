@@ -3,6 +3,7 @@ import { JwtGuard } from "src/auth/guard";
 import { IstaService } from "./ista.service";
 import { ApiTags } from "@nestjs/swagger";
 import { OrderDto } from "./dto";
+import { PlannedDto } from "./dto/PlannedDto";
 
 @UseGuards(JwtGuard)
 @ApiTags('ISTA API')
@@ -26,7 +27,9 @@ export class IstaController {
         
     }
     //Planned - from us
-
+    orderPlanned(@Body() dto: PlannedDto) {
+        
+    }
     //Execution on site done 
 
     //closed cp - Übernahme TWA
