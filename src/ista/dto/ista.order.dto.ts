@@ -13,11 +13,11 @@ import { RejectedDto } from "./RejectedDto";
 
 export class OrderDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     id: number;
   
     @ApiProperty({ example: '12345' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     number: string;
   
@@ -33,47 +33,47 @@ export class OrderDto {
     createdAt: Date;
   
     @ApiProperty({ type: () => [OrderStatusDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     status: OrderStatusDto[];
   
     @ApiProperty({ type: () => [CustomerContactDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     customerContacts: CustomerContactDto[];
   
     @ApiProperty({ type: () => [NotPossibleDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     notPossible: NotPossibleDto[];
   
     @ApiProperty({ type: () => [PostponedDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     postponed: PostponedDto[];
   
     @ApiProperty({ type: () => [CancelledDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     cancelled: CancelledDto[];
   
     @ApiProperty({ type: () => [RejectedDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     rejected: RejectedDto[];
   
     @ApiProperty({ type: () => [ClosedContractPartnerDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     closedContractPartner: ClosedContractPartnerDto[];
   
     @ApiProperty({ type: () => [PlannedDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     planned: PlannedDto[];
   
     @ApiProperty({ type: () => [ReceivedDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @IsArray()
     received: ReceivedDto[];
   }

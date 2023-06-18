@@ -1,31 +1,31 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsString, IsDate, IsBoolean } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, IsDate, IsBoolean, IsOptional } from "class-validator";
 
 export class OrderStatusDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     id: number;
   
     @ApiProperty({ example: 'type' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     type: string;
   
     @ApiProperty({ example: '2023-06-16' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Type(() => Date)
     setOn: Date;
   
     @ApiProperty({ example: true })
-    @IsNotEmpty()
+    @IsOptional()
     @IsBoolean()
     executionOnSiteDone: boolean;
   
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     orderId: number;
   }

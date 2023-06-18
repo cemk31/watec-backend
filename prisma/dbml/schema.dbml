@@ -136,9 +136,11 @@ Table Order {
 
 Table OrderStatus {
   id Int [pk, increment]
-  type String [not null]
-  setOn DateTime [not null]
-  executionOnSiteDone Boolean [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  type String
+  setOn DateTime
+  executionOnSiteDone Boolean
   orderId Int [not null]
   order Order [not null]
 }
@@ -170,18 +172,18 @@ Table ReportOrderStatusRequest {
 
 Table ClosedContractPartner {
   id Int [pk, increment]
-  order Order [not null]
-  orderId Int [not null]
-  orderstatusType Int [not null]
-  setOn DateTime [not null]
-  customerContact CustomerContact [not null]
-  customerContactId Int [not null]
+  order Order
+  orderId Int
+  orderstatusType Int
+  setOn DateTime
+  CustomerContact CustomerContact [not null]
   deficiencyDescription String
   registrationHealthAuthoritiesOn DateTime
   extraordinaryExpenditureReason String
   suppliedDocuments SuppliedDocuments [not null]
   recordedSystem RecordedSystem [not null]
   ReportOrderStatusRequest ReportOrderStatusRequest [not null]
+  Contact Contact [not null]
 }
 
 Table SuppliedDocuments {
@@ -416,8 +418,8 @@ Table Rejected {
 
 Table NotPossible {
   id Int [pk, increment]
-  Request Request [not null]
-  requestId Int [unique, not null]
+  Request Request
+  requestId Int [unique]
   Order Order [not null]
   orderId Int [not null]
   statusType String [not null]
@@ -440,12 +442,14 @@ Table Contact {
   postponedId Int [not null]
   Cancelled Cancelled [not null]
   cancelledId Int [not null]
+  ClosedContractPartner ClosedContractPartner [not null]
+  closedContractPartnerId Int [not null]
 }
 
 Table Cancelled {
   id Int [pk, increment]
-  Request Request [not null]
-  requestId Int [unique, not null]
+  Request Request
+  requestId Int [unique]
   Order Order [not null]
   orderId Int [not null]
   statusType String [not null]
@@ -476,8 +480,8 @@ Table Received {
   orderstatusType String [not null]
   setOn DateTime [not null]
   CustomerContact CustomerContact [not null]
-  Request Request [not null]
-  requestId Int [unique, not null]
+  Request Request
+  requestId Int [unique]
 }
 
 Enum Auftragsstatus {
@@ -511,8 +515,6 @@ Ref: CustomerContact.receivedId > Received.id
 Ref: ReportOrderStatusRequest.closedContractPartnerId > ClosedContractPartner.id
 
 Ref: ClosedContractPartner.orderId > Order.id
-
-Ref: ClosedContractPartner.customerContactId > CustomerContact.id
 
 Ref: SuppliedDocuments.documentId > Document.id
 
@@ -569,6 +571,8 @@ Ref: Contact.rejectedId > Rejected.id
 Ref: Contact.postponedId > Postponed.id
 
 Ref: Contact.cancelledId > Cancelled.id
+
+Ref: Contact.closedContractPartnerId > ClosedContractPartner.id
 
 Ref: Cancelled.requestId - Request.id
 

@@ -36,7 +36,7 @@ export class CancelledDto {
     contact: ContactDto[];
   
     @ApiProperty({ example: 'Cancellation Reason' })
-    @IsOptional()
+    @IsNotEmpty()
     @IsString()
-    cancellationReason?: string;
+    cancellationReason: string;
   }

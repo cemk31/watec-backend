@@ -1,10 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsDate, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsDate, IsOptional, IsString, IsArray } from "class-validator";
 import { ContactDto } from "./ContactDto";
 import { RecordedSystemDto } from "./RecordedSystemDto";
 import { ReportOrderStatusRequestDto } from "./ReportOrderStatusRequestDto";
 import { SuppliedDocumentsDto } from "./SuppliedDocumentsDto";
+import { CustomerContactDto } from "./CustomerContactDto";
 
 export class ClosedContractPartnerDto {
     @ApiProperty({ example: 1 })
@@ -28,10 +29,10 @@ export class ClosedContractPartnerDto {
     @Type(() => Date)
     setOn: Date;
   
-    @ApiProperty({ type: [ContactDto] })
-    @IsNotEmpty()
-    @Type(() => ContactDto)
-    customerContact: ContactDto[];
+    // @ApiProperty({ type: () => [CustomerContactDto] })
+    // @IsNotEmpty()
+    // @IsArray()
+    // customerContacts: CustomerContactDto[]; 
   
     @ApiProperty({ example: 'Deficiency Description' })
     @IsOptional()
@@ -63,4 +64,9 @@ export class ClosedContractPartnerDto {
     @IsNotEmpty()
     @Type(() => ReportOrderStatusRequestDto)
     reportOrderStatusRequest: ReportOrderStatusRequestDto[];
+
+    @ApiProperty({ type: [ContactDto] })
+    @IsNotEmpty()
+    @Type(() => ContactDto)
+    contact: ContactDto[];
   }

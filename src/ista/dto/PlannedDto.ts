@@ -9,9 +9,10 @@ export class PlannedDto {
     @IsInt()
     id: number;
   
-    @ApiProperty({ type: () => OrderDto })
+    @ApiProperty({ example: 1 })
     @IsNotEmpty()
-    order: OrderDto;
+    @IsNumber()
+    orderId: number;
   
     @ApiProperty({ example: 'Order Status' })
     @IsNotEmpty()

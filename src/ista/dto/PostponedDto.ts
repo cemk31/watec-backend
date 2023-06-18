@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsString, IsDate, IsOptional } from "class-validator";
 import { ContactDto } from "./ContactDto";
+import { RequestDto } from "./RequestDto";
 
 export class PostponedDto {
     @ApiProperty({ example: 1 })
@@ -42,7 +43,8 @@ export class PostponedDto {
     nextContactAttemptOn: Date;
   
     @ApiProperty({ example: 'Reason' })
-    @IsOptional()
+    @IsNotEmpty()
     @IsString()
-    postponedReason?: string;
+    postponedReason: string;
+
   }
