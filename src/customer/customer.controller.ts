@@ -1,6 +1,6 @@
 import { UseGuards, Controller, Get, Body, Post } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
-import { CreateCustomerDTO } from './dto/create-customer.dto';
+import { CustomerDTO } from './dto/create-customer.dto';
 import { GetUser } from 'src/auth/decorator';
 import { CustomerService } from './customer.service';
 
@@ -12,7 +12,7 @@ export class CustomerController {
   @Post()
   createCustomer(
     @GetUser('id') userId: number,
-    @Body() dto: CreateCustomerDTO,
+    @Body() dto: CustomerDTO,
   ) {
     return this.customerService.createCustomer(userId, dto);
   }

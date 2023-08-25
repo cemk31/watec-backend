@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,91 +11,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// MODELS
-
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  email String @unique
-  hash  String
-
-  firstName String?
-  lastName  String?
-
-  auftraege Auftrag[]
-
-  bookmarks    Bookmark[]
-  //erstellte Adressen vom Nutzer
+  id           Int            @id @default(autoincrement())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  email        String         @unique
+  hash         String
+  firstName    String?
+  lastName     String?
   customer     Customer[]
+  auftraege    Auftrag[]
   auftraggeber Auftraggeber[]
+  bookmarks    Bookmark[]
 
   @@map("users")
 }
 
 model Bookmark {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   title       String
   description String?
   link        String
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
 
   @@map("bookmarks")
 }
 
 model Customer {
-  id          Int     @id @default(autoincrement())
-  firstName   String?
-  lastName    String?
-  email       String?
-  phoneNumber String?
-  street      String?
-  zipCode     String?
-  place       String?
-  country     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId Int?
-  user   User? @relation(fields: [userId], references: [id])
+  id             Int       @id @default(autoincrement())
+  firstName      String?
+  lastName       String?
+  phoneNumber    String?
+  street         String?
+  zipCode        String?
+  userId         Int?
+  email          String?
+  country        String?
+  createdAt      DateTime  @default(now())
+  place          String?
+  updatedAt      DateTime  @updatedAt
+  companyName    String?
+  fax            String?
+  propertyNumber String?
+  addresses      Address[]
+  user           User?     @relation(fields: [userId], references: [id])
+  orders         Order[]
 
   @@map("Customer")
 }
 
-// ENUMERATIONS
-
-enum Auftragsstatus {
-  Eingegangen
-  Kundenkontakt_nicht_moeglich
-  Kundenkontakt_verschoben
-  Geplant
-  Ausfuehrung_vor_Ort_erfolgt
-  Ausfuehrung_vor_Ort_nicht_moeglich
-  Abgeschlossen_Vertragspartner
-  Abgelehnt
-  Storniert
-}
-
 model Auftrag {
-  id Int @id @default(autoincrement())
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-  emailEingang  DateTime?
-  terminiertZum DateTime?
-  uhrzeit       DateTime?
-  datumAushang  DateTime?
-
+  id                   Int       @id @default(autoincrement())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
   done                 Boolean?
+  emailEingang         DateTime?
   bemerkung            String?
   vorgemerkt           String?
   liNr                 String?
@@ -121,35 +91,36 @@ model Auftrag {
   angebot              String?
   auftragbestatigung   Boolean?
   vwBestatigung        String?
-
-  aushang        Boolean?
-  agInformiert   Boolean?
-  bgb            Boolean?
-  bgbBericht     Boolean?
-  ssa            Boolean?
-  bericht        Boolean?
-  umb            Boolean?
-  ber            Boolean?
-  reNr           String?
-  reBetrag       Decimal?
-  reErhalten     Boolean?
-  reNr2          String?
-  reBetrag2      Decimal?
-  reNr2Erhalten  Boolean?
-  dateien        String?
-  mahnung        Boolean?
-  mahnung1       Boolean?
-  mahnungErhaten Boolean?
-  auftraggeber   String?
-  ap             String?
-  strasse        String?
-  plz            String?
-  ort            String?
-  tel            String?
-  email          String
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  terminiertZum        DateTime?
+  uhrzeit              DateTime?
+  aushang              Boolean?
+  datumAushang         DateTime?
+  agInformiert         Boolean?
+  bgb                  Boolean?
+  bgbBericht           Boolean?
+  ssa                  Boolean?
+  bericht              Boolean?
+  umb                  Boolean?
+  ber                  Boolean?
+  reNr                 String?
+  reBetrag             Decimal?
+  reErhalten           Boolean?
+  reNr2                String?
+  reBetrag2            Decimal?
+  reNr2Erhalten        Boolean?
+  dateien              String?
+  mahnung              Boolean?
+  mahnung1             Boolean?
+  mahnungErhaten       Boolean?
+  auftraggeber         String?
+  ap                   String?
+  strasse              String?
+  plz                  String?
+  ort                  String?
+  tel                  String?
+  email                String
+  userId               Int
+  user                 User      @relation(fields: [userId], references: [id])
 
   @@map("auftraege")
 }
@@ -158,56 +129,48 @@ model Auftraggeber {
   id               Int      @id @default(autoincrement())
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  auftraggebername String
-  ap               String
-  strasse          String
-  plz              Int
-  ort              String
-  tel              String
-  email            String   @unique
   userId           Int
+  ap               String
+  email            String   @unique
+  ort              String
+  plz              Int
+  strasse          String
+  tel              String
+  auftraggebername String
   user             User     @relation(fields: [userId], references: [id])
 
   @@map("auftraggeber")
 }
 
-// ORDER API 
 model Order {
   id                    Int                     @id @default(autoincrement())
   number                String
   remarkExternal        String?
   createdAt             DateTime                @default(now())
-  status                OrderStatus[]
-  customerContacts      CustomerContact[]
-  NotPossible           NotPossible[]
-  Postponed             Postponed[]
+  actualStatus          Status                  @default(RECEIVED)
+  customerId            Int
   Cancelled             Cancelled[]
-  Rejected              Rejected[]
   ClosedContractPartner ClosedContractPartner[]
+  CustomerContacts      CustomerContact[]
+  NotPossible           NotPossible[]
+  Customer              Customer                @relation(fields: [customerId], references: [id])
+  status                OrderStatus[]
   Planned               Planned[]
+  Postponed             Postponed[]
   Received              Received[]
-
-  actualStatus Status @default(RECEIVED)
+  Rejected              Rejected[]
 }
 
 model OrderStatus {
-  id Int @id @default(autoincrement())
-
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-
-  type                String? // represents the orderstatusType
-  executionOnSiteDone Boolean? // represents the executionOnSiteDone field
-  orderId             Int // represents the relation to Order
+  id                  Int       @id @default(autoincrement())
+  type                String?
+  setOn               DateTime? @default(now())
+  executionOnSiteDone Boolean?
+  orderId             Int
+  createdAt           DateTime? @default(now())
+  updatedAt           DateTime? @updatedAt
   order               Order     @relation(fields: [orderId], references: [id])
-
-  setOn     DateTime? @default(now())
 }
-
-// model CustomerContacts {
-//   id                     Int    @id @default(autoincrement())
-//   customerContact        CustomerContact[]
-// }
 
 model CustomerContact {
   id                    Int                     @id @default(autoincrement())
@@ -217,12 +180,14 @@ model CustomerContact {
   result                String
   remark                String?
   orderId               Int
-  order                 Order                   @relation(fields: [orderId], references: [id])
-  ClosedContractPartner ClosedContractPartner[]
-  planned               Planned?                @relation(fields: [plannedId], references: [id])
   plannedId             Int?
-  received              Received?               @relation(fields: [receivedId], references: [id])
   receivedId            Int?
+  statusReportId        Int
+  order                 Order                   @relation(fields: [orderId], references: [id])
+  planned               Planned?                @relation(fields: [plannedId], references: [id])
+  received              Received?               @relation(fields: [receivedId], references: [id])
+  statusReport          StatusReport            @relation(fields: [statusReportId], references: [id])
+  ClosedContractPartner ClosedContractPartner[] @relation("ClosedContractPartnerToCustomerContact")
 }
 
 model ReportOrderStatusRequest {
@@ -230,35 +195,34 @@ model ReportOrderStatusRequest {
   environment             String
   language                String
   consumer                String
-  closedContractPartner   ClosedContractPartner @relation(fields: [closedContractPartnerId], references: [id])
   closedContractPartnerId Int
+  closedContractPartner   ClosedContractPartner @relation(fields: [closedContractPartnerId], references: [id])
 }
 
 model ClosedContractPartner {
   id                              Int                        @id @default(autoincrement())
-  order                           Order?                     @relation(fields: [orderId], references: [id])
   orderId                         Int?
   orderstatusType                 Int?
-  CustomerContact                 CustomerContact[]
+  setOn                           DateTime?                  @default(now())
   deficiencyDescription           String?
   registrationHealthAuthoritiesOn DateTime?
   extraordinaryExpenditureReason  String?
-  suppliedDocuments               SuppliedDocuments[]
+  createdAt                       DateTime?                  @default(now())
+  updatedAt                       DateTime?                  @updatedAt
+  order                           Order?                     @relation(fields: [orderId], references: [id])
+  Contact                         Contact[]
   recordedSystem                  RecordedSystem[]
   ReportOrderStatusRequest        ReportOrderStatusRequest[]
-  Contact                         Contact[]
-
-  setOn     DateTime? @default(now())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  suppliedDocuments               SuppliedDocuments[]
+  CustomerContact                 CustomerContact[]          @relation("ClosedContractPartnerToCustomerContact")
 }
 
 model SuppliedDocuments {
   id                      Int                    @id @default(autoincrement())
-  document                Document?              @relation(fields: [documentId], references: [id])
-  ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
   closedContractPartnerId Int?
   documentId              Int?
+  ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
+  document                Document?              @relation(fields: [documentId], references: [id])
 }
 
 model Document {
@@ -270,13 +234,13 @@ model Document {
 
 model RecordedSystem {
   id                      Int                    @id @default(autoincrement())
+  drinkingWaterFacilityId Int
+  closedContractPartnerId Int?
+  propertyId              Int?
+  ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
   drinkingWaterFacility   DrinkingWaterFacility  @relation(fields: [drinkingWaterFacilityId], references: [id])
   property                Property?              @relation(fields: [propertyId], references: [id])
-  propertyId              Int?
   services                Service[]
-  ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
-  closedContractPartnerId Int?
-  drinkingWaterFacilityId Int
 }
 
 model Property {
@@ -294,10 +258,10 @@ model Service {
   extraordinaryExpenditure Boolean
   purchasePrice_ista       Float?
   warranty                 Boolean?
-  serviceRenderedIn        Address         @relation(fields: [addressId], references: [id])
   addressId                Int
-  RecordedSystem           RecordedSystem? @relation(fields: [recordedSystemId], references: [id])
   recordedSystemId         Int?
+  serviceRenderedIn        Address         @relation(fields: [addressId], references: [id])
+  RecordedSystem           RecordedSystem? @relation(fields: [recordedSystemId], references: [id])
 }
 
 model DrinkingWaterFacility {
@@ -326,10 +290,10 @@ model DrinkingWaterFacility {
   heatExchangerSystem_central                 Boolean?
   heatExchangerSystem_districtheating         Boolean?
   heatExchangerSystem_continuousflowprinciple Boolean?
-  drinkingWaterHeaters                        DrinkingWaterHeater[]
   ascendingPipes                              AscendingPipe[]
-  samplingPoints                              SamplingPoint[]
+  drinkingWaterHeaters                        DrinkingWaterHeater[]
   RecordedSystem                              RecordedSystem[]
+  samplingPoints                              SamplingPoint[]
 }
 
 model DrinkingWaterHeater {
@@ -345,10 +309,10 @@ model DrinkingWaterHeater {
   roomType                        String?
   roomPosition                    Int?
   positionDetail                  String?
-  unit                            Unit                  @relation(fields: [unitId], references: [id])
   unitId                          Int
-  DrinkingWaterFacility           DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
   drinkingWaterFacilityId         Int
+  DrinkingWaterFacility           DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
+  unit                            Unit                  @relation(fields: [unitId], references: [id])
 }
 
 model AscendingPipe {
@@ -360,8 +324,8 @@ model AscendingPipe {
   circulationTemperature                 Int?
   pipeDiameter                           String
   pipeMaterialtype                       String
-  DrinkingWaterFacility                  DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
   drinkingWaterFacilityId                Int
+  DrinkingWaterFacility                  DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
 }
 
 model SamplingPoints {
@@ -379,12 +343,12 @@ model SamplingPoint {
   roomType                         String?
   roomPosition                     Int?
   positionDetail                   String
-  unit                             Unit                  @relation(fields: [unitId], references: [id])
   unitId                           Int
-  DrinkingWaterFacility            DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
   drinkingWaterFacilityId          Int
-  SamplingPoints                   SamplingPoints?       @relation(fields: [samplingPointsId], references: [id])
   samplingPointsId                 Int?
+  DrinkingWaterFacility            DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
+  SamplingPoints                   SamplingPoints?       @relation(fields: [samplingPointsId], references: [id])
+  unit                             Unit                  @relation(fields: [unitId], references: [id])
 }
 
 model Unit {
@@ -394,16 +358,16 @@ model Unit {
   position            Int?
   userName            String?
   generalUnit         Boolean
-  building            Building              @relation(fields: [buildingId], references: [id])
   buildingId          Int
   DrinkingWaterHeater DrinkingWaterHeater[]
   SamplingPoint       SamplingPoint[]
+  building            Building              @relation(fields: [buildingId], references: [id])
 }
 
 model Building {
   id        Int     @id @default(autoincrement())
-  address   Address @relation(fields: [addressId], references: [id])
   addressId Int
+  address   Address @relation(fields: [addressId], references: [id])
   Unit      Unit[]
 }
 
@@ -414,93 +378,94 @@ model Address {
   postcode     String
   city         String
   country      String?
+  createdAt    DateTime   @default(now())
+  customerId   Int
+  updatedAt    DateTime   @updatedAt
+  Customer     Customer   @relation(fields: [customerId], references: [id])
   building     Building[]
   Service      Service[]
 }
 
 model Envelope {
   id       Int    @id @default(autoincrement())
-  Header   Header @relation(fields: [headerId], references: [id])
   headerId Int    @unique
-  Body     Body   @relation(fields: [bodyId], references: [id])
   bodyId   Int    @unique
+  Body     Body   @relation(fields: [bodyId], references: [id])
+  Header   Header @relation(fields: [headerId], references: [id])
 }
 
 model Header {
   id       Int       @id @default(autoincrement())
-  Envelope Envelope? // one-to-one relation with Envelope
+  Envelope Envelope?
 }
 
 model Body {
   id        Int       @id @default(autoincrement())
-  Envelope  Envelope? // one-to-one relation with Envelope
-  Request   Request   @relation(fields: [requestId], references: [id])
   requestId Int       @unique
+  Request   Request   @relation(fields: [requestId], references: [id])
+  Envelope  Envelope?
 }
 
 model Request {
   id            Int          @id @default(autoincrement())
-  Body          Body? // one-to-one relation with Body
   environment   String
   language      String
   consumer      String
-  Rejected      Rejected?
   rejectedId    Int?
-  NotPossible   NotPossible?
   notPossibleId Int?
-  Postponed     Postponed?
   postponedId   Int?
-  Cancelled     Cancelled?
   cancelledId   Int?
-  Planned       Planned?
   plannedId     Int?
+  Body          Body?
+  Cancelled     Cancelled?
+  NotPossible   NotPossible?
+  Planned       Planned?
+  Postponed     Postponed?
   Received      Received?
+  Rejected      Rejected?
 }
 
 model Postponed {
   id                   Int       @id @default(autoincrement())
-  Request              Request   @relation(fields: [requestId], references: [id])
   requestId            Int       @unique
-  Order                Order     @relation(fields: [orderId], references: [id])
   orderId              Int
   statusType           String
-  Contact              Contact[]
+  setOn                DateTime? @default(now())
   nextContactAttemptOn DateTime
   postponedReason      String
-
-  setOn     DateTime? @default(now())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt            DateTime? @default(now())
+  updatedAt            DateTime? @updatedAt
+  Contact              Contact[]
+  Order                Order     @relation(fields: [orderId], references: [id])
+  Request              Request   @relation(fields: [requestId], references: [id])
 }
 
 model Rejected {
   id         Int       @id @default(autoincrement())
-  Request    Request   @relation(fields: [requestId], references: [id])
   requestId  Int       @unique
-  Order      Order     @relation(fields: [orderId], references: [id])
   orderId    Int
   statusType Int
-  Contact    Contact[]
+  setOn      DateTime? @default(now())
   reason     String
   reasonText String?
-
-  setOn     DateTime? @default(now())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+  Contact    Contact[]
+  Order      Order     @relation(fields: [orderId], references: [id])
+  Request    Request   @relation(fields: [requestId], references: [id])
 }
 
 model NotPossible {
   id         Int       @id @default(autoincrement())
-  Request    Request?  @relation(fields: [requestId], references: [id])
   requestId  Int?      @unique
-  Order      Order     @relation(fields: [orderId], references: [id])
   orderId    Int
   statusType String
+  setOn      DateTime? @default(now())
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
   Contact    Contact[]
-
-  setOn     DateTime? @default(now())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  Order      Order     @relation(fields: [orderId], references: [id])
+  Request    Request?  @relation(fields: [requestId], references: [id])
 }
 
 model Contact {
@@ -510,63 +475,79 @@ model Contact {
   agentCP                 String
   result                  String
   remark                  String?
-  NotPossible             NotPossible           @relation(fields: [notPossibleId], references: [id])
   notPossibleId           Int
-  Rejected                Rejected              @relation(fields: [rejectedId], references: [id])
   rejectedId              Int
-  Postponed               Postponed             @relation(fields: [postponedId], references: [id])
   postponedId             Int
-  Cancelled               Cancelled             @relation(fields: [cancelledId], references: [id])
   cancelledId             Int
-  ClosedContractPartner   ClosedContractPartner @relation(fields: [closedContractPartnerId], references: [id])
   closedContractPartnerId Int
+  Cancelled               Cancelled             @relation(fields: [cancelledId], references: [id])
+  ClosedContractPartner   ClosedContractPartner @relation(fields: [closedContractPartnerId], references: [id])
+  NotPossible             NotPossible           @relation(fields: [notPossibleId], references: [id])
+  Postponed               Postponed             @relation(fields: [postponedId], references: [id])
+  Rejected                Rejected              @relation(fields: [rejectedId], references: [id])
 }
 
 model Cancelled {
   id                 Int       @id @default(autoincrement())
-  Request            Request?  @relation(fields: [requestId], references: [id])
   requestId          Int?      @unique
-  Order              Order     @relation(fields: [orderId], references: [id])
   orderId            Int
   statusType         String
-  Contact            Contact[]
+  setOn              DateTime? @default(now())
   cancellationReason String
-
-  setOn     DateTime? @default(now())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt          DateTime? @default(now())
+  updatedAt          DateTime? @updatedAt
+  Order              Order     @relation(fields: [orderId], references: [id])
+  Request            Request?  @relation(fields: [requestId], references: [id])
+  Contact            Contact[]
 }
 
 model Planned {
   id                          Int               @id @default(autoincrement())
-  Order                       Order             @relation(fields: [orderId], references: [id])
   orderId                     Int
   orderstatusType             String
-  CustomerContact             CustomerContact[]
+  setOn                       DateTime?         @default(now())
   detailedScheduleDate        DateTime
   detailedScheduleTimeFrom    DateTime?
   detailedScheduleTimeTo      DateTime?
   detailedScheduleDelayReason String?
-  Request                     Request           @relation(fields: [requestId], references: [id])
   requestId                   Int               @unique
-
-  setOn           DateTime? @default(now())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt                   DateTime?         @default(now())
+  updatedAt                   DateTime?         @updatedAt
+  CustomerContact             CustomerContact[]
+  Order                       Order             @relation(fields: [orderId], references: [id])
+  Request                     Request           @relation(fields: [requestId], references: [id])
 }
 
 model Received {
   id              Int               @id @default(autoincrement())
-  Order           Order             @relation(fields: [orderId], references: [id])
   orderId         Int
   orderstatusType String
-  CustomerContact CustomerContact[]
-  Request         Request?          @relation(fields: [requestId], references: [id])
+  setOn           DateTime?         @default(now())
   requestId       Int?              @unique
-  
-  setOn           DateTime? @default(now())
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @updatedAt
+  CustomerContact CustomerContact[]
+  Order           Order             @relation(fields: [orderId], references: [id])
+  Request         Request?          @relation(fields: [requestId], references: [id])
+}
+
+model StatusReport {
+  id               Int               @id @default(autoincrement())
+  orderNo          String
+  currentDatetime  DateTime
+  customerContacts CustomerContact[]
+}
+
+enum Auftragsstatus {
+  Eingegangen
+  Kundenkontakt_nicht_moeglich
+  Kundenkontakt_verschoben
+  Geplant
+  Ausfuehrung_vor_Ort_erfolgt
+  Ausfuehrung_vor_Ort_nicht_moeglich
+  Abgeschlossen_Vertragspartner
+  Abgelehnt
+  Storniert
 }
 
 enum Status {

@@ -8,6 +8,7 @@ import { HttpService } from "@nestjs/axios";
 @Injectable()
 export class IstaService {
 
+    
     constructor(private prisma: PrismaService) {}
 
     async createOrder(dto: OrderDto) {
@@ -19,9 +20,9 @@ export class IstaService {
           status: {
             create: dto.status,
           },
-          customerContacts: {
-            create: dto.customerContacts,
-          },
+          // CustomerContacts: {
+          //   create: dto.CustomerContacts,
+          // },
           NotPossible: {
             create: dto.notPossible,
           },
@@ -43,17 +44,22 @@ export class IstaService {
           Received: {
             create: dto.received,
           },
+          Customer: {
+            create: dto.customer,
+            
+          },
         },
         include: {
           status: true,
           Received: true,
           Planned: true,
-          customerContacts: true,
+          CustomerContacts: true,
           NotPossible: true,
           Postponed: true,   
           Cancelled: true,      
           Rejected: true,
           ClosedContractPartner: true,
+          Customer: true,
         },
       });
       return order;
@@ -99,33 +105,33 @@ export class IstaService {
           },
           Planned: {
             include: {
-              CustomerContact: true, // include CustomerContact related to Received
-              Request: true, // include Request related to Received
+              CustomerContact: true, // include CustomerContact related to Planned
+              Request: true, // include Request related to Planned
             },
           },
-          customerContacts: true,
+          // customerContacts: true,
           NotPossible: {
             include: {
-              Contact: true, // include CustomerContact related to Received
-              Request: true, // include Request related to Received
+              Contact: true, // include CustomerContact related to NotPossible
+              Request: true, // include Request related to NotPossible
             },
           },
           Postponed: {
             include: {
-              Contact: true, // include CustomerContact related to Received
-              Request: true, // include Request related to Received
+              Contact: true, // include CustomerContact related to Postponed
+              Request: true, // include Request related to Postponed
             },
           },
           Cancelled: {
             include: {
-              Contact: true, // include CustomerContact related to Received
-              Request: true, // include Request related to Received
+              Contact: true, // include CustomerContact related to Cancelled
+              Request: true, // include Request related to Cancelled
             },
           },      
           Rejected: {
             include: {
-              Contact: true, // include CustomerContact related to Received
-              Request: true, // include Request related to Received
+              Contact: true, // include CustomerContact related to Rejected
+              Request: true, // include Request related to Rejected
             },
           },
           ClosedContractPartner: true,
@@ -144,10 +150,13 @@ export class IstaService {
         Received: {
           create: {
             ...dto.received,
-            // No need to set orderId here, Prisma does it automatically.
           },
         },
-        // add other fields here...
+        Customer: {
+          create: {
+            ...dto.customer,
+          }
+        }
       };
     
       const order = await this.prisma.order.create({
@@ -157,19 +166,25 @@ export class IstaService {
           createdAt: dto.createdAt,
           Received: {
             create: {
-              orderstatusType: 'YOUR_ORDER_STATUS_TYPE', // Provide your order status type here.
-              setOn: new Date('2023-06-16T12:33:08.298Z'), // Provide your setOn DateTime here.
-              CustomerContacts: {
-                create: dto.customerContacts,
-              },
+              orderstatusType: 'YOUR_ORDER_STATUS_TYPE', 
+              setOn: new Date('2023-06-16T12:33:08.298Z')
             }
-          }
+          },
+          CustomerContacts: {
+            create: dto.CustomerContacts.map(contact => ({
+              contactAttemptOn: contact.contactAttemptOn,
+              contactPersonCustomer: contact.contactPersonCustomer,
+              agentCP: contact.agentCP,
+              result: contact.result,
+              remark: contact.remark,
+              // Weitere Felder je nach Schema hinzufügen
+            }))
+          },          
         },
         include: {
           Received: true
         }
-      });
-    
+      });    
       return order;
     }
 
@@ -188,7 +203,7 @@ export class IstaService {
               Request: true, // include Request related to Received
             },
           },
-          customerContacts: {
+          CustomerContacts: {
             include: {
               ClosedContractPartner: true, // include ClosedContractPartner related to customerContacts
               planned: true, // include planned related to customerContacts
@@ -223,9 +238,9 @@ export class IstaService {
           status: {
             create: dto.status,
           },
-          customerContacts: {
-            create: dto.customerContacts,
-          },
+          // CustomerContacts: {
+          //   create: dto.customerContacts,
+          // },
           NotPossible: {
             create: dto.notPossible,
           },
@@ -257,7 +272,7 @@ export class IstaService {
             },
           },
           Planned: true,
-          customerContacts: true,
+          CustomerContacts: true,
           NotPossible: true,
           Postponed: true,   
           Cancelled: true,      

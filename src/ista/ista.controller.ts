@@ -12,6 +12,7 @@ import { Order } from "@prisma/client";
 export class IstaController {
 
     mockOrderDto: OrderDto = {
+        id: 1,
         number: '123456789',
         remarkExternal: 'External Remark',
         createdAt: new Date(),
@@ -24,7 +25,7 @@ export class IstaController {
                 type: 'Type1'
             }
         ],
-        customerContacts: [
+        CustomerContacts: [
             {
                 agentCP: 'Agent CP',
                 contactPersonCustomer: 'Customer',
@@ -191,7 +192,20 @@ export class IstaController {
                 requestId: 1,
             }
         ],
-        id: 0
+
+        customer: [
+            {
+                name: 'John Doe',
+                email: 'john.doe@example.com',
+                phoneNumber: '+1234567890',
+                lastName: 'Doe',
+                firstName: 'John',
+                street: '123 Main St',
+                zipCode: '12345',
+                place: 'Springfield',
+                country: 'USA'
+            }
+        ]
     };
       
     
