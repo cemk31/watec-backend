@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
 import { JwtGuard } from "src/auth/guard";
 import { ApiTags } from "@nestjs/swagger";
 import { OrderDto } from "./dto";
 import { PlannedDto } from "./dto/PlannedDto";
 import { IstaService } from "./ista.service";
+import { Order } from "@prisma/client";
 
 @UseGuards(JwtGuard)
 @ApiTags('ISTA API')
@@ -177,7 +178,7 @@ export class IstaController {
                 orderId: null,
                 orderstatusType: 'Status Type',
                 setOn: new Date(),
-                customerContact: [
+                customerContacts: [
                     {
                         agentCP: 'Agent CP',
                         contactPersonCustomer: 'Customer',
@@ -204,26 +205,25 @@ export class IstaController {
         return this.istaService.createOrder(dto);
     }
 
+    //RECEIVED - Create new empty order
+    @Post("/received")
+    createNewOrder(@Body() dto: OrderDto) {
+        console.log("createNewOrder");
+        return this.istaService.orderReceived(dto);
+    }
+
     //createTestOrder
     @Post("/test")
     createTestOrder() {
         return this.istaService.createOrder(this.mockOrderDto);
     }
-
-    @Post("/received")
-    createTestOrderReceived() {
-        return this.istaService.orderReceived(this.mockOrderDto);
-    }
-
-    //Received to Us
-    @Post()
-    orderReceived(@Body() dto: OrderDto) {
-        
-    }
-    //Planned - from us
-    orderPlanned(@Body() dto: PlannedDto) {
-
-    }
+    
+    //Planned - from us 
+    //OrderPlanned should be added to Order order -> Planned 
+    // @Patch("/orderPlanned")
+    // orderPlanned(@Body() dto: PlannedDto) {
+    //     return this.istaService.createOrderPlanned(dto);
+    // }
     //Execution on site done 
 
     //closed cp - Übernahme TWA
@@ -242,14 +242,21 @@ export class IstaController {
     //GetAllOrders
     @Get()
     getAllOrders() {
-        console.log("getAllOrders");
         return this.istaService.getAllOrders();
     }
 
-    //Create new empty order
-    @Post("/new")
-    createNewOrder(@Body() dto: OrderDto) {
-        console.log("createNewOrder");
-        return this.istaService.createNewOrder(dto);
+    //Get Order by Id
+    @Get(':id')
+    getOrderById(@Param('id', ParseIntPipe) orderId: number) {
+        return this.istaService.getOrderById(orderId);
     }
+
+    @Patch()
+    updateStatus(@Body() orderDTO : OrderDto){
+      console.log(orderDTO);
+      return this.istaService.updateOrder(orderDTO.id, orderDTO);
+    }
+    
+
+
 }

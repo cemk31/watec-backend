@@ -26,7 +26,7 @@ export class ReceivedDto {
   
     @ApiProperty({ type: () => [CustomerContactDto] })
     @IsOptional()
-    customerContact: CustomerContactDto[];
+    customerContacts: CustomerContactDto[];
   
     @ApiProperty({ example: 1 })
     @IsOptional()

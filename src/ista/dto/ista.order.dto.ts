@@ -27,7 +27,7 @@ export class OrderDto {
     remarkExternal?: string;
   
     @ApiProperty({ example: '2023-06-16' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Type(() => Date)
     createdAt: Date;

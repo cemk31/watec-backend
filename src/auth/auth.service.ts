@@ -98,4 +98,53 @@ export class AuthService {
       userId: userId
     } as { access_token: string, email: string, userId: number };
   }
+
+  async resetPassword(email: string, newPassword: string) {
+    // Find the user by email
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    // If user does not exist throw exception
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    // Generate new password hash
+    const newHash = await argon.hash(newPassword);
+
+    // Update user's password in the db
+    const updatedUser = await this.prisma.user.update({
+      where: { email },
+      data: { hash: newHash },
+    });
+
+    return updatedUser;
+  }
+
+  async updateUser(userId: number, newEmail: string, newPassword: string) {
+    // Find the user by id
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    // If user does not exist throw exception
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    // Generate new password hash
+    const newHash = await argon.hash(newPassword);
+
+    // Update user's email and password in the db
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: newEmail,
+        hash: newHash,
+      },
+    });
+
+    return updatedUser;
+  }
 }

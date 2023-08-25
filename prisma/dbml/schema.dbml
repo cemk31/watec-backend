@@ -132,6 +132,7 @@ Table Order {
   ClosedContractPartner ClosedContractPartner [not null]
   Planned Planned [not null]
   Received Received [not null]
+  actualStatus Status [not null, default: 'RECEIVED']
 }
 
 Table OrderStatus {
@@ -494,6 +495,15 @@ Enum Auftragsstatus {
   Abgeschlossen_Vertragspartner
   Abgelehnt
   Storniert
+}
+
+Enum Status {
+  RECEIVED
+  PLANNED
+  NOTPOSSIBLE
+  POSTPONED
+  REJECTED
+  CLOSED
 }
 
 Ref: bookmarks.userId > users.id

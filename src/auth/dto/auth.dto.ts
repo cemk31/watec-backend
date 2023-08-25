@@ -26,4 +26,9 @@ export class AuthDto {
   @IsOptional()
   @ApiProperty()
   lastName: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  userRole: string;
 }

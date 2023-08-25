@@ -14,6 +14,7 @@ import { CustomerModule } from './customer/customer.module';
 import { AuftraggeberModule } from './auftraggeber/auftraggeber.module';
 import { AdresseModule } from './adresse/adresse.module';
 import { IstaModule } from './ista/ista.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { IstaModule } from './ista/ista.module';
     CustomerModule,
     AuftraggeberModule,
     AdresseModule,
-    IstaModule
+    IstaModule,
+    HttpModule
   ],
 })
 export class AppModule {

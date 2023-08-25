@@ -186,19 +186,22 @@ model Order {
   ClosedContractPartner ClosedContractPartner[]
   Planned               Planned[]
   Received              Received[]
+
+  actualStatus Status @default(RECEIVED)
 }
 
 model OrderStatus {
-  id                  Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 
   type                String? // represents the orderstatusType
-  setOn               DateTime? // represents the setOn field
   executionOnSiteDone Boolean? // represents the executionOnSiteDone field
   orderId             Int // represents the relation to Order
-  order               Order    @relation(fields: [orderId], references: [id])
+  order               Order     @relation(fields: [orderId], references: [id])
+
+  setOn     DateTime? @default(now())
 }
 
 // model CustomerContacts {
@@ -233,10 +236,9 @@ model ReportOrderStatusRequest {
 
 model ClosedContractPartner {
   id                              Int                        @id @default(autoincrement())
-  order                           Order?                      @relation(fields: [orderId], references: [id])
+  order                           Order?                     @relation(fields: [orderId], references: [id])
   orderId                         Int?
   orderstatusType                 Int?
-  setOn                           DateTime?
   CustomerContact                 CustomerContact[]
   deficiencyDescription           String?
   registrationHealthAuthoritiesOn DateTime?
@@ -246,6 +248,9 @@ model ClosedContractPartner {
   ReportOrderStatusRequest        ReportOrderStatusRequest[]
   Contact                         Contact[]
 
+  setOn     DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model SuppliedDocuments {
@@ -459,10 +464,13 @@ model Postponed {
   Order                Order     @relation(fields: [orderId], references: [id])
   orderId              Int
   statusType           String
-  setOn                DateTime
   Contact              Contact[]
   nextContactAttemptOn DateTime
   postponedReason      String
+
+  setOn     DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Rejected {
@@ -472,52 +480,61 @@ model Rejected {
   Order      Order     @relation(fields: [orderId], references: [id])
   orderId    Int
   statusType Int
-  setOn      DateTime
   Contact    Contact[]
   reason     String
   reasonText String?
+
+  setOn     DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model NotPossible {
   id         Int       @id @default(autoincrement())
-  Request    Request?   @relation(fields: [requestId], references: [id])
-  requestId  Int?       @unique
+  Request    Request?  @relation(fields: [requestId], references: [id])
+  requestId  Int?      @unique
   Order      Order     @relation(fields: [orderId], references: [id])
   orderId    Int
   statusType String
-  setOn      DateTime
   Contact    Contact[]
+
+  setOn     DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Contact {
-  id               Int         @id @default(autoincrement())
-  contactAttemptOn DateTime
-  contactPerson    String?
-  agentCP          String
-  result           String
-  remark           String?
-  NotPossible      NotPossible @relation(fields: [notPossibleId], references: [id])
-  notPossibleId    Int
-  Rejected         Rejected    @relation(fields: [rejectedId], references: [id])
-  rejectedId       Int
-  Postponed        Postponed   @relation(fields: [postponedId], references: [id])
-  postponedId      Int
-  Cancelled        Cancelled   @relation(fields: [cancelledId], references: [id])
-  cancelledId      Int
-  ClosedContractPartner ClosedContractPartner @relation(fields: [closedContractPartnerId], references: [id])
+  id                      Int                   @id @default(autoincrement())
+  contactAttemptOn        DateTime
+  contactPerson           String?
+  agentCP                 String
+  result                  String
+  remark                  String?
+  NotPossible             NotPossible           @relation(fields: [notPossibleId], references: [id])
+  notPossibleId           Int
+  Rejected                Rejected              @relation(fields: [rejectedId], references: [id])
+  rejectedId              Int
+  Postponed               Postponed             @relation(fields: [postponedId], references: [id])
+  postponedId             Int
+  Cancelled               Cancelled             @relation(fields: [cancelledId], references: [id])
+  cancelledId             Int
+  ClosedContractPartner   ClosedContractPartner @relation(fields: [closedContractPartnerId], references: [id])
   closedContractPartnerId Int
 }
 
 model Cancelled {
   id                 Int       @id @default(autoincrement())
-  Request            Request?   @relation(fields: [requestId], references: [id])
-  requestId          Int?       @unique
+  Request            Request?  @relation(fields: [requestId], references: [id])
+  requestId          Int?      @unique
   Order              Order     @relation(fields: [orderId], references: [id])
   orderId            Int
   statusType         String
-  setOn              DateTime
   Contact            Contact[]
   cancellationReason String
+
+  setOn     DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Planned {
@@ -525,7 +542,6 @@ model Planned {
   Order                       Order             @relation(fields: [orderId], references: [id])
   orderId                     Int
   orderstatusType             String
-  setOn                       DateTime
   CustomerContact             CustomerContact[]
   detailedScheduleDate        DateTime
   detailedScheduleTimeFrom    DateTime?
@@ -533,6 +549,10 @@ model Planned {
   detailedScheduleDelayReason String?
   Request                     Request           @relation(fields: [requestId], references: [id])
   requestId                   Int               @unique
+
+  setOn           DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Received {
@@ -540,8 +560,20 @@ model Received {
   Order           Order             @relation(fields: [orderId], references: [id])
   orderId         Int
   orderstatusType String
-  setOn           DateTime
   CustomerContact CustomerContact[]
-  Request         Request?           @relation(fields: [requestId], references: [id])
-  requestId       Int?               @unique
+  Request         Request?          @relation(fields: [requestId], references: [id])
+  requestId       Int?              @unique
+  
+  setOn           DateTime? @default(now())
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+enum Status {
+  RECEIVED
+  PLANNED
+  NOTPOSSIBLE
+  POSTPONED
+  REJECTED
+  CLOSED
 }
