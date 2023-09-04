@@ -17,6 +17,7 @@ export class CustomerService {
   }
 
   async getCustomers(userId: number) {
+    console.log("getCustomers: ", userId);
     return this.prisma.customer.findMany({
       where: {
         userId,

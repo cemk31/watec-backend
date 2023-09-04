@@ -1,10 +1,15 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
 import { JwtGuard } from "src/auth/guard";
 import { ApiTags } from "@nestjs/swagger";
-import { OrderDto } from "./dto";
+import { CreateCustomerOrderDTO, CustomerDTO, OrderDto } from "./dto";
 import { PlannedDto } from "./dto/PlannedDto";
 import { IstaService } from "./ista.service";
-import { Order } from "@prisma/client";
+import { Order, Rejected } from "@prisma/client";
+import { RejectedDto } from "./dto/RejectedDto";
+import { PostponedDto } from "./dto/PostponedDto";
+import { CancelledDto } from "./dto/CancelledDto";
+import { NotPossibleDto } from "./dto/NotPossibleDto";
+import { ClosedContractPartnerDto } from "./dto/ClosedContractPartnerDto";
 
 @UseGuards(JwtGuard)
 @ApiTags('ISTA API')
@@ -19,7 +24,7 @@ export class IstaController {
         status: [
             {
                 id: 1,
-                orderId: 2,
+                orderId: null,
                 setOn: new Date(),
                 executionOnSiteDone: true,
                 type: 'Type1'
@@ -38,7 +43,7 @@ export class IstaController {
             {
                 id: 1,
                 requestId: 1,
-                orderId: 1,
+                orderId: null,
                 statusType: 'Type1',
                 setOn: new Date(),
                 contact: [{
@@ -59,7 +64,7 @@ export class IstaController {
             {
               id: 1,
               requestId: 1,
-              orderId: 1,
+              orderId: null,
               statusType: 'Type1',
               setOn: new Date(),
               contact: [{
@@ -82,7 +87,7 @@ export class IstaController {
             {
                 id: 1,
                 requestId: 1,
-                orderId: 1,
+                orderId: null,
                 statusType: 'Cancelled',
                 setOn: new Date(),
                 contact: [{
@@ -104,7 +109,7 @@ export class IstaController {
             {
                 id: 1,
                 requestId: 1,
-                orderId: 1,
+                orderId: null,
                 statusType: 2,
                 setOn: new Date(),
                 contact: [{
@@ -126,7 +131,7 @@ export class IstaController {
         closedContractPartner: [
             {
                 id: 1,
-                orderId: 1,
+                orderId: null,
                 orderstatusType: 1,
                 setOn: new Date(),
                 contact: [{
@@ -154,7 +159,7 @@ export class IstaController {
         planned: [
             {
                 id: 1,
-                orderId: 1,
+                orderId: null,
                 orderstatusType: "1",
                 setOn: new Date(),
                 customerContact: [
@@ -192,8 +197,7 @@ export class IstaController {
                 requestId: 1,
             }
         ],
-
-        customer: [
+        customer:
             {
                 name: 'John Doe',
                 email: 'john.doe@example.com',
@@ -205,8 +209,7 @@ export class IstaController {
                 place: 'Springfield',
                 country: 'USA'
             }
-        ]
-    };
+        };
       
     
     constructor(
@@ -221,7 +224,7 @@ export class IstaController {
 
     //RECEIVED - Create new empty order
     @Post("/received")
-    createNewOrder(@Body() dto: OrderDto) {
+    createNewOrder(@Body() dto: CreateCustomerOrderDTO) {
         console.log("createNewOrder");
         return this.istaService.orderReceived(dto);
     }
@@ -231,24 +234,74 @@ export class IstaController {
     createTestOrder() {
         return this.istaService.createOrder(this.mockOrderDto);
     }
+
+    @Post("/customerOrder")
+    createCustomerAndOrder(@Body() dto: CreateCustomerOrderDTO){
+        // const customer = this.istaService.createCustomer(dto.customer);
+        console.log("customer", dto.Customer);
+        console.log("customer", dto.Received);
+
+        const order = this.istaService.orderReceived(dto);
+
+        return order;
+    }
     
+    //RECEIVED - Create new empty customer & order
+    @Post("/customer")
+    createCustomer(@Body() dto: CustomerDTO){
+        const customer = this.istaService.createCustomer(dto);
+        return customer;
+    }
+
+    @Get("/customer/:id")
+    getCustomerById(@Param('id', ParseIntPipe) customerId: number){
+        return this.istaService.getCustomerById(customerId);
+    }
+
     //Planned - from us 
-    //OrderPlanned should be added to Order order -> Planned 
-    // @Patch("/orderPlanned")
-    // orderPlanned(@Body() dto: PlannedDto) {
-    //     return this.istaService.createOrderPlanned(dto);
-    // }
+    @Post("/planned")
+    orderPlanned(@Body() dto: PlannedDto) {
+        return this.istaService.orderPlanned(dto.orderId, dto.requestId, dto);
+    }
     //Execution on site done 
 
     //closed cp - Übernahme TWA
+    @Post("/closed")
+    orderClosed(@Body() dto: ClosedContractPartnerDto) {
+        return this.istaService.orderClosedContractPartner(dto.orderId, dto);
+    }
+    //Rejected
+    @Post("/rejected")
+    async orderRejected(@Body() dto: RejectedDto): Promise<any> {
+        try {
+          const orderDTO = new OrderDto();
+          orderDTO.rejected = [dto];  // Option 2: Erstellen Sie ein Array mit dto als einzigem Element
+          
+          const result = await this.istaService.orderRejected(dto.orderId, dto.requestId, dto);
 
-    //Rejected 
+          return result;
+        } catch (error) {
+          // Fehlerbehandlung
+          console.error(error);
+          throw new HttpException('Ein Fehler ist aufgetreten', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
 
     //customer contact not possible 
-
+    @Post("/notPossible")
+    orderNotPossible(@Body() dto: NotPossibleDto) {
+        return this.istaService.orderNotPossible(dto.orderId, dto.requestId, dto);
+    }
     //customer contact postponed 
-
+    @Post("/postponed")
+    orderPostponed(@Body() dto: PostponedDto) {
+        return this.istaService.orderPostponed(dto.orderId, dto.requestId, dto);
+    }
     //CANCELLED
+    @Post("/cancelled")
+    orderCancelled(@Body() dto: CancelledDto) {
+        return this.istaService.orderCancelled(dto.orderId, dto.requestId, dto);
+    }
 
     //EXECUTION ON SITE NOT POSSIBLE
 
@@ -260,7 +313,7 @@ export class IstaController {
     }
 
     //Get Order by Id
-    @Get(':id')
+    @Get('/order/:id')
     getOrderById(@Param('id', ParseIntPipe) orderId: number) {
         return this.istaService.getOrderById(orderId);
     }
@@ -270,7 +323,4 @@ export class IstaController {
       console.log(orderDTO);
       return this.istaService.updateOrder(orderDTO.id, orderDTO);
     }
-    
-
-
 }

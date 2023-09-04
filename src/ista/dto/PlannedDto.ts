@@ -5,7 +5,7 @@ import { OrderDto } from "./ista.order.dto";
 
 export class PlannedDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsInt()
     id: number;
   
@@ -15,21 +15,21 @@ export class PlannedDto {
     orderId: number;
   
     @ApiProperty({ example: 'Order Status' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     orderstatusType: string;
   
     @ApiProperty({ example: '2023-01-01T00:00:00Z' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     setOn: Date;
   
     @ApiProperty({ type: () => [CustomerContactDto] })
-    @IsNotEmpty()
+    @IsOptional()
     customerContact: CustomerContactDto[];
   
     @ApiProperty({ example: '2023-01-01T00:00:00Z' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     detailedScheduleDate: Date;
   
@@ -49,7 +49,7 @@ export class PlannedDto {
     detailedScheduleDelayReason?: string;
   
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     requestId: number;
   }

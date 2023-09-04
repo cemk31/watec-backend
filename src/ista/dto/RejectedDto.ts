@@ -5,33 +5,33 @@ import { ContactDto } from "./ContactDto";
 
 export class RejectedDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     id: number;
   
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     requestId: number;
   
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     orderId: number;
   
     @ApiProperty({ example: 20 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     statusType: number;
   
     @ApiProperty({ example: '2023-06-16' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Type(() => Date)
     setOn: Date;
   
     @ApiProperty({ type: [ContactDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @Type(() => ContactDto)
     contact: ContactDto[];
   

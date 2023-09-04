@@ -78,10 +78,9 @@ export class OrderDto {
     @IsArray()
     received: ReceivedDto[];
 
-    @ApiProperty({ type: () => [] })
+    @ApiProperty({ type: () => CustomerDTO })
     @IsOptional()
-    @IsArray()
-    customer: CustomerDTO[];
+    customer: CustomerDTO;
   }
 
  

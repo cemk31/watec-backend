@@ -1,16 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsString, IsDate } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, IsDate, IsOptional } from "class-validator";
 import { ContactDto } from "./ContactDto";
 
 export class NotPossibleDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     id: number;
   
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     requestId: number;
   
@@ -20,18 +20,18 @@ export class NotPossibleDto {
     orderId: number;
   
     @ApiProperty({ example: 'statusType' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     statusType: string;
   
     @ApiProperty({ example: '2023-06-16' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Type(() => Date)
     setOn: Date;
   
     @ApiProperty()
-    @IsNotEmpty()
+    @IsOptional()
     @Type(() => ContactDto)
     contact: ContactDto[];
   }

@@ -34,18 +34,18 @@ Table Customer {
   phoneNumber String
   street String
   zipCode String
-  userId Int
   email String
   country String
-  createdAt DateTime [default: `now()`, not null]
   place String
-  updatedAt DateTime [not null]
   companyName String
   fax String
   propertyNumber String
   addresses Address [not null]
+  userId Int
   user users
   orders Order [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
 }
 
 Table auftraege {
@@ -125,21 +125,22 @@ Table auftraggeber {
 
 Table Order {
   id Int [pk, increment]
-  number String [not null]
+  number String
   remarkExternal String
   createdAt DateTime [default: `now()`, not null]
   actualStatus Status [not null, default: 'RECEIVED']
   customerId Int [not null]
+  Customer Customer [not null]
   Cancelled Cancelled [not null]
   ClosedContractPartner ClosedContractPartner [not null]
   CustomerContacts CustomerContact [not null]
   NotPossible NotPossible [not null]
-  Customer Customer [not null]
   status OrderStatus [not null]
   Planned Planned [not null]
   Postponed Postponed [not null]
   Received Received [not null]
   Rejected Rejected [not null]
+  updatedAt DateTime
 }
 
 Table OrderStatus {
@@ -155,19 +156,19 @@ Table OrderStatus {
 
 Table CustomerContact {
   id Int [pk, increment]
-  contactAttemptOn DateTime [not null]
+  contactAttemptOn DateTime
   contactPersonCustomer String
-  agentCP String [not null]
-  result String [not null]
+  agentCP String
+  result String
   remark String
-  orderId Int [not null]
+  orderId Int
+  order Order
   plannedId Int
-  receivedId Int
-  statusReportId Int [not null]
-  order Order [not null]
   planned Planned
+  receivedId Int
   received Received
-  statusReport StatusReport [not null]
+  statusReportId Int
+  statusReport StatusReport
   ClosedContractPartner ClosedContractPartner [not null]
 }
 
@@ -176,33 +177,33 @@ Table ReportOrderStatusRequest {
   environment String [not null]
   language String [not null]
   consumer String [not null]
-  closedContractPartnerId Int [not null]
-  closedContractPartner ClosedContractPartner [not null]
+  closedContractPartnerId Int
+  closedContractPartner ClosedContractPartner
 }
 
 Table ClosedContractPartner {
   id Int [pk, increment]
-  orderId Int
   orderstatusType Int
   setOn DateTime [default: `now()`]
   deficiencyDescription String
   registrationHealthAuthoritiesOn DateTime
   extraordinaryExpenditureReason String
-  createdAt DateTime [default: `now()`]
-  updatedAt DateTime
+  orderId Int
   order Order
   Contact Contact [not null]
   recordedSystem RecordedSystem [not null]
   ReportOrderStatusRequest ReportOrderStatusRequest [not null]
   suppliedDocuments SuppliedDocuments [not null]
   CustomerContact CustomerContact [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
 }
 
 Table SuppliedDocuments {
   id Int [pk, increment]
   closedContractPartnerId Int
-  documentId Int
   ClosedContractPartner ClosedContractPartner
+  documentId Int
   document Document
 }
 
@@ -215,11 +216,11 @@ Table Document {
 
 Table RecordedSystem {
   id Int [pk, increment]
-  drinkingWaterFacilityId Int [not null]
   closedContractPartnerId Int
-  propertyId Int
   ClosedContractPartner ClosedContractPartner
-  drinkingWaterFacility DrinkingWaterFacility [not null]
+  drinkingWaterFacilityId Int
+  drinkingWaterFacility DrinkingWaterFacility
+  propertyId Int
   property Property
   services Service [not null]
 }
@@ -290,10 +291,10 @@ Table DrinkingWaterHeater {
   roomType String
   roomPosition Int
   positionDetail String
-  unitId Int [not null]
-  drinkingWaterFacilityId Int [not null]
-  DrinkingWaterFacility DrinkingWaterFacility [not null]
-  unit Unit [not null]
+  drinkingWaterFacilityId Int
+  DrinkingWaterFacility DrinkingWaterFacility
+  unitId Int
+  unit Unit
 }
 
 Table AscendingPipe {
@@ -392,92 +393,97 @@ Table Request {
   environment String [not null]
   language String [not null]
   consumer String [not null]
-  rejectedId Int
-  notPossibleId Int
-  postponedId Int
-  cancelledId Int
-  plannedId Int
   Body Body
+  cancelledId Int
   Cancelled Cancelled
+  notPossibleId Int
   NotPossible NotPossible
+  plannedId Int
   Planned Planned
+  postponedId Int
   Postponed Postponed
+  receivedId Int
   Received Received
+  rejectedId Int
   Rejected Rejected
 }
 
 Table Postponed {
   id Int [pk, increment]
-  requestId Int [unique, not null]
-  orderId Int [not null]
   statusType String [not null]
   setOn DateTime [default: `now()`]
   nextContactAttemptOn DateTime [not null]
   postponedReason String [not null]
-  createdAt DateTime [default: `now()`]
-  updatedAt DateTime
   Contact Contact [not null]
+  orderId Int [not null]
   Order Order [not null]
-  Request Request [not null]
+  requestId Int [unique]
+  Request Request
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
 }
 
 Table Rejected {
   id Int [pk, increment]
-  requestId Int [unique, not null]
-  orderId Int [not null]
-  statusType Int [not null]
+  statusType Int
   setOn DateTime [default: `now()`]
-  reason String [not null]
+  reason String
   reasonText String
+  Contact Contact [not null]
+  requestId Int [unique]
+  Request Request
+  orderId Int [not null]
+  Order Order [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
-  Contact Contact [not null]
-  Order Order [not null]
-  Request Request [not null]
 }
 
 Table NotPossible {
   id Int [pk, increment]
-  requestId Int [unique]
-  orderId Int [not null]
-  statusType String [not null]
+  statusType String
   setOn DateTime [default: `now()`]
+  Contact Contact [not null]
+  orderId Int [not null]
+  Order Order [not null]
+  requestId Int [unique]
+  Request Request
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
-  Contact Contact [not null]
-  Order Order [not null]
-  Request Request
 }
 
 Table Contact {
   id Int [pk, increment]
   contactAttemptOn DateTime [not null]
   contactPerson String
-  agentCP String [not null]
-  result String [not null]
+  agentCP String
+  result String
   remark String
-  notPossibleId Int [not null]
-  rejectedId Int [not null]
-  postponedId Int [not null]
-  cancelledId Int [not null]
-  closedContractPartnerId Int [not null]
-  Cancelled Cancelled [not null]
-  ClosedContractPartner ClosedContractPartner [not null]
-  NotPossible NotPossible [not null]
-  Postponed Postponed [not null]
-  Rejected Rejected [not null]
+  cancelledId Int
+  Cancelled Cancelled
+  closedContractPartnerId Int
+  ClosedContractPartner ClosedContractPartner
+  notPossibleId Int
+  NotPossible NotPossible
+  postponedId Int
+  Postponed Postponed
+  rejectedId Int
+  Rejected Rejected
+  receivedId Int
+  Received Received
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
 }
 
 Table Cancelled {
   id Int [pk, increment]
-  requestId Int [unique]
-  orderId Int [not null]
   statusType String [not null]
   setOn DateTime [default: `now()`]
   cancellationReason String [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  orderId Int [not null]
   Order Order [not null]
+  requestId Int [unique]
   Request Request
   Contact Contact [not null]
 }
@@ -485,18 +491,18 @@ Table Cancelled {
 Table Planned {
   id Int [pk, increment]
   orderId Int [not null]
-  orderstatusType String [not null]
+  orderstatusType String
   setOn DateTime [default: `now()`]
-  detailedScheduleDate DateTime [not null]
+  detailedScheduleDate DateTime
   detailedScheduleTimeFrom DateTime
   detailedScheduleTimeTo DateTime
   detailedScheduleDelayReason String
-  requestId Int [unique, not null]
-  createdAt DateTime [default: `now()`]
-  updatedAt DateTime
+  requestId Int [unique]
+  Request Request
   CustomerContact CustomerContact [not null]
   Order Order [not null]
-  Request Request [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
 }
 
 Table Received {
@@ -508,6 +514,7 @@ Table Received {
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   CustomerContact CustomerContact [not null]
+  Contact Contact [not null]
   Order Order [not null]
   Request Request
 }
@@ -606,9 +613,9 @@ Ref: Postponed.orderId > Order.id
 
 Ref: Postponed.requestId - Request.id
 
-Ref: Rejected.orderId > Order.id
-
 Ref: Rejected.requestId - Request.id
+
+Ref: Rejected.orderId > Order.id
 
 Ref: NotPossible.orderId > Order.id
 
@@ -624,13 +631,15 @@ Ref: Contact.postponedId > Postponed.id
 
 Ref: Contact.rejectedId > Rejected.id
 
+Ref: Contact.receivedId > Received.id
+
 Ref: Cancelled.orderId > Order.id
 
 Ref: Cancelled.requestId - Request.id
 
-Ref: Planned.orderId > Order.id
-
 Ref: Planned.requestId - Request.id
+
+Ref: Planned.orderId > Order.id
 
 Ref: Received.orderId > Order.id
 

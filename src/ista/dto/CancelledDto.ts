@@ -5,12 +5,12 @@ import { ContactDto } from "./ContactDto";
 
 export class CancelledDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     id: number;
   
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     requestId: number;
   
@@ -20,18 +20,18 @@ export class CancelledDto {
     orderId: number;
   
     @ApiProperty({ example: '020' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     statusType: string;
   
     @ApiProperty({ example: '2023-06-16' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Type(() => Date)
     setOn: Date;
   
     @ApiProperty({ type: [ContactDto] })
-    @IsNotEmpty()
+    @IsOptional()
     @Type(() => ContactDto)
     contact: ContactDto[];
   
