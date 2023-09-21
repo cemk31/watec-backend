@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, UseGuards } from "@nestjs/common";
 import { JwtGuard } from "src/auth/guard";
 import { ApiTags } from "@nestjs/swagger";
-import { CreateCustomerOrderDTO, CustomerDTO, OrderDto } from "./dto";
+import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from "./dto";
 import { PlannedDto } from "./dto/PlannedDto";
 import { IstaService } from "./ista.service";
 import { Order, Rejected } from "@prisma/client";
@@ -227,6 +227,13 @@ export class IstaController {
     createNewOrder(@Body() dto: CreateCustomerOrderDTO) {
         console.log("createNewOrder");
         return this.istaService.orderReceived(dto);
+    }
+
+    @Put("/received")
+    updateOrder(@Body() dto: ReceivedDto) {
+        console.log("updateOrder");
+        const orderId = Number(dto.orderId);
+        return this.istaService.updateOrderReceived(orderId, dto);
     }
 
     //createTestOrder

@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from './dto';
 import { RejectedDto } from './dto/RejectedDto';
 import { PostponedDto } from './dto/PostponedDto';
-import { Cancelled, ClosedContractPartner, NotPossible, Planned, Postponed } from '@prisma/client';
+import { Cancelled, ClosedContractPartner, NotPossible, Order, Planned, Postponed, Received } from '@prisma/client';
 import { CancelledDto } from './dto/CancelledDto';
 import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
@@ -13,6 +13,7 @@ import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
 export class IstaService {
   constructor(private prisma: PrismaService) {}
 
+  //create Order with status Received
   async receivedOrder(dto: CreateCustomerOrderDTO) {
     try {
       const order = await this.prisma.order.create({
@@ -234,9 +235,6 @@ export class IstaService {
         status: {
           create: dto.status,
         },
-        // CustomerContacts: {
-        //   create: dto.customerContacts,
-        // },
         NotPossible: {
           create: dto.notPossible,
         },
@@ -401,7 +399,6 @@ export class IstaService {
           // Wenn Sie auch Contact-Daten haben, fügen Sie diese hier hinzu
         },
       });
-      
       return cancelledEntry;
     } catch (error) {
       console.error('Error creating cancelled entry:', error);
@@ -478,10 +475,7 @@ export class IstaService {
   }
 
   async orderClosedContractPartner(orderId: number | null, dto: ClosedContractPartnerDto): Promise<ClosedContractPartner | null> {
-    try {
-      console.log("createClosedContractPartnerEntry: ", dto);
-      console.log("orderID: ", orderId);
-  
+    try {  
       const closedContractPartnerEntry = await this.prisma.closedContractPartner.create({
         data: {
           orderstatusType: dto.orderstatusType,
@@ -519,4 +513,47 @@ export class IstaService {
       return null;
     }
   }
+
+  //Received
+  async updateOrderReceived(orderId:number | null, dto: ReceivedDto): Promise<Order | null> {
+    try {
+      console.log("createReceivedEntry: ", dto);
+      console.log("orderID: ", orderId); // Log the orderId to debug
+  
+      const receivedEntry = await this.prisma.received.create({
+        data: {
+          orderstatusType: dto.orderstatusType, // Optional, gemäß Ihrem Schema
+          setOn: dto.setOn, // Optional, gemäß Ihrem Schema
+          CustomerContact: {
+            create: dto.customerContacts?.map(contact => ({
+              contactAttemptOn: contact.contactAttemptOn,
+              contactPersonCustomer: contact.contactPersonCustomer,
+              agentCP: contact.agentCP,
+              result: contact.result,
+              remark: contact.remark,
+            })) ?? []
+          },
+          Order: orderId ? { // Verbindung zur Order-Entität durch die orderId
+            connect: {
+              id: orderId,
+            },
+          } : undefined,
+          // Falls notwendig, fügen Sie hier die Logik hinzu, um CustomerContacts zu verbinden
+        },
+      });
+  
+      // Find and return the updated Order entity
+      if (orderId) {
+        const updatedOrder = await this.prisma.order.findUnique({
+          where: { id: orderId },
+          include: { Received: true } // Include the Received entities related to the Order
+        });
+        return updatedOrder;
+      }
+    } catch (error) {
+      console.error('Error creating received entry:', error);
+      return null;
+    }
+  }
+  
 }
