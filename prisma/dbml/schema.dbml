@@ -476,7 +476,7 @@ Table Contact {
 
 Table Cancelled {
   id Int [pk, increment]
-  statusType String [not null]
+  statusType String
   setOn DateTime [default: `now()`]
   cancellationReason String [not null]
   createdAt DateTime [default: `now()`]
@@ -545,6 +545,7 @@ Enum Status {
   POSTPONED
   REJECTED
   CLOSED
+  CANCELLED
 }
 
 Ref: bookmarks.userId > users.id

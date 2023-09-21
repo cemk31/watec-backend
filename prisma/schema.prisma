@@ -547,7 +547,7 @@ model Contact {
 
 model Cancelled {
   id                 Int       @id @default(autoincrement())
-  statusType         String
+  statusType         String?
   setOn              DateTime? @default(now())
   cancellationReason String
   createdAt          DateTime? @default(now())
@@ -590,7 +590,7 @@ model Received {
   createdAt       DateTime?         @default(now())
   updatedAt       DateTime?         @updatedAt
   CustomerContact CustomerContact[]
-  Contact       Contact[]
+  Contact         Contact[]
   Order           Order             @relation(fields: [orderId], references: [id])
   Request         Request?          @relation(fields: [requestId], references: [id])
 }
@@ -621,4 +621,5 @@ enum Status {
   POSTPONED
   REJECTED
   CLOSED
+  CANCELLED
 }
