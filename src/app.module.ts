@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AuthModule } from './auth/auth.module';
@@ -15,6 +15,7 @@ import { AuftraggeberModule } from './auftraggeber/auftraggeber.module';
 import { AdresseModule } from './adresse/adresse.module';
 import { IstaModule } from './ista/ista.module';
 import { HttpModule } from '@nestjs/axios';
+import { XmlToJsonMiddleware } from './middleware/xml-to-json.middleware';
 
 @Module({
   imports: [
@@ -36,6 +37,11 @@ import { HttpModule } from '@nestjs/axios';
   ],
 })
 export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(XmlToJsonMiddleware)
+      .forRoutes({ path: 'soap/reportOrderStatus', method: RequestMethod.POST });
+  }
 }
 
 // This function checks if the environment-specific .env file exists. 

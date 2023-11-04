@@ -1,70 +1,46 @@
-import { UseGuards, Controller, Body, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
+import { UseGuards, Controller, Body, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, Put } from "@nestjs/common";
 import { GetUser } from "src/auth/decorator";
 import { JwtGuard } from "src/auth/guard";
 import { AuftragService } from "src/auftrag/auftrag.service";
 import { CreateAuftragDTO } from "./dto/create-auftrag.dto";
 import { EditAuftragDTO } from "./dto/edit-auftrag.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('Auftrag')
 @UseGuards(JwtGuard)
 @Controller('auftrag')
 export class AuftragController {
     constructor(
-        private auftragService: AuftragService,
+        private readonly auftragService: AuftragService,
       ) {}
-    
-      @Get()
-      getAuftrage(@GetUser('id') userId: number) {
-        return this.auftragService.getAuftraege(
-          userId,
-        );
-      }
-    
-      @Get(':id')
-      getAuftragById(
-        @GetUser('id') userId: number,
-        @Param('id', ParseIntPipe) auftragId: number,
-      ) {
-        return this.auftragService.getAuftragById(
-          userId,
-          auftragId,
-        );
-      }
-    
-      @Post()
-      createAuftrag(
-        @GetUser('id') userId: number,
-        @Body() dto: CreateAuftragDTO,
-      ) {
-        return this.auftragService.createAuftrag(
-          userId,
-          dto,
-        );
-      }
-    
-      @Patch(':id')
-      editAuftragById(
-        @GetUser('id') userId: number,
-        @Param('id', ParseIntPipe) auftragId: number,
-        @Body() dto: EditAuftragDTO,
-      ) {
-        return this.auftragService.editAuftragById(
-          userId,
-          auftragId,
-          dto,
-        );
-      }
-    
-      @HttpCode(HttpStatus.NO_CONTENT)
-      @Delete(':id')
-      deleteAuftragById(
-        @GetUser('id') userId: number,
-        @Param('id', ParseIntPipe) auftragId: number,
-      ) {
-        return this.auftragService.deleteAuftragById(
-          userId,
-          auftragId,
-        );
-      }
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new Auftrag' })
+  create(@Body() createAuftragDto: CreateAuftragDTO) {
+    return this.auftragService.createAuftrag(createAuftragDto);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Retrieve all Auftraege' })
+  findAll() {
+    return this.auftragService.getAllAuftraege();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Retrieve a single Auftrag by id' })
+  findOne(@Param('id') id: string) {
+    return this.auftragService.getSingleAuftrag(+id);
+  }
+
+  // @Put(':id')
+  // @ApiOperation({ summary: 'Update an Auftrag' })
+  // update(@Param('id') id: string, @Body() updateAuftragDto: CreateAuftragDTO) {
+  //   return this.auftragService.updateAuftrag(+id, updateAuftragDto);
+  // }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete an Auftrag' })
+  remove(@Param('id') id: string) {
+    return this.auftragService.deleteAuftrag(+id);
+  }
 }

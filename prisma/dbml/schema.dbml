@@ -52,20 +52,30 @@ Table auftraege {
   id Int [pk, increment]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  userId Int [not null]
+  user users [not null]
   done Boolean
   emailEingang DateTime
   bemerkung String
   vorgemerkt String
-  liNr String
-  adresseLi String
-  plzLi String
-  ortLi String
-  vwBuro String
-  vwMa String
-  mailadresseVw String
-  telVw String
   hmName String
   hmTel String
+  mail String
+  emailId Int [unique]
+  email email
+  objektId Int [unique]
+  objekt objekt
+  auftraggeberId Int
+  auftraggeber auftraggeber
+  vwStatischId Int
+  vwStatisch vw
+  vwDynamischId Int
+  vwDynamisch vw
+  auftragsBestaetigung auftragsbestaetigung
+}
+
+Table email {
+  id Int [pk, increment]
   emailBetreff String
   emailAnhang String
   bestatigungVersendet Boolean
@@ -74,6 +84,30 @@ Table auftraege {
   angebotErstellt Boolean
   angebotsnummer String
   angebot String
+  auftrag auftraege
+}
+
+Table objekt {
+  id Int [pk, increment]
+  liNr String
+  adresseLi String
+  plzLi String
+  ortLi String
+  auftrag auftraege
+}
+
+Table vw {
+  id Int [pk, increment]
+  vwBuro String
+  vwMa String
+  mailadresseVw String
+  telVw String
+  auftraegeStatisch auftraege [not null]
+  auftraegeDynamisch auftraege [not null]
+}
+
+Table auftragsbestaetigung {
+  id Int [pk, increment]
   auftragbestatigung Boolean
   vwBestatigung String
   terminiertZum DateTime
@@ -97,30 +131,24 @@ Table auftraege {
   mahnung Boolean
   mahnung1 Boolean
   mahnungErhaten Boolean
-  auftraggeber String
-  ap String
-  strasse String
-  plz String
-  ort String
-  tel String
-  email String [not null]
-  userId Int [not null]
-  user users [not null]
+  auftragId Int [unique]
+  auftrag auftraege
 }
 
 Table auftraggeber {
   id Int [pk, increment]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  userId Int [not null]
-  ap String [not null]
-  email String [unique, not null]
-  ort String [not null]
-  plz Int [not null]
-  strasse String [not null]
-  tel String [not null]
-  auftraggebername String [not null]
-  user users [not null]
+  userId Int
+  user users
+  ap String
+  email String
+  ort String
+  plz Int
+  strasse String
+  tel String
+  auftraggebername String
+  auftraege auftraege [not null]
 }
 
 Table Order {
@@ -553,6 +581,18 @@ Ref: bookmarks.userId > users.id
 Ref: Customer.userId > users.id
 
 Ref: auftraege.userId > users.id
+
+Ref: auftraege.emailId - email.id
+
+Ref: auftraege.objektId - objekt.id
+
+Ref: auftraege.auftraggeberId > auftraggeber.id
+
+Ref: auftraege.vwStatischId > vw.id
+
+Ref: auftraege.vwDynamischId > vw.id
+
+Ref: auftragsbestaetigung.auftragId - auftraege.id
 
 Ref: auftraggeber.userId > users.id
 

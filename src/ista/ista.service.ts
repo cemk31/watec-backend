@@ -8,10 +8,25 @@ import { CancelledDto } from './dto/CancelledDto';
 import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
+import * as soap from 'soap';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class IstaService {
-  constructor(private prisma: PrismaService) {}
+  private client: soap.Client | null = null;
+
+  constructor(private prisma: PrismaService,
+    private configService: ConfigService) {
+    const soapUrl = this.configService.get<string>('SOAP_URL');
+    console.log('SOAP_URL:', soapUrl);
+    soap.createClientAsync(soapUrl)
+    .then(client => {
+      this.client = client;
+    })
+    .catch(err => {
+      console.error('Error initializing SOAP client:', err);
+    });
+  }
 
   //create Order with status Received
   async receivedOrder(dto: CreateCustomerOrderDTO) {
@@ -47,7 +62,6 @@ export class IstaService {
               country: dto.Customer?.country,
               email: dto.Customer?.email,
               phoneNumber: dto.Customer?.phoneNumber,
-
              },
           },
         },
@@ -349,6 +363,13 @@ export class IstaService {
       console.log("orderID: ", orderId);
       console.log("requestID: ", requestId);  // Log the requestId to debug
   
+      // Aktualisieren des updatedAt Feldes der Order
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: { updatedAt: new Date(),
+                actualStatus: "POSTPONED" }
+      });
+  
       const postponedEntry = await this.prisma.postponed.create({
         data: {
           statusType: dto.statusType,
@@ -356,14 +377,10 @@ export class IstaService {
           nextContactAttemptOn: dto.nextContactAttemptOn,
           postponedReason: dto.postponedReason,
           Order: {
-            connect: {
-              id: orderId,
-            },
+            connect: { id: orderId }
           },
           Request: requestId ? {
-            connect: {
-              id: requestId,
-            },
+            connect: { id: requestId }
           } : undefined,
         },
       });
@@ -373,7 +390,7 @@ export class IstaService {
       console.error('Error creating postponed entry:', error);
       return null;
     }
-  }
+  }  
 
   async orderCancelled(orderId: number, requestId: number | null, dto: CancelledDto): Promise<Cancelled | null> {
     try {
@@ -381,6 +398,12 @@ export class IstaService {
       console.log("orderID: ", orderId);
       console.log("requestID: ", requestId);  // Log the requestId to debug
   
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: { updatedAt: new Date(),
+                actualStatus: "CANCELLED" }
+      });
+
       const cancelledEntry = await this.prisma.cancelled.create({
         data: {
           statusType: dto.statusType,
@@ -412,6 +435,12 @@ export class IstaService {
       console.log("orderID: ", orderId);
       console.log("requestID: ", requestId);  // Log the requestId to debug
   
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: { updatedAt: new Date(),
+                actualStatus: "PLANNED" }
+      });
+
       const plannedEntry = await this.prisma.planned.create({
         data: {
           orderstatusType: dto.orderstatusType, // Optional, gemäß Ihrem Schema
@@ -447,6 +476,12 @@ export class IstaService {
       console.log("orderID: ", orderId);
       console.log("requestID: ", requestId); // Log the requestId to debug
   
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: { updatedAt: new Date(),
+                actualStatus: "NOTPOSSIBLE" }
+      });
+
       const notPossibleEntry = await this.prisma.notPossible.create({
         data: {
           statusType: dto.statusType, // Optional, gemäß Ihrem Schema
@@ -476,6 +511,12 @@ export class IstaService {
 
   async orderClosedContractPartner(orderId: number | null, dto: ClosedContractPartnerDto): Promise<ClosedContractPartner | null> {
     try {  
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: { updatedAt: new Date(),
+                actualStatus: "CLOSED" }
+      });
+
       const closedContractPartnerEntry = await this.prisma.closedContractPartner.create({
         data: {
           orderstatusType: dto.orderstatusType,
@@ -554,6 +595,18 @@ export class IstaService {
       console.error('Error creating received entry:', error);
       return null;
     }
+  }  
+
+  reportOrderStatus(payload: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.client.reportOrderStatus(payload, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
   }
   
 }

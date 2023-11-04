@@ -330,4 +330,9 @@ export class IstaController {
       console.log(orderDTO);
       return this.istaService.updateOrder(orderDTO.id, orderDTO);
     }
+
+    @Post('/report-status')
+    async reportStatus(@Body() payload: any): Promise<any> {
+    return this.istaService.reportOrderStatus(payload);
+    }
 }

@@ -66,25 +66,43 @@ model Customer {
 }
 
 model Auftrag {
-  id                   Int       @id @default(autoincrement())
-  
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-  
+  // Meta-Daten
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+
+  // Auftragsdaten
   done                 Boolean?
   emailEingang         DateTime?
   bemerkung            String?
   vorgemerkt           String?
-  liNr                 String?
-  adresseLi            String?
-  plzLi                String?
-  ortLi                String?
-  vwBuro               String?
-  vwMa                 String?
-  mailadresseVw        String?
-  telVw                String?
   hmName               String?
   hmTel                String?
+  mail                 String?
+  emailId              Int? @unique
+  email                Email? @relation(fields: [emailId], references: [id])
+
+  objektId             Int?  @unique
+  objekt               Objekt? @relation(fields: [objektId], references: [id])
+ 
+  auftraggeberId Int?
+  auftraggeber   Auftraggeber? @relation(fields: [auftraggeberId], references: [id])
+
+  vwStatischId   Int?
+  vwStatisch     Vw? @relation("VsStatischToAuftrag", fields: [vwStatischId], references: [id])
+
+  vwDynamischId  Int?
+  vwDynamisch    Vw? @relation("VsDynamischToAuftrag", fields: [vwDynamischId], references: [id])
+  
+  auftragsBestaetigung   AuftragsBestaetigung?
+  
+  @@map("auftraege")
+}
+
+model Email {
+  id       Int       @id @default(autoincrement())
   emailBetreff         String?
   emailAnhang          String?
   bestatigungVersendet Boolean?
@@ -93,6 +111,39 @@ model Auftrag {
   angebotErstellt      Boolean?
   angebotsnummer       String?
   angebot              String?
+
+  auftrag             Auftrag?
+  @@map("email")
+}
+
+model Objekt {
+  id                   Int       @id @default(autoincrement())
+
+  liNr                 String?
+  adresseLi            String?
+  plzLi                String?
+  ortLi                String?
+
+  auftrag              Auftrag?
+  @@map("objekt")
+}
+
+model Vw {
+  id                   Int       @id @default(autoincrement())
+  vwBuro               String?
+  vwMa                 String?
+  mailadresseVw        String?
+  telVw                String?
+  
+  // auftrag              Auftrag?
+  auftraegeStatisch   Auftrag[] @relation("VsStatischToAuftrag")
+  auftraegeDynamisch  Auftrag[] @relation("VsDynamischToAuftrag")
+  @@map("vw")
+}
+
+model AuftragsBestaetigung {
+  id        Int       @id @default(autoincrement())
+  //Auftragsbestätigung
   auftragbestatigung   Boolean?
   vwBestatigung        String?
   terminiertZum        DateTime?
@@ -116,17 +167,11 @@ model Auftrag {
   mahnung              Boolean?
   mahnung1             Boolean?
   mahnungErhaten       Boolean?
-  auftraggeber         String?
-  ap                   String?
-  strasse              String?
-  plz                  String?
-  ort                  String?
-  tel                  String?
-  email                String
-  userId               Int
-  user                 User      @relation(fields: [userId], references: [id])
 
-  @@map("auftraege")
+  auftragId Int?      @unique
+  auftrag   Auftrag?  @relation(fields: [auftragId], references: [id])
+
+  @@map("auftragsbestaetigung")
 }
 
 model Auftraggeber {
@@ -135,19 +180,23 @@ model Auftraggeber {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  userId           Int
-  ap               String
-  email            String   @unique
-  ort              String
-  plz              Int
-  strasse          String
-  tel              String
-  auftraggebername String
-  user             User     @relation(fields: [userId], references: [id])
+  userId           Int?
+  user             User?     @relation(fields: [userId], references: [id])
+
+  ap               String?
+  email            String?   
+  ort              String?
+  plz              Int?
+  strasse          String?
+  tel              String?
+  auftraggebername String?
+
+  auftraege       Auftrag[]
 
   @@map("auftraggeber")
 }
 
+//WATEC ISTA API
 model Order {
   id                    Int                     @id @default(autoincrement())
   number                String?

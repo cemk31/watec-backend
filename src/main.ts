@@ -34,9 +34,20 @@ async function bootstrap() {
 
     const config = new DocumentBuilder()
     .setTitle('WATEC Backend')
-    .setDescription('WATEC Backend API Description')
-    .setVersion('1.0')
-    .addTag('watec')
+    .setDescription('WATEC-Backend API Description - Documentation generated on 05-10-2023')
+    .setVersion('1.0.0.')
+    .addTag('WATEC', 'Endpoints related to the WATEC Backend Services')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token'
+    )
+    .setContact(
+      'WATEC Support',
+      'https://yourwebsite.com',
+      'support@yourwebsite.com'
+    )
+    .setLicense('WATEC License', 'https://yourwebsite.com/license')
+    .addServer('http://localhost:3000/', 'Local Development Server')
     .build();
 
     const document = SwaggerModule.createDocument(app, config);
