@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@nest-middlewares/cors": "^7.0.1",
-    "@nes tjs/axios": "^3.0.0",
+    "@nestjs/axios": "^3.0.0",
     "@nestjs/cli": "^9.5.0",
     "@nestjs/common": "^9.4.2",
     "@nestjs/config": "^1.2.1",
