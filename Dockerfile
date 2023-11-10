@@ -14,7 +14,7 @@ COPY --chown=node:node . .
 
 # Build the application if necessary, and generate Prisma client
 # This step can be skipped if the application does not need a build process
-RUN npm run build && npx prisma generate
+RUN npx prisma generate && npm run build
 
 # Set the environment based on build argument
 ENV NODE_ENV=${NODE_ENV}
