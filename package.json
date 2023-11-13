@@ -6,7 +6,7 @@
     "private": true,
     "license": "UNLICENSED",
     "engines": {
-        "node": "18.x",
+        "node": "19.x",
         "npm": "9.x"
     },
     "scripts": {
