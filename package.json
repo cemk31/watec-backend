@@ -4,7 +4,7 @@
     "description": "",
     "author": "Cem Kanmaz",
     "private": true,
-    "license": "UNLICENSED",
+    "license": "LICENSED",
     "engines": {
         "node": "18.x",
         "npm": "9.x"
