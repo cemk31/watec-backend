@@ -16,6 +16,9 @@ import { AdresseModule } from './adresse/adresse.module';
 import { IstaModule } from './ista/ista.module';
 import { HttpModule } from '@nestjs/axios';
 import { XmlToJsonMiddleware } from './middleware/xml-to-json.middleware';
+import { EmailService } from './email/email.service';
+import { DecryptService } from './decrypt/decrypt.service';
+import { DecryptModule } from './decrypt/decrypt.module';
 
 @Module({
   imports: [
@@ -33,8 +36,10 @@ import { XmlToJsonMiddleware } from './middleware/xml-to-json.middleware';
     AuftraggeberModule,
     AdresseModule,
     IstaModule,
-    HttpModule
+    HttpModule,
+    DecryptModule
   ],
+  providers: [EmailService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

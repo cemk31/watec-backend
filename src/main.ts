@@ -47,7 +47,7 @@ async function bootstrap() {
       'support@yourwebsite.com'
     )
     .setLicense('WATEC License', 'https://yourwebsite.com/license')
-    .addServer('http://localhost:3000/', 'Local Development Server')
+    // .addServer('http://localhost:3000/', 'Local Development Server')
     .build();
 
     const document = SwaggerModule.createDocument(app, config);

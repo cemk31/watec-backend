@@ -10,6 +10,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginAuthDto } from './dto/loginAuth.dto';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private  emailService: EmailService,
   ) {}
 
   async signup(dto: AuthDto) {
@@ -146,5 +148,14 @@ export class AuthService {
     });
 
     return updatedUser;
+  }
+
+  async sendPasswordResetEmail(userEmail: string, resetLink: string) {
+    await this.emailService.sendMail(
+      userEmail,
+      'Passwort zurücksetzen',
+      'Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen.',
+      `<p>Bitte klicken Sie <a href="${resetLink}">hier</a>, um Ihr Passwort zurückzusetzen.</p>`
+    );
   }
 }
