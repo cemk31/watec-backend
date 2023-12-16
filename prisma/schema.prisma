@@ -11,23 +11,20 @@ datasource db {
 }
 
 // MODELS
-
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  email String @unique
-  hash  String
-
-  firstName String?
-  lastName  String?
-
-  auftraege   Auftrag[]
-
-  bookmarks   Bookmark[]
-  //erstellte Adressen vom Nutzer
-  adresse_sst Adresse_SST[]
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  email           String    @unique
+  hash            String
+  firstName       String?
+  lastName        String?
+  isConfirmed    Boolean   @default(false)
+  confirmationToken String?
+  customer        Customer[]
+  auftraege       Auftrag[]
+  auftraggeber    Auftraggeber[]
+  bookmarks       Bookmark[]
 
   @@map("users")
 }
