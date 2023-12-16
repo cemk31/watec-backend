@@ -20,7 +20,7 @@ model User {
   firstName       String?
   lastName        String?
   isConfirmed    Boolean   @default(false)
-  confirmationToken String?
+  confirmationToken String? @unique
   customer        Customer[]
   auftraege       Auftrag[]
   auftraggeber    Auftraggeber[]
