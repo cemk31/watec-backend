@@ -128,49 +128,12 @@ $ npm run test:cov
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
 ## License
 
   Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
-## Notizen Watec Backend
-Anforderungen:
-- Verbindung der nestJS Applikation zur mySQL Datenbanken (lokal) / Google Datenbanken (Cloud)
-- 
-// {
-//     "type": "mysql",
-//     "host": "34.141.117.32",
-//     "port": 3306,
-//     "username": "root",
-//     "password": "-/wWYKTB,'_Xi9E",
-//     "database": "watec-mysql",
-//     "entities": [
-//       "src/entities/**/*.ts"
-//     ],
-//     "synchronize": true
-//   }
 
-  imports: [DbModule, 
-    TypeOrmModule.forRoot({
-      "type": "mysql",
-      "host": "34.141.117.32",
-      "port": 3306,
-      "username": "root",
-      "password": "secret",
-      "database": "mysql",
-      "entities": [
-        "src/entities/*.ts"
-      ],
-      "synchronize": true
-    })
-  ],
-
-DOCKER EINRICHTUNG: 
+DOCKER Configuration: 
 commands:
 docker ps
 docker -version : Docker Version
