@@ -55,4 +55,14 @@ export class AuthController {
     console.log("dto", dto);
     return this.authService.resetPassword(dto.email, dto.newPassword);
   }
+=======
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.email, dto.newPassword);
+  }
+
+  @Post('update-user')
+  updateUser(@Body() dto: UpdateUserDto) {
+    return this.authService.updateUser(dto.userId, dto.newEmail, dto.newPassword);
+  }
 }

@@ -26,6 +26,16 @@ export class IstaService {
     // .catch(err => {
     //   console.error('Error initializing SOAP client:', err);
     // });
+
+    const soapUrl = this.configService.get<string>('SOAP_URL');
+    console.log('SOAP_URL:', soapUrl);
+    soap.createClientAsync(soapUrl)
+    .then(client => {
+      this.client = client;
+    })
+    .catch(err => {
+      console.error('Error initializing SOAP client:', err);
+    });
   }
 
   //create Order with status Received

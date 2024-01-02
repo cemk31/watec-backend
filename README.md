@@ -139,8 +139,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
   Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 ## Notizen Watec Backend
-Anforderungen:
-
 DOCKER EINRICHTUNG: 
 commands:
 docker ps
@@ -174,4 +172,31 @@ yarn add @nestjs/jtw passport-jwt
 
 yarn add @types
 
-    // "heroku-postbuild": "npm install --production --unsafe-perm --legacy-peer-deps && npm prisma generate && npm prisma migrate deploy"
+// "heroku-postbuild": "npm install --production --unsafe-perm --legacy-peer-deps && npm prisma generate && npm prisma migrate deploy"
+
+
+Befehle zum Erstellen und Ausführen von Docker-Images
+Für die Entwicklungsumgebung
+Erstellen des Docker-Images für die Entwicklung:
+
+docker build --target development -t myapp:dev .
+
+Ausführen des Docker-Images für die Entwicklung:
+docker run --rm -it -p 3000:3000 myapp:dev
+
+Für die Produktionsumgebung
+Erstellen des Docker-Images für die Produktion:
+
+docker build --target production -t myapp:prod .
+
+Ausführen des Docker-Images für die Produktion:
+
+docker run --rm -it -p 3000:3000 myapp:prod
+
+Setzen von Umgebungsvariablen beim Bau des Docker-Images
+Für die Entwicklung:
+
+docker build --build-arg NODE_ENV=development --target development -t myapp:dev .
+
+Für die Produktion:
+docker build --build-arg NODE_ENV=production --target production -t myapp:prod .

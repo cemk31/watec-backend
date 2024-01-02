@@ -4,6 +4,9 @@ import { ApiTags } from "@nestjs/swagger";
 import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from "./dto";
 import { PlannedDto } from "./dto/PlannedDto";
 import { IstaService } from "./ista.service";
+
+import { Order, Rejected } from "@prisma/client";
+
 import { RejectedDto } from "./dto/RejectedDto";
 import { PostponedDto } from "./dto/PostponedDto";
 import { CancelledDto } from "./dto/CancelledDto";

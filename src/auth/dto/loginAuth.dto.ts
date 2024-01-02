@@ -14,6 +14,7 @@ export class LoginAuthDto {
 
   @IsString()
   @IsOptional()
+  @IsNotEmpty()
   @ApiProperty()
   password: string;
 }

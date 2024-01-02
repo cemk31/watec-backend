@@ -161,6 +161,7 @@ export class AuthService {
     console.log('Email verified successfully');
   }
 
+  
   async signin(dto: LoginAuthDto) {
     // find the user by email
     const user = await this.prisma.user.findUnique({
@@ -174,6 +175,11 @@ export class AuthService {
 
     // compare password
     const pwMatches = (user.hash = dto.password);
+
+    const pwMatches = await argon.verify(
+      user.hash,
+      dto.password,
+    );
     // if password incorrect throw exception
     
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
@@ -278,6 +284,55 @@ export class AuthService {
     console.log("passwordResetToken", passwordResetToken);
     // Send a password reset email
     await this.sendConfirmationEmail(updatedUser.email, updatedUser.confirmationToken);
+
+    return updatedUser;
+  }
+
+  async resetPassword(email: string, newPassword: string) {
+    // Find the user by email
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    // If user does not exist throw exception
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    // Generate new password hash
+    const newHash = await argon.hash(newPassword);
+
+    // Update user's password in the db
+    const updatedUser = await this.prisma.user.update({
+      where: { email },
+      data: { hash: newHash },
+    });
+
+    return updatedUser;
+  }
+
+  async updateUser(userId: number, newEmail: string, newPassword: string) {
+    // Find the user by id
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    // If user does not exist throw exception
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    // Generate new password hash
+    const newHash = await argon.hash(newPassword);
+
+    // Update user's email and password in the db
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: newEmail,
+        hash: newHash,
+      },
+    });
 
     return updatedUser;
   }

@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('RECEIVED', 'PLANNED', 'NOTPOSSIBLE', 'POSTPONED', 'REJECTED', 'CLOSED');
+
+-- AlterTable
+ALTER TABLE "Order" ADD COLUMN     "actualStatus" "Status" NOT NULL DEFAULT 'RECEIVED';
