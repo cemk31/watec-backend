@@ -4,7 +4,6 @@ import { ApiTags } from "@nestjs/swagger";
 import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from "./dto";
 import { PlannedDto } from "./dto/PlannedDto";
 import { IstaService } from "./ista.service";
-import { Order, Rejected } from "@prisma/client";
 import { RejectedDto } from "./dto/RejectedDto";
 import { PostponedDto } from "./dto/PostponedDto";
 import { CancelledDto } from "./dto/CancelledDto";
@@ -334,5 +333,10 @@ export class IstaController {
     @Post('/report-status')
     async reportStatus(@Body() payload: any): Promise<any> {
     return this.istaService.reportOrderStatus(payload);
+    }
+
+    @Delete('/order/:id')
+    deleteOrder(@Param('id', ParseIntPipe) orderId: number){
+        return this.istaService.deleteOrder(orderId);
     }
 }

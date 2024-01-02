@@ -140,35 +140,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Notizen Watec Backend
 Anforderungen:
-- Verbindung der nestJS Applikation zur mySQL Datenbanken (lokal) / Google Datenbanken (Cloud)
-- 
-// {
-//     "type": "mysql",
-//     "host": "34.141.117.32",
-//     "port": 3306,
-//     "username": "root",
-//     "password": "-/wWYKTB,'_Xi9E",
-//     "database": "watec-mysql",
-//     "entities": [
-//       "src/entities/**/*.ts"
-//     ],
-//     "synchronize": true
-//   }
-
-  imports: [DbModule, 
-    TypeOrmModule.forRoot({
-      "type": "mysql",
-      "host": "34.141.117.32",
-      "port": 3306,
-      "username": "root",
-      "password": "secret",
-      "database": "mysql",
-      "entities": [
-        "src/entities/*.ts"
-      ],
-      "synchronize": true
-    })
-  ],
 
 DOCKER EINRICHTUNG: 
 commands:

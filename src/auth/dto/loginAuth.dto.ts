@@ -13,7 +13,7 @@ export class LoginAuthDto {
   email: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
   password: string;
 }

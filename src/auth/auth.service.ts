@@ -22,29 +22,58 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
+  async sendSuccessFullRegistrationEmail(email: string): Promise<void> {
+    const transporter = nodemailer.createTransport({
+      host: "send.one.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "info@spootech.com",
+        pass: "Welcome123.",
+      },
+      tls: {
+          // do not fail on invalid certs
+          rejectUnauthorized: false,
+        },
+    });
+    console.log("email", email);
+    let mailOptions = {
+      from: '"Spootech", <info@spootech.com>', // sender address
+      to: email, // list of receivers
+      subject: "Registrierung erfolgreich!", // Subject line
+      // text: "Hello world?", // plain text body
+      html: `<b>Registrierung erfolgreich!</b><p>Ihre Registrierung war erfolgreich!</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Support Team</b></p>`, // html body
+    };
+    await transporter.sendMail(mailOptions);
+  }
+
   async sendConfirmationEmail(
     email: string,
     confirmationToken: string,
   ): Promise<void> {
     try {
       const transporter = nodemailer.createTransport({
-        // Configure your email service here
-        service: 'gmail',
+        host: "send.one.com",
+        port: 465,
+        secure: true,
         auth: {
-          user: 'huzafa.abbasi98@gmail.com',
-          pass: 'tzwaqonchawvwutu',
+          user: "info@spootech.com",
+          pass: "Welcome123.",
         },
+        tls: {
+            // do not fail on invalid certs
+            rejectUnauthorized: false,
+          },
       });
-
-      const confirmationLink = `http://localhost:3000/auth/verify-email/${confirmationToken}`;
-
-      const mailOptions = {
-        from: 'huzafa.abbasi98@gmail.com',
-        to: email,
-        subject: 'Confirm Your Email',
-        text: `Click the following link to confirm your email: ${confirmationLink}`,
-      };
-
+      // const confirmationLink = `http://localhost:3000/auth/verify-email/${confirmationToken}`;
+      console.log("email", email);
+      let mailOptions = {
+        from: '"Spootech", <info@spootech.com>', // sender address
+        to: email, // list of receivers
+        subject: confirmationToken + " Ihr Token zum zurücksetzen Ihres Passwortes", // Subject line
+        // text: "Hello world?", // plain text body
+        html: `<b>${confirmationToken}</b><p>Ihr Token zur Wiederherstellung Ihres Passwortes!</p> <p>Bitte geben Sie diesen Token in der App ein, um Ihr Passwort zurückzusetzen.</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Support Team</b></p>`, // html body
+    };
       await transporter.sendMail(mailOptions);
 
       console.log('Confirmation email sent successfully');
@@ -53,13 +82,15 @@ export class AuthService {
     }
   }
 
-  generateToken = (length = 32): string => {
-    return randomBytes(length).toString('hex');
+  generateToken = (): string => {
+    const randomNumber = Math.floor(100000 + Math.random() * 900000).toString();
+    return randomNumber;
   };
 
   async signup(dto: AuthDto) {
     // generate the password hash
     const hash = await argon.hash(dto.password);
+    console.log("hash", hash);
 
     const confirmationToken = this.generateToken();
 
@@ -67,19 +98,23 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    if (existingUser && !existingUser.isConfirmed) {
-      // User is registered but not confirmed, update the confirmation token
-      const confirmationToken = this.generateToken();
-      await this.prisma.user.update({
-        where: { id: existingUser.id },
-        data: { confirmationToken: confirmationToken },
-      });
+    // if (existingUser && !existingUser.isConfirmed) {
+    //   // User is registered but not confirmed, update the confirmation token
+    //   const confirmationToken = this.generateToken();
+    //   await this.prisma.user.update({
+    //     where: { id: existingUser.id },
+    //     data: { confirmationToken: confirmationToken },
+    //   });
 
-      // Send a new confirmation email
-      await this.sendConfirmationEmail(existingUser.email, confirmationToken);
+    //   console.log("ExistingUser", existingUser.email, confirmationToken);
+    //   // Send a new confirmation email
+    //   await this.sendConfirmationEmail(existingUser.email, confirmationToken);
 
-      // Return an appropriate response (e.g., indicating that a new confirmation email is sent)
-      return { message: 'A new confirmation email has been sent.' };
+    //   // Return an appropriate response (e.g., indicating that a new confirmation email is sent)
+    //   return { message: 'A new confirmation email has been sent.' };
+    // }
+    if (existingUser && existingUser.isConfirmed) {
+      throw new ForbiddenException('Credentials taken');
     }
     // save the new user in the db
     try {
@@ -92,8 +127,7 @@ export class AuthService {
           confirmationToken: confirmationToken,
         },
       });
-
-      await this.sendConfirmationEmail(user.email, confirmationToken);
+      await this.sendSuccessFullRegistrationEmail(user.email);
       return this.signToken(user.id, user.email);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -141,6 +175,7 @@ export class AuthService {
     // compare password
     const pwMatches = (user.hash = dto.password);
     // if password incorrect throw exception
+    
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
     return this.signToken(user.id, user.email);
   }
@@ -168,8 +203,10 @@ export class AuthService {
   }
 
   async resetPassword(email: string, newPassword: string) {
+    console.log("email", email);
+    console.log("newPassword", newPassword);
     // Find the user by email
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: { email },
     });
 
@@ -212,6 +249,35 @@ export class AuthService {
         hash: newHash,
       },
     });
+
+    return updatedUser;
+  }
+
+  async forgotPassword(email: string) {
+    console.log("email", email);
+    // Find the user by email
+    const user = await this.prisma.user.findFirst({
+      where: { email },
+    });
+
+    // If user does not exist throw exception
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    // Generate a new password reset token
+    const passwordResetToken = this.generateToken();
+    console.log("passwordResetToken", passwordResetToken);
+    // Update user's password reset token in the db
+    const updatedUser = await this.prisma.user.update({
+      where: { email: user.email }, // Add a default value or initializer for the "id" property
+      data: { confirmationToken: passwordResetToken },
+    });
+    console.log("updatedUser", updatedUser);
+    console.log("email", email);
+    console.log("passwordResetToken", passwordResetToken);
+    // Send a password reset email
+    await this.sendConfirmationEmail(updatedUser.email, updatedUser.confirmationToken);
 
     return updatedUser;
   }

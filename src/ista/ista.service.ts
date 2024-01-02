@@ -17,15 +17,15 @@ export class IstaService {
 
   constructor(private prisma: PrismaService,
     private configService: ConfigService) {
-    const soapUrl = this.configService.get<string>('SOAP_URL');
-    console.log('SOAP_URL:', soapUrl);
-    soap.createClientAsync(soapUrl)
-    .then(client => {
-      this.client = client;
-    })
-    .catch(err => {
-      console.error('Error initializing SOAP client:', err);
-    });
+    // const soapUrl = this.configService.get<string>('SOAP_URL');
+    // console.log('SOAP_URL:', soapUrl);
+    // soap.createClientAsync(soapUrl)
+    // .then(client => {
+    //   this.client = client;
+    // })
+    // .catch(err => {
+    //   console.error('Error initializing SOAP client:', err);
+    // });
   }
 
   //create Order with status Received
@@ -609,4 +609,11 @@ export class IstaService {
     });
   }
   
+  async deleteOrder(orderId: number) { // Update return type to Promise<Order | null>
+    console.log('Deleting order with id:', orderId);
+    const deleteUser = await this.prisma.order.delete({
+      where: { id: orderId },
+    });
+    return Promise.resolve(deleteUser);
+  }
 }
