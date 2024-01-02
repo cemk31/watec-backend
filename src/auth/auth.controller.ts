@@ -35,14 +35,6 @@ export class AuthController {
   signin(@Body() dto: LoginAuthDto) {
     return this.authService.signin(dto);
   }
-  @Post('update-user')
-  updateUser(@Body() dto: UpdateUserDto) {
-    return this.authService.updateUser(
-      dto.userId,
-      dto.newEmail,
-      dto.newPassword,
-    );
-  }
 
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
@@ -50,12 +42,6 @@ export class AuthController {
     return this.authService.forgotPassword(dto.email);
   }
 
-  @Post('reset-password')
-  resetPassword(@Body() dto: ResetPasswordDto) {
-    console.log("dto", dto);
-    return this.authService.resetPassword(dto.email, dto.newPassword);
-  }
-=======
   @Post('reset-password')
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto.email, dto.newPassword);

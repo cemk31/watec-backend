@@ -13,6 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoginAuthDto } from './dto/loginAuth.dto';
 import * as nodemailer from 'nodemailer';
 import { randomBytes } from 'crypto';
+import { Order } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -173,9 +174,6 @@ export class AuthService {
     if (!user || user.isConfirmed == false)
       throw new ForbiddenException('Credentials incorrect');
 
-    // compare password
-    const pwMatches = (user.hash = dto.password);
-
     const pwMatches = await argon.verify(
       user.hash,
       dto.password,
@@ -206,31 +204,6 @@ export class AuthService {
       email: email,
       userId: userId,
     } as { access_token: string; email: string; userId: number };
-  }
-
-  async resetPassword(email: string, newPassword: string) {
-    console.log("email", email);
-    console.log("newPassword", newPassword);
-    // Find the user by email
-    const user = await this.prisma.user.findFirst({
-      where: { email },
-    });
-
-    // If user does not exist throw exception
-    if (!user) {
-      throw new ForbiddenException('User not found');
-    }
-
-    // Generate new password hash
-    const newHash = await argon.hash(newPassword);
-
-    // Update user's password in the db
-    const updatedUser = await this.prisma.user.update({
-      where: { email },
-      data: { hash: newHash },
-    });
-
-    return updatedUser;
   }
 
   async updateUser(userId: number, newEmail: string, newPassword: string) {
@@ -311,29 +284,30 @@ export class AuthService {
     return updatedUser;
   }
 
-  async updateUser(userId: number, newEmail: string, newPassword: string) {
-    // Find the user by id
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+  async deleteOrder(orderId: number): Promise<Order | null> {
+    console.log('Deleting order with id:', orderId);
+    try {
+    // Löschen der abhängigen Datensätze
+    await this.prisma.cancelled.deleteMany({ where: { orderId } });
+    await this.prisma.closedContractPartner.deleteMany({ where: { orderId } });
+    await this.prisma.notPossible.deleteMany({ where: { orderId } });
+    await this.prisma.planned.deleteMany({ where: { orderId } });
+    await this.prisma.postponed.deleteMany({ where: { orderId } });
+    await this.prisma.received.deleteMany({ where: { orderId } });
+    await this.prisma.rejected.deleteMany({ where: { orderId } });
+    await this.prisma.orderStatus.deleteMany({ where: { orderId } });
+    await this.prisma.customerContact.deleteMany({ where: { orderId } });
+    // Fügen Sie hier ähnliche Löschvorgänge für andere abhängige Tabellen hinzu...
 
-    // If user does not exist throw exception
-    if (!user) {
-      throw new ForbiddenException('User not found');
+    // Löschen des Auftrags
+    const deletedOrder = await this.prisma.order.delete({ where: { id: orderId } });
+    console.log('Deleted order:', deletedOrder);
+    
+    return deletedOrder;
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      // Hier könnten Sie einen spezifischen Fehlercode zurückgeben oder eine benutzerfreundliche Fehlermeldung
+      throw new Error('Order could not be deleted. Please check for related data.');
     }
-
-    // Generate new password hash
-    const newHash = await argon.hash(newPassword);
-
-    // Update user's email and password in the db
-    const updatedUser = await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        email: newEmail,
-        hash: newHash,
-      },
-    });
-
-    return updatedUser;
   }
 }

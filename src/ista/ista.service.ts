@@ -618,12 +618,31 @@ export class IstaService {
       });
     });
   }
-  
-  async deleteOrder(orderId: number) { // Update return type to Promise<Order | null>
+
+  async deleteOrder(orderId: number): Promise<Order | null> {
     console.log('Deleting order with id:', orderId);
-    const deleteUser = await this.prisma.order.delete({
-      where: { id: orderId },
-    });
-    return Promise.resolve(deleteUser);
+    try {
+    // Löschen der abhängigen Datensätze
+    await this.prisma.cancelled.deleteMany({ where: { orderId } });
+    await this.prisma.closedContractPartner.deleteMany({ where: { orderId } });
+    await this.prisma.notPossible.deleteMany({ where: { orderId } });
+    await this.prisma.planned.deleteMany({ where: { orderId } });
+    await this.prisma.postponed.deleteMany({ where: { orderId } });
+    await this.prisma.received.deleteMany({ where: { orderId } });
+    await this.prisma.rejected.deleteMany({ where: { orderId } });
+    await this.prisma.orderStatus.deleteMany({ where: { orderId } });
+    await this.prisma.customerContact.deleteMany({ where: { orderId } });
+    // Fügen Sie hier ähnliche Löschvorgänge für andere abhängige Tabellen hinzu...
+
+    // Löschen des Auftrags
+    const deletedOrder = await this.prisma.order.delete({ where: { id: orderId } });
+    console.log('Deleted order:', deletedOrder);
+    
+    return deletedOrder;
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      // Hier könnten Sie einen spezifischen Fehlercode zurückgeben oder eine benutzerfreundliche Fehlermeldung
+      throw new Error('Order could not be deleted. Please check for related data.');
+    }
   }
 }

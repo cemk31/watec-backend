@@ -10,7 +10,6 @@ export class ResetPasswordDto {
 @IsString()
 @IsOptional()
 @ApiProperty()
-export class ResetPasswordDto {
-    email: string;
-    newPassword: string;
-  }
+newPassword: string;
+
+}
