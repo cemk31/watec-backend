@@ -62,6 +62,7 @@
         "faker": "^5.5.3",
         "json-to-prisma-schema-convertor": "^0.1.0",
         "nestjs-soap": "^3.0.2",
+        "nodemailer": "^6.9.7",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",
         "reflect-metadata": "0.1.13",

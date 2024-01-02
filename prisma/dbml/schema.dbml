@@ -10,6 +10,8 @@ Table users {
   hash String [not null]
   firstName String
   lastName String
+  isConfirmed Boolean [not null, default: false]
+  confirmationToken String [unique]
   customer Customer [not null]
   auftraege auftraege [not null]
   auftraggeber auftraggeber [not null]
