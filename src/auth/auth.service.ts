@@ -203,7 +203,8 @@ export class AuthService {
       access_token: token,
       email: email,
       userId: userId,
-    } as { access_token: string; email: string; userId: number };
+      expires: new Date(Date.now() + 60 * 60 * 1000),
+    } as { access_token: string; email: string; userId: number, expires: Date };
   }
 
   async updateUser(userId: number, newEmail: string, newPassword: string) {
