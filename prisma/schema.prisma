@@ -47,6 +47,10 @@ model Customer {
   id             Int       @id @default(autoincrement())
   firstName      String?
   lastName       String?
+
+  addressId      Int?
+  address        Address?
+
   phoneNumber    String?
   street         String?
   zipCode        String?
@@ -56,11 +60,12 @@ model Customer {
   companyName    String?
   fax            String?
   propertyNumber String?
-  addresses      Address[]
 
   userId         Int?
   user           User?     @relation(fields: [userId], references: [id])
   orders         Order[]
+
+  objekt         Objekt[]
 
   createdAt           DateTime? @default(now())
   updatedAt           DateTime? @updatedAt
@@ -118,7 +123,7 @@ model Email {
   auftrag             Auftrag?
   @@map("email")
 }
-
+//Liegenschaft
 model Objekt {
   id                   Int       @id @default(autoincrement())
 
@@ -128,6 +133,9 @@ model Objekt {
   ortLi                String?
 
   auftrag              Auftrag?
+
+  customerId           Int?
+  customer             Customer? @relation(fields: [customerId], references: [id])
   @@map("objekt")
 }
 
@@ -453,13 +461,16 @@ model Address {
   id           Int        @id @default(autoincrement())
   street       String
   streetnumber String?
+  houseNumber  String?
   postcode     String
   city         String
   country      String?
   createdAt    DateTime   @default(now())
-  customerId   Int
   updatedAt    DateTime   @updatedAt
-  Customer     Customer   @relation(fields: [customerId], references: [id])
+  
+  customerId   Int?        @unique
+  customer     Customer?   @relation(fields: [customerId], references: [id]) 
+  
   building     Building[]
   Service      Service[]
 }

@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional, IsEmail } from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsArray } from 'class-validator';
+import { CreateObjektDto } from "src/auftrag/dto/create-objekt.dto";
 
 
 export class CustomerDTO {
@@ -59,4 +60,10 @@ export class CustomerDTO {
   @IsOptional()
   @IsString()
   propertyNumber?: string;
+
+  @ApiProperty({ type: () => [CreateObjektDto] })
+  @IsOptional()
+  @IsArray()
+  @IsOptional()
+  objekt?: CreateObjektDto[];
 }
