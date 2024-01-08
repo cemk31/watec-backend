@@ -395,8 +395,9 @@ Temporary Items
 =======
 # Local
 .env
-dist
+# dist
 .webpack
 .serverless/**/*.zip
 
 .history
+.vercel
