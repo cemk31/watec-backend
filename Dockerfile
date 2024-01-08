@@ -1,65 +1,29 @@
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
+# Argument for setting node environment, default to production but can be overridden during build time
+ARG NODE_ENV=production
 
-FROM node:18-alpine As development
-
-# Create app directory
+# Base image for both development and production
+FROM node:18-alpine As base
 WORKDIR /usr/src/app
-
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
-# Copying this first prevents re-running npm install on every code change.
 COPY --chown=node:node package*.json ./
 
-# Install app dependencies using the `npm ci` command instead of `npm install`
+# Install all dependencies
 RUN npm ci --legacy-peer-deps
 
-# Bundle app source
+# Copy the rest of the application source code
 COPY --chown=node:node . .
+
+# Build the application if necessary, and generate Prisma client
+# This step can be skipped if the application does not need a build process
+RUN npx prisma generate && npm run build
+
+# Set the environment based on build argument
+ENV NODE_ENV=${NODE_ENV}
+
+# Install production dependencies if production, otherwise skip this step
+RUN if [ "${NODE_ENV}" = "production" ] ; then npm ci --legacy-peer-deps --only=production && npm cache clean --force ; fi
 
 # Use the node user from the image (instead of the root user)
 USER node
 
-###################
-# BUILD FOR PRODUCTION
-###################
-
-FROM node:18-alpine As build
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node package*.json ./
-
-# In order to run `npm run build` we need access to the Nest CLI which is a dev dependency. In the previous development stage we ran `npm ci` which installed all dependencies, so we can copy over the node_modules directory from the development image
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
-
-COPY --chown=node:node . .
-
-# Generate the Prisma client
-RUN npx prisma generate
-
-# Run the build command which creates the production bundle
-RUN npm run build
-
-# Set NODE_ENV environment variable
-ENV NODE_ENV production
-
-# Running `npm ci` removes the existing node_modules directory and passing in --only=production ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
-RUN npm ci --legacy-peer-deps --only=production && npm cache clean --force && npx prisma generate
-
-USER node
-
-###################
-# PRODUCTION
-###################
-
-FROM node:18-alpine As production
-
-# Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-
-# Start the server using the production build
+# Set the start command for the application
 CMD [ "node", "dist/main.js" ]
-
