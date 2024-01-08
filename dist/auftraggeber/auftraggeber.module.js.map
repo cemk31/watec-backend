@@ -1,0 +1,1 @@
+{"version":3,"file":"auftraggeber.module.js","sourceRoot":"","sources":["../../src/auftraggeber/auftraggeber.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,uEAAmE;AACnE,iEAA6D;AAMtD,IAAM,kBAAkB,GAAxB,MAAM,kBAAkB;CAAG,CAAA;AAArB,kBAAkB;IAJ9B,IAAA,eAAM,EAAC;QACJ,WAAW,EAAE,CAAC,gDAAsB,CAAC;QACrC,SAAS,EAAE,CAAC,0CAAmB,CAAC;KACnC,CAAC;GACW,kBAAkB,CAAG;AAArB,gDAAkB"}
