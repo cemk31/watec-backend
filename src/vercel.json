@@ -5,7 +5,8 @@
         "src": "package.json",
         "use": "@vercel/node",
         "config": {
-          "includeFiles": ["prisma/schema.prisma"]
+          "includeFiles": ["prisma/schema.prisma"],
+          "distDir": "dist"
         }
       }
     ],
