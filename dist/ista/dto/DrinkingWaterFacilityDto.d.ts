@@ -1,0 +1,35 @@
+import { AscendingPipeDto } from "./AscendingPipeDto";
+import { DrinkingWaterHeaterDto } from "./DrinkingWaterHeaterDto";
+import { RecordedSystemDto } from "./RecordedSystemDto";
+import { SamplingPointDto } from "./SamplingPointDto";
+export declare class DrinkingWaterFacilityDto {
+    id: number;
+    consecutiveNumber: number;
+    usageType: string;
+    usageTypeOthers: string;
+    numberSuppliedUnits: number;
+    numberDrinkingWaterHeater: number;
+    totalVolumeLitres: number;
+    pipingSystemType_Circulation: boolean;
+    pipingSystemType_Waterbranchline: boolean;
+    pipingSystemType_Pipetraceheater: boolean;
+    pipingVolumeGr3Litres: boolean;
+    deadPipeKnown: boolean;
+    deadPipesPosition: string;
+    numberAscendingPipes: number;
+    aerosolformation: boolean;
+    explanation: string;
+    numberSuppliedPersons: number;
+    pipeworkSchematicsAvailable: boolean;
+    numberColdWaterLegs: number;
+    numberHotWaterLegs: number;
+    temperatureCirculationDWH_A: number;
+    temperatureCirculationDWH_B: number;
+    heatExchangerSystem_central: boolean;
+    heatExchangerSystem_districtheating: boolean;
+    heatExchangerSystem_continuousflowprinciple: boolean;
+    drinkingWaterHeaters: DrinkingWaterHeaterDto[];
+    ascendingPipes: AscendingPipeDto[];
+    samplingPoints: SamplingPointDto[];
+    recordedSystems: RecordedSystemDto[];
+}
