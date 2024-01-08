@@ -9,15 +9,23 @@ export class CustomerService {
   async createCustomer(userId: number, dto: CustomerDTO) {
     const customer = await this.prisma.customer.create({
       data: {
-        userId,
-        ...dto,
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        street: dto.street,
+        zipCode: dto.zipCode,
+        place: dto.place,
+        country: dto.country,
+        email: dto.email,
+        phoneNumber: dto.phoneNumber,
+        objekt: {
+          create: dto.objekt,
+        },
       },
     });
     return customer;
   }
 
   async getCustomers(userId: number) {
-    console.log("getCustomers: ", userId);
     return this.prisma.customer.findMany({
       where: {
         userId,

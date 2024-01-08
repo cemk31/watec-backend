@@ -3,6 +3,7 @@ import { IsNotEmpty, IsInt, IsString, IsDate, IsNumber, IsOptional } from "class
 import { CustomerContactDto } from "./CustomerContactDto";
 import { OrderDto } from "./ista.order.dto";
 
+
 export class ReceivedDto {
     @ApiProperty({ example: 1 })
     @IsOptional()
@@ -13,23 +14,49 @@ export class ReceivedDto {
     @IsOptional()
     @IsNumber()
     orderId: number;
-  
-    @ApiProperty({ example: 'Order Status' })
+    
+    @ApiProperty({ example: 'Order Status', default: 'RECEIVED' })
     @IsOptional()
     @IsString()
     orderstatusType: string;
-  
+    
     @ApiProperty({ example: '2023-01-01T00:00:00Z' })
     @IsOptional()
     @IsDate()
     setOn: Date;
-  
-    @ApiProperty({ type: () => [CustomerContactDto] })
+     
+    @ApiProperty({ example: '2023-01-01T00:00:00Z' })
     @IsOptional()
-    customerContacts: CustomerContactDto[];
+    // @IsDate()
+    contactAttemptOn: Date;
+
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional()
+    contactPersonCustomer?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    agentCP: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    result: string;
+
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional()
+    remark?: string;
   
     @ApiProperty({ example: 1 })
     @IsOptional()
     @IsNumber()
+    @IsOptional()
     requestId: number;
+
+    @ApiProperty({ type: () => [CustomerContactDto] })
+    @IsOptional()
+    customerContacts: CustomerContactDto[];
   }
