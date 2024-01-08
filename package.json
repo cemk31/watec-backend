@@ -39,8 +39,8 @@
         "railway:docker:production": "docker build --build-arg NODE_ENV=production -t myapp:prod ."
     },
     "dependencies": {
-        "@nest-middlewares/cors": "^7.0.1",
-        "@nestjs/axios": "^3.0.0",
+        "@nest-middlewares/cors": "^10.0.0",
+        "@nestjs/axios": "^3.0.1",
         "@nestjs/cli": "^9.5.0",
         "@nestjs/common": "^10.3.0",
         "@nestjs/config": "3.1.1",
