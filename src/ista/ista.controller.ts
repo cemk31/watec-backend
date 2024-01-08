@@ -186,6 +186,11 @@ export class IstaController {
                 orderId: null,
                 orderstatusType: 'Status Type',
                 setOn: new Date(),
+                contactAttemptOn: new Date(),
+                contactPersonCustomer: 'Customer',
+                agentCP: 'Agent CP',
+                result: 'Success',
+                remark: 'Remark',
                 customerContacts: [
                     {
                         agentCP: 'Agent CP',
@@ -228,12 +233,13 @@ export class IstaController {
     @Post("/received")
     createNewOrder(@Body() dto: CreateCustomerOrderDTO) {
         console.log("createNewOrder");
+        console.log(dto);
         return this.istaService.orderReceived(dto);
     }
 
-    @Put("/received")
+    @Post("/create-received")
     updateOrder(@Body() dto: ReceivedDto) {
-        console.log("updateOrder");
+        console.log("updateOrder DTO", dto);
         const orderId = Number(dto.orderId);
         return this.istaService.updateOrderReceived(orderId, dto);
     }

@@ -47,7 +47,7 @@ export class IstaService {
           remarkExternal: dto.remarkExternal,
           Received: {
             create: dto.Received?.map(received => ({
-              orderstatusType: received.orderstatusType,
+              orderstatusType: "RECEIVED",
               setOn: received.setOn,
               CustomerContact: {
                 create: received.customerContacts?.map(contact => ({
@@ -131,7 +131,17 @@ export class IstaService {
         },
         // Die Annahme hier ist, dass `customer` in dto ein Array ist, und Sie möchten mehrere Kunden erstellen
         Customer: {
-          create: dto.customer,
+          create: {
+            // Add the necessary properties from dto.customer
+            firstName: dto.customer.firstName,
+            lastName: dto.customer.lastName,
+            street: dto.customer.street,
+            zipCode: dto.customer.zipCode,
+            place: dto.customer.place,
+            country: dto.customer.country,
+            email: dto.customer.email,
+            phoneNumber: dto.customer.phoneNumber,
+          },
         },
       },
       include: {
@@ -200,11 +210,9 @@ export class IstaService {
 
   async orderReceived(dto: CreateCustomerOrderDTO) {
     const { Customer, number, remarkExternal, Received } = dto;
-  
     try {
       // const customer = await this.createCustomer(dto.Customer);
       const order = await this.receivedOrder(dto);
-  
       return order;
     } catch (error) {
       console.error("Fehler beim Speichern:", error);
@@ -573,16 +581,16 @@ export class IstaService {
   
       const receivedEntry = await this.prisma.received.create({
         data: {
-          orderstatusType: dto.orderstatusType, // Optional, gemäß Ihrem Schema
+          orderstatusType: "RECEIVED", // Optional, gemäß Ihrem Schema
           setOn: dto.setOn, // Optional, gemäß Ihrem Schema
           CustomerContact: {
-            create: dto.customerContacts?.map(contact => ({
-              contactAttemptOn: contact.contactAttemptOn,
-              contactPersonCustomer: contact.contactPersonCustomer,
-              agentCP: contact.agentCP,
-              result: contact.result,
-              remark: contact.remark,
-            })) ?? []
+            create: {
+              contactAttemptOn: new Date(dto.contactAttemptOn),
+              contactPersonCustomer: dto?.contactPersonCustomer,
+              agentCP: dto?.agentCP,
+              result: dto?.result,
+              remark: dto?.remark,
+            }
           },
           Order: orderId ? { // Verbindung zur Order-Entität durch die orderId
             connect: {
