@@ -36,7 +36,8 @@
         "vercel-build": "prisma generate",
         "heroku-postbuild": "nvm use 20 && npm install -g npm@10.2.5 && npx prisma generate && npm run build",
         "railway:docker:development": "docker build --build-arg NODE_ENV=development -t myapp:dev .",
-        "railway:docker:production": "docker build --build-arg NODE_ENV=production -t myapp:prod ."
+        "railway:docker:production": "docker build --build-arg NODE_ENV=production -t myapp:prod .",
+        "build:digitalocean": "npm install --include=dev && npm run build && npm ci"
     },
     "dependencies": {
         "@nest-middlewares/cors": "^10.0.0",
