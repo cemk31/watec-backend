@@ -12,22 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IstaService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const soap = require("soap");
 const config_1 = require("@nestjs/config");
 let IstaService = class IstaService {
     constructor(prisma, configService) {
         this.prisma = prisma;
         this.configService = configService;
-        this.client = null;
-        const soapUrl = this.configService.get('SOAP_URL');
-        console.log('SOAP_URL:', soapUrl);
-        soap.createClientAsync(soapUrl)
-            .then(client => {
-            this.client = client;
-        })
-            .catch(err => {
-            console.error('Error initializing SOAP client:', err);
-        });
     }
     async receivedOrder(dto) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
@@ -540,18 +529,6 @@ let IstaService = class IstaService {
             console.error('Error creating received entry:', error);
             return null;
         }
-    }
-    reportOrderStatus(payload) {
-        return new Promise((resolve, reject) => {
-            this.client.reportOrderStatus(payload, (err, result) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(result);
-                }
-            });
-        });
     }
     async deleteOrder(orderId) {
         console.log('Deleting order with id:', orderId);

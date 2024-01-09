@@ -8,12 +8,11 @@ import { CancelledDto } from './dto/CancelledDto';
 import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
-import * as soap from 'soap';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class IstaService {
-  private client: soap.Client | null = null;
+  // private client: soap.Client | null = null;
 
   constructor(private prisma: PrismaService,
     private configService: ConfigService) {
@@ -27,15 +26,15 @@ export class IstaService {
     //   console.error('Error initializing SOAP client:', err);
     // });
 
-    const soapUrl = this.configService.get<string>('SOAP_URL');
-    console.log('SOAP_URL:', soapUrl);
-    soap.createClientAsync(soapUrl)
-    .then(client => {
-      this.client = client;
-    })
-    .catch(err => {
-      console.error('Error initializing SOAP client:', err);
-    });
+    // const soapUrl = this.configService.get<string>('SOAP_URL');
+    // console.log('SOAP_URL:', soapUrl);
+    // soap.createClientAsync(soapUrl)
+    // .then(client => {
+    //   this.client = client;
+    // })
+    // .catch(err => {
+    //   console.error('Error initializing SOAP client:', err);
+    // });
   }
 
   //create Order with status Received
@@ -615,17 +614,17 @@ export class IstaService {
     }
   }  
 
-  reportOrderStatus(payload: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.client.reportOrderStatus(payload, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  }
+  // reportOrderStatus(payload: any): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     this.client.reportOrderStatus(payload, (err, result) => {
+  //       if (err) {
+  //         reject(err);
+  //       } else {
+  //         resolve(result);
+  //       }
+  //     });
+  //   });
+  // }
 
   async deleteOrder(orderId: number): Promise<Order | null> {
     console.log('Deleting order with id:', orderId);
