@@ -11,7 +11,6 @@ import { ConfigService } from '@nestjs/config';
 export declare class IstaService {
     private prisma;
     private configService;
-    private client;
     constructor(prisma: PrismaService, configService: ConfigService);
     receivedOrder(dto: CreateCustomerOrderDTO): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -1032,6 +1031,5 @@ export declare class IstaService {
     orderNotPossible(orderId: number, requestId: number | null, dto: NotPossibleDto): Promise<NotPossible | null>;
     orderClosedContractPartner(orderId: number | null, dto: ClosedContractPartnerDto): Promise<ClosedContractPartner | null>;
     updateOrderReceived(orderId: number | null, dto: ReceivedDto): Promise<Order | null>;
-    reportOrderStatus(payload: any): Promise<any>;
     deleteOrder(orderId: number): Promise<Order | null>;
 }

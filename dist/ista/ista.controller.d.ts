@@ -1209,7 +1209,6 @@ export declare class IstaController {
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
-    reportStatus(payload: any): Promise<any>;
     deleteOrder(orderId: number): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         number: string;

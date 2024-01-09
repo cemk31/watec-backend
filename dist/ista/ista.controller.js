@@ -289,9 +289,6 @@ let IstaController = class IstaController {
         console.log(orderDTO);
         return this.istaService.updateOrder(orderDTO.id, orderDTO);
     }
-    async reportStatus(payload) {
-        return this.istaService.reportOrderStatus(payload);
-    }
     deleteOrder(orderId) {
         return this.istaService.deleteOrder(orderId);
     }
@@ -406,13 +403,6 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.OrderDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "updateStatus", null);
-__decorate([
-    (0, common_1.Post)('/report-status'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], IstaController.prototype, "reportStatus", null);
 __decorate([
     (0, common_1.Delete)('/order/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

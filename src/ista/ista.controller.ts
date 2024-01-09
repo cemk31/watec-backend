@@ -339,10 +339,10 @@ export class IstaController {
       return this.istaService.updateOrder(orderDTO.id, orderDTO);
     }
 
-    @Post('/report-status')
-    async reportStatus(@Body() payload: any): Promise<any> {
-    return this.istaService.reportOrderStatus(payload);
-    }
+    // @Post('/report-status')
+    // async reportStatus(@Body() payload: any): Promise<any> {
+    // return this.istaService.reportOrderStatus(payload);
+    // }
 
     @Delete('/order/:id')
     deleteOrder(@Param('id', ParseIntPipe) orderId: number){
