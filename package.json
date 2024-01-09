@@ -37,7 +37,7 @@
         "heroku-postbuild": "nvm use 20 && npm install -g npm@10.2.5 && npx prisma generate && npm run build",
         "railway:docker:development": "docker build --build-arg NODE_ENV=development -t myapp:dev .",
         "railway:docker:production": "docker build --build-arg NODE_ENV=production -t myapp:prod .",
-        "build:digitalocean": "npm install --production=false && npm ci --ic && npm run build"
+        "build:digitalocean": "nvm use 20 && npm install --production=false && npm ci --ic && npm run build"
     },
     "dependencies": {
         "@nest-middlewares/cors": "^10.0.0",
