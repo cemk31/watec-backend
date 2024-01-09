@@ -1,0 +1,17 @@
+{
+    "$schema": "https://railway.app/railway.schema.json",
+    "build": {
+      "builder": "DOCKERFILE",
+      "nixpacksPlan": {
+        "repo": "cemk31/watec-backend"
+      },
+      "dockerfilePath": "Dockerfile"
+    },
+    "deploy": {
+      "region": "europe-west4",
+      "numReplicas": 1,
+      "sleepApplication": false,
+      "restartPolicyType": "ON_FAILURE",
+      "restartPolicyMaxRetries": 10
+    }
+  }
