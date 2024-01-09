@@ -6,8 +6,8 @@
     "private": true,
     "license": "UNLICENSED",
     "engines": {
-        "node": "20.x",
-        "npm": "9.x"
+        "node": "18.x",
+        "npm": "10.x"
     },
     "scripts": {
         "json-to-prisma": "json-to-prisma-schema-convertor convert --inputPath='./prisma/schema.json' --outputPath='./prisma/schemaJSON.prisma'",
