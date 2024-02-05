@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from './dto';
 import { RejectedDto } from './dto/RejectedDto';
 import { PostponedDto } from './dto/PostponedDto';
-import { Cancelled, ClosedContractPartner, NotPossible, Order, Planned, Postponed, Received } from '@prisma/client';
+import { Cancelled, ClosedContractPartner, NotPossible, Order, Planned, Postponed, Received, Status } from '@prisma/client';
 import { CancelledDto } from './dto/CancelledDto';
 import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
@@ -15,27 +15,7 @@ export class IstaService {
   // private client: soap.Client | null = null;
 
   constructor(private prisma: PrismaService,
-    private configService: ConfigService) {
-    // const soapUrl = this.configService.get<string>('SOAP_URL');
-    // console.log('SOAP_URL:', soapUrl);
-    // soap.createClientAsync(soapUrl)
-    // .then(client => {
-    //   this.client = client;
-    // })
-    // .catch(err => {
-    //   console.error('Error initializing SOAP client:', err);
-    // });
-
-    // const soapUrl = this.configService.get<string>('SOAP_URL');
-    // console.log('SOAP_URL:', soapUrl);
-    // soap.createClientAsync(soapUrl)
-    // .then(client => {
-    //   this.client = client;
-    // })
-    // .catch(err => {
-    //   console.error('Error initializing SOAP client:', err);
-    // });
-  }
+    private configService: ConfigService) {}
 
   //create Order with status Received
   async receivedOrder(dto: CreateCustomerOrderDTO) {
@@ -44,6 +24,7 @@ export class IstaService {
         data: {
           number: dto.number,
           remarkExternal: dto.remarkExternal,
+          actualStatus: Status.RECEIVED,
           Received: {
             create: dto.Received?.map(received => ({
               orderstatusType: "RECEIVED",
@@ -104,9 +85,6 @@ export class IstaService {
         status: {
           create: dto.status,
         },
-        // CustomerContacts: {
-        //   create: dto.CustomerContacts,
-        // },
         NotPossible: {
           create: dto.notPossible,
         },
@@ -339,7 +317,6 @@ export class IstaService {
         fax: dto.fax, // hinzugefügt
         companyName: dto.companyName, // hinzugefügt
         propertyNumber: dto.propertyNumber, // hinzugefügt
-        // ... andere Felder entsprechend der CustomerDTO-Definition
       },
     });
     return customer;
@@ -364,34 +341,24 @@ export class IstaService {
             id: orderId,
           },
         },
-        // Verbindet den Rejected-Eintrag mit einem Request-Eintrag
-        // Request: {
-        //   connect: {
-        //     id: requestId,
-        //   },
-        // },
       },
     });
   }
 
   async orderPostponed(orderId: number, requestId: number | null, dto: PostponedDto): Promise<Postponed | null> {
-    try {
-      console.log("orderPostponed: ", dto);
-      console.log("orderID: ", orderId);
-      console.log("requestID: ", requestId);  // Log the requestId to debug
-  
+    try {  
       // Aktualisieren des updatedAt Feldes der Order
       await this.prisma.order.update({
         where: { id: orderId },
         data: { updatedAt: new Date(),
-                actualStatus: "POSTPONED" }
+                actualStatus: Status.POSTPONED }
       });
   
       const postponedEntry = await this.prisma.postponed.create({
         data: {
-          statusType: dto.statusType,
-          setOn: dto.setOn,
-          nextContactAttemptOn: dto.nextContactAttemptOn,
+          statusType: Status.POSTPONED || 'POSTPONED',
+          setOn: dto.setOn || new Date(), // Set new date if empty
+          nextContactAttemptOn: dto.nextContactAttemptOn || new Date(),
           postponedReason: dto.postponedReason,
           Order: {
             connect: { id: orderId }
@@ -418,7 +385,7 @@ export class IstaService {
       await this.prisma.order.update({
         where: { id: orderId },
         data: { updatedAt: new Date(),
-                actualStatus: "CANCELLED" }
+                actualStatus: Status.CANCELLED }
       });
 
       const cancelledEntry = await this.prisma.cancelled.create({
@@ -455,12 +422,12 @@ export class IstaService {
       await this.prisma.order.update({
         where: { id: orderId },
         data: { updatedAt: new Date(),
-                actualStatus: "PLANNED" }
+                actualStatus: Status.PLANNED }
       });
 
       const plannedEntry = await this.prisma.planned.create({
         data: {
-          orderstatusType: dto.orderstatusType, // Optional, gemäß Ihrem Schema
+          orderstatusType: Status.PLANNED, // Optional, gemäß Ihrem Schema
           setOn: dto.setOn, // Optional, gemäß Ihrem Schema
           detailedScheduleDate: dto.detailedScheduleDate, // Optional, gemäß Ihrem Schema
           detailedScheduleTimeFrom: dto.detailedScheduleTimeFrom, // Optional, gemäß Ihrem Schema
@@ -488,15 +455,11 @@ export class IstaService {
   }
 
   async orderNotPossible(orderId: number, requestId: number | null, dto: NotPossibleDto): Promise<NotPossible | null> {
-    try {
-      console.log("createNotPossibleEntry: ", dto);
-      console.log("orderID: ", orderId);
-      console.log("requestID: ", requestId); // Log the requestId to debug
-  
+    try {  
       await this.prisma.order.update({
         where: { id: orderId },
         data: { updatedAt: new Date(),
-                actualStatus: "NOTPOSSIBLE" }
+                actualStatus: Status.NOTPOSSIBLE }
       });
 
       const notPossibleEntry = await this.prisma.notPossible.create({
@@ -574,17 +537,14 @@ export class IstaService {
 
   //Received
   async updateOrderReceived(orderId:number | null, dto: ReceivedDto): Promise<Order | null> {
-    try {
-      console.log("createReceivedEntry: ", dto);
-      console.log("orderID: ", orderId); // Log the orderId to debug
-  
+    try {  
       const receivedEntry = await this.prisma.received.create({
         data: {
-          orderstatusType: "RECEIVED", // Optional, gemäß Ihrem Schema
-          setOn: dto.setOn, // Optional, gemäß Ihrem Schema
+          orderstatusType: Status.RECEIVED,
+          setOn: dto.setOn,
           CustomerContact: {
             create: {
-              contactAttemptOn: new Date(dto.contactAttemptOn),
+              contactAttemptOn: dto?.contactAttemptOn ? new Date(dto?.contactAttemptOn) : new Date(),
               contactPersonCustomer: dto?.contactPersonCustomer,
               agentCP: dto?.agentCP,
               result: dto?.result,
@@ -599,12 +559,17 @@ export class IstaService {
           // Falls notwendig, fügen Sie hier die Logik hinzu, um CustomerContacts zu verbinden
         },
       });
-  
+
+      console.log("receivedEntry: ", receivedEntry);
+        
       // Find and return the updated Order entity
       if (orderId) {
         const updatedOrder = await this.prisma.order.findUnique({
           where: { id: orderId },
-          include: { Received: true } // Include the Received entities related to the Order
+          include: { 
+            Received: true, // Include the Received entities related to the Order
+            CustomerContacts: true // Include the CustomerContact entities related to the Order
+          } 
         });
         return updatedOrder;
       }
@@ -612,19 +577,7 @@ export class IstaService {
       console.error('Error creating received entry:', error);
       return null;
     }
-  }  
-
-  // reportOrderStatus(payload: any): Promise<any> {
-  //   return new Promise((resolve, reject) => {
-  //     this.client.reportOrderStatus(payload, (err, result) => {
-  //       if (err) {
-  //         reject(err);
-  //       } else {
-  //         resolve(result);
-  //       }
-  //     });
-  //   });
-  // }
+  }
 
   async deleteOrder(orderId: number): Promise<Order | null> {
     console.log('Deleting order with id:', orderId);
@@ -651,5 +604,41 @@ export class IstaService {
       // Hier könnten Sie einen spezifischen Fehlercode zurückgeben oder eine benutzerfreundliche Fehlermeldung
       throw new Error('Order could not be deleted. Please check for related data.');
     }
+  }
+
+  async doneOrder(orderId: number): Promise<Order | null> {
+    try {
+      const updatedOrder = await this.prisma.order.update({
+        where: { id: orderId },
+        data: {
+          actualStatus: Status.DONE,
+          updatedAt: new Date(),
+        },
+        include: {
+          status: true,
+          Received: true,
+          Planned: true,
+          CustomerContacts: true,
+          NotPossible: true,
+          Postponed: true,
+          Cancelled: true,
+          Rejected: true,
+          ClosedContractPartner: true,
+          Customer: true,
+        },
+      });
+      return updatedOrder;
+    } catch (error) {
+      console.error('Error updating order:', error);
+      return null;
+    }
+  }
+
+  async reportStatusToISTA(order: OrderDto) {
+    // const URL = this.configService.get('ISTA_URL');
+    const URL = "http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl";
+    const soap = require('soap');
+    
+
   }
 }

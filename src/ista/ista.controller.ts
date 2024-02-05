@@ -233,7 +233,7 @@ export class IstaController {
     @Post("/received")
     createNewOrder(@Body() dto: CreateCustomerOrderDTO) {
         console.log("createNewOrder");
-        console.log(dto);
+        console.log(dto);   
         return this.istaService.orderReceived(dto);
     }
 
@@ -348,4 +348,25 @@ export class IstaController {
     deleteOrder(@Param('id', ParseIntPipe) orderId: number){
         return this.istaService.deleteOrder(orderId);
     }
+
+    @Post('/order/cp')
+    closedContractPartner(@Body() dto: ClosedContractPartnerDto){
+        console.log("closedContractPartner", dto);
+        return this.istaService.orderClosedContractPartner(dto.orderId, dto);
+    }
+
+    @Post('/done')
+    done(@Body() dto: OrderDto){
+        console.log("done", dto);
+        return this.istaService.doneOrder(dto.id);
+    }
+
+    @Post('/sync-ista')
+    reportStatusToISTA(@Body() dto: OrderDto){
+        //check the id of status (for example Received id:1)
+        //after that get the parameter and send it via xml 
+        console.log("reportStatus", dto);
+
+    }
+
 }

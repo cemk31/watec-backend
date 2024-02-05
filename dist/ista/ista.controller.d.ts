@@ -1218,4 +1218,24 @@ export declare class IstaController {
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
+    closedContractPartner(dto: ClosedContractPartnerDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        orderstatusType: number;
+        setOn: Date;
+        deficiencyDescription: string;
+        registrationHealthAuthoritiesOn: Date;
+        extraordinaryExpenditureReason: string;
+        orderId: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }, unknown, never> & {}>;
+    done(dto: OrderDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        number: string;
+        remarkExternal: string;
+        createdAt: Date;
+        actualStatus: import(".prisma/client").Status;
+        customerId: number;
+        updatedAt: Date;
+    }, unknown, never> & {}>;
 }

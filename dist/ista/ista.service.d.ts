@@ -2,7 +2,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from './dto';
 import { RejectedDto } from './dto/RejectedDto';
 import { PostponedDto } from './dto/PostponedDto';
-import { Cancelled, ClosedContractPartner, NotPossible, Order, Planned, Postponed } from '@prisma/client';
+import { Cancelled, ClosedContractPartner, NotPossible, Order, Planned, Postponed, Status } from '@prisma/client';
 import { CancelledDto } from './dto/CancelledDto';
 import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
@@ -131,7 +131,7 @@ export declare class IstaService {
         number: string;
         remarkExternal: string;
         createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
+        actualStatus: Status;
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
@@ -254,7 +254,7 @@ export declare class IstaService {
         number: string;
         remarkExternal: string;
         createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
+        actualStatus: Status;
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
@@ -531,7 +531,7 @@ export declare class IstaService {
         number: string;
         remarkExternal: string;
         createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
+        actualStatus: Status;
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {})[]>;
@@ -654,7 +654,7 @@ export declare class IstaService {
         number: string;
         remarkExternal: string;
         createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
+        actualStatus: Status;
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
@@ -836,7 +836,7 @@ export declare class IstaService {
         number: string;
         remarkExternal: string;
         createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
+        actualStatus: Status;
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
@@ -984,7 +984,7 @@ export declare class IstaService {
         number: string;
         remarkExternal: string;
         createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
+        actualStatus: Status;
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
@@ -1032,4 +1032,5 @@ export declare class IstaService {
     orderClosedContractPartner(orderId: number | null, dto: ClosedContractPartnerDto): Promise<ClosedContractPartner | null>;
     updateOrderReceived(orderId: number | null, dto: ReceivedDto): Promise<Order | null>;
     deleteOrder(orderId: number): Promise<Order | null>;
+    doneOrder(orderId: number): Promise<Order | null>;
 }

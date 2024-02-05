@@ -581,6 +581,7 @@ Enum Status {
   REJECTED
   CLOSED
   CANCELLED
+  DONE
 }
 
 Ref: bookmarks.userId > users.id

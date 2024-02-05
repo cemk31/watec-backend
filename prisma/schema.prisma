@@ -685,4 +685,5 @@ enum Status {
   REJECTED
   CLOSED
   CANCELLED
+  DONE
 }

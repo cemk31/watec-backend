@@ -4,7 +4,7 @@
     "description": "",
     "author": "Cem Kanmaz",
     "private": true,
-    "license": "UNLICENSED",
+    "license": "LICENSED",
     "engines": {
         "node": "^20 || ^18",
         "npm": "^10 || ^9"
@@ -36,7 +36,7 @@
         "vercel-build": "prisma generate",
         "heroku-postbuild": "nvm use 20 && npm install -g npm@10.2.5 && npx prisma generate && npm run build",
         "railway:docker:development": "docker build --build-arg NODE_ENV=development -t myapp:dev .",
-        "railway:docker:production": "docker build --build-arg NODE_ENV=production -t myapp:prod .",    
+        "railway:docker:production": "docker build --build-arg NODE_ENV=production -t myapp:prod .",
         "build:digitalocean": "nvm use 20 && npm install --production=false && npm ci --legacy-peer-deps=true && npm run build"
     },
     "dependencies": {
@@ -61,6 +61,7 @@
         "faker": "^5.5.3",
         "heroku": "^8.7.1",
         "json-to-prisma-schema-convertor": "^0.1.0",
+        "nestjs-soap": "^3.0.2",
         "nodemailer": "^6.9.7",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",

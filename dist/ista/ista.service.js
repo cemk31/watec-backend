@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IstaService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const client_1 = require("@prisma/client");
 const config_1 = require("@nestjs/config");
 let IstaService = class IstaService {
     constructor(prisma, configService) {
@@ -25,6 +26,7 @@ let IstaService = class IstaService {
                 data: {
                     number: dto.number,
                     remarkExternal: dto.remarkExternal,
+                    actualStatus: client_1.Status.RECEIVED,
                     Received: {
                         create: (_b = (_a = dto.Received) === null || _a === void 0 ? void 0 : _a.map(received => {
                             var _a, _b;
@@ -326,19 +328,16 @@ let IstaService = class IstaService {
     }
     async orderPostponed(orderId, requestId, dto) {
         try {
-            console.log("orderPostponed: ", dto);
-            console.log("orderID: ", orderId);
-            console.log("requestID: ", requestId);
             await this.prisma.order.update({
                 where: { id: orderId },
                 data: { updatedAt: new Date(),
-                    actualStatus: "POSTPONED" }
+                    actualStatus: client_1.Status.POSTPONED }
             });
             const postponedEntry = await this.prisma.postponed.create({
                 data: {
-                    statusType: dto.statusType,
-                    setOn: dto.setOn,
-                    nextContactAttemptOn: dto.nextContactAttemptOn,
+                    statusType: client_1.Status.POSTPONED || 'POSTPONED',
+                    setOn: dto.setOn || new Date(),
+                    nextContactAttemptOn: dto.nextContactAttemptOn || new Date(),
                     postponedReason: dto.postponedReason,
                     Order: {
                         connect: { id: orderId }
@@ -363,7 +362,7 @@ let IstaService = class IstaService {
             await this.prisma.order.update({
                 where: { id: orderId },
                 data: { updatedAt: new Date(),
-                    actualStatus: "CANCELLED" }
+                    actualStatus: client_1.Status.CANCELLED }
             });
             const cancelledEntry = await this.prisma.cancelled.create({
                 data: {
@@ -397,11 +396,11 @@ let IstaService = class IstaService {
             await this.prisma.order.update({
                 where: { id: orderId },
                 data: { updatedAt: new Date(),
-                    actualStatus: "PLANNED" }
+                    actualStatus: client_1.Status.PLANNED }
             });
             const plannedEntry = await this.prisma.planned.create({
                 data: {
-                    orderstatusType: dto.orderstatusType,
+                    orderstatusType: client_1.Status.PLANNED,
                     setOn: dto.setOn,
                     detailedScheduleDate: dto.detailedScheduleDate,
                     detailedScheduleTimeFrom: dto.detailedScheduleTimeFrom,
@@ -428,13 +427,10 @@ let IstaService = class IstaService {
     }
     async orderNotPossible(orderId, requestId, dto) {
         try {
-            console.log("createNotPossibleEntry: ", dto);
-            console.log("orderID: ", orderId);
-            console.log("requestID: ", requestId);
             await this.prisma.order.update({
                 where: { id: orderId },
                 data: { updatedAt: new Date(),
-                    actualStatus: "NOTPOSSIBLE" }
+                    actualStatus: client_1.Status.NOTPOSSIBLE }
             });
             const notPossibleEntry = await this.prisma.notPossible.create({
                 data: {
@@ -495,15 +491,13 @@ let IstaService = class IstaService {
     }
     async updateOrderReceived(orderId, dto) {
         try {
-            console.log("createReceivedEntry: ", dto);
-            console.log("orderID: ", orderId);
             const receivedEntry = await this.prisma.received.create({
                 data: {
-                    orderstatusType: "RECEIVED",
+                    orderstatusType: client_1.Status.RECEIVED,
                     setOn: dto.setOn,
                     CustomerContact: {
                         create: {
-                            contactAttemptOn: new Date(dto.contactAttemptOn),
+                            contactAttemptOn: (dto === null || dto === void 0 ? void 0 : dto.contactAttemptOn) ? new Date(dto === null || dto === void 0 ? void 0 : dto.contactAttemptOn) : new Date(),
                             contactPersonCustomer: dto === null || dto === void 0 ? void 0 : dto.contactPersonCustomer,
                             agentCP: dto === null || dto === void 0 ? void 0 : dto.agentCP,
                             result: dto === null || dto === void 0 ? void 0 : dto.result,
@@ -517,10 +511,14 @@ let IstaService = class IstaService {
                     } : undefined,
                 },
             });
+            console.log("receivedEntry: ", receivedEntry);
             if (orderId) {
                 const updatedOrder = await this.prisma.order.findUnique({
                     where: { id: orderId },
-                    include: { Received: true }
+                    include: {
+                        Received: true,
+                        CustomerContacts: true
+                    }
                 });
                 return updatedOrder;
             }
@@ -549,6 +547,34 @@ let IstaService = class IstaService {
         catch (error) {
             console.error('Error deleting order:', error);
             throw new Error('Order could not be deleted. Please check for related data.');
+        }
+    }
+    async doneOrder(orderId) {
+        try {
+            const updatedOrder = await this.prisma.order.update({
+                where: { id: orderId },
+                data: {
+                    actualStatus: client_1.Status.DONE,
+                    updatedAt: new Date(),
+                },
+                include: {
+                    status: true,
+                    Received: true,
+                    Planned: true,
+                    CustomerContacts: true,
+                    NotPossible: true,
+                    Postponed: true,
+                    Cancelled: true,
+                    Rejected: true,
+                    ClosedContractPartner: true,
+                    Customer: true,
+                },
+            });
+            return updatedOrder;
+        }
+        catch (error) {
+            console.error('Error updating order:', error);
+            return null;
         }
     }
 };
