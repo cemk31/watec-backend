@@ -300,6 +300,9 @@ let IstaController = class IstaController {
         console.log("done", dto);
         return this.istaService.doneOrder(dto.id);
     }
+    reportStatusToISTA(dto) {
+        console.log("reportStatus", dto);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -432,6 +435,13 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.OrderDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "done", null);
+__decorate([
+    (0, common_1.Post)('/sync-ista'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.OrderDto]),
+    __metadata("design:returntype", void 0)
+], IstaController.prototype, "reportStatusToISTA", null);
 IstaController = __decorate([
     (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, swagger_1.ApiTags)('ISTA API'),

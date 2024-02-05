@@ -1238,4 +1238,5 @@ export declare class IstaController {
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
+    reportStatusToISTA(dto: OrderDto): void;
 }

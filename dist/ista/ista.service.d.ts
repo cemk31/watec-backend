@@ -1033,4 +1033,5 @@ export declare class IstaService {
     updateOrderReceived(orderId: number | null, dto: ReceivedDto): Promise<Order | null>;
     deleteOrder(orderId: number): Promise<Order | null>;
     doneOrder(orderId: number): Promise<Order | null>;
+    reportStatusToISTA(order: OrderDto): Promise<void>;
 }

@@ -577,6 +577,10 @@ let IstaService = class IstaService {
             return null;
         }
     }
+    async reportStatusToISTA(order) {
+        const URL = "http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl";
+        const soap = require('soap');
+    }
 };
 IstaService = __decorate([
     (0, common_1.Injectable)(),
