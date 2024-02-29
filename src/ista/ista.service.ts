@@ -220,7 +220,20 @@ export class IstaService {
         Postponed: true,
         Cancelled: true,
         Rejected: true,
-        ClosedContractPartner: true,
+        ClosedContractPartner: {
+          include: {
+            recordedSystem: 
+            {
+              include: {
+                property: true, // include Property related to recordedSystem
+                drinkingWaterFacility: true, // include DrinkingWaterFacility related to recordedSystem
+                services: true, // include Service related to recordedSystem
+              },
+            },
+            suppliedDocuments: true, // include Request related to ClosedContractPartner
+            ReportOrderStatusRequest: true,
+          },
+        },
         Customer: true,
       },
     });
@@ -494,7 +507,7 @@ export class IstaService {
       await this.prisma.order.update({
         where: { id: orderId },
         data: { updatedAt: new Date(),
-                actualStatus: "CLOSED" }
+                actualStatus: Status.CLOSEDCONTRACTPARTNER }
       });
 
       const closedContractPartnerEntry = await this.prisma.closedContractPartner.create({
@@ -509,22 +522,13 @@ export class IstaService {
               id: orderId,
             },
           } : undefined,
-          // Für die nachfolgenden Beziehungen könnten Sie zusätzliche Logik hinzufügen, um sie je nach den in dto übergebenen Daten zu verbinden oder zu erstellen
-          Contact: {
-            // ... (Logik zum Verbinden oder Erstellen von Kontakten)
-          },
-          recordedSystem: {
-            // ... (Logik zum Verbinden oder Erstellen von recordedSystem Einträgen)
-          },
-          ReportOrderStatusRequest: {
-            // ... (Logik zum Verbinden oder Erstellen von ReportOrderStatusRequest Einträgen)
-          },
-          suppliedDocuments: {
-            // ... (Logik zum Verbinden oder Erstellen von suppliedDocuments Einträgen)
-          },
-          CustomerContact: {
-            // ... (Logik zum Verbinden oder Erstellen von CustomerContact Einträgen)
-          },
+        },
+      });
+
+      this.prisma.suppliedDocuments.create({
+        data: {
+          closedContractPartnerId: closedContractPartnerEntry.id,
+          documentId: dto.suppliedDocuments[0].documentId,
         },
       });
   
@@ -608,6 +612,7 @@ export class IstaService {
 
   async doneOrder(orderId: number): Promise<Order | null> {
     try {
+      console.log('Updating order with id:', orderId);
       const updatedOrder = await this.prisma.order.update({
         where: { id: orderId },
         data: {
@@ -638,7 +643,6 @@ export class IstaService {
     // const URL = this.configService.get('ISTA_URL');
     const URL = "http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl";
     const soap = require('soap');
-    
-
+  
   }
 }

@@ -12,6 +12,7 @@ import { PostponedDto } from "./dto/PostponedDto";
 import { CancelledDto } from "./dto/CancelledDto";
 import { NotPossibleDto } from "./dto/NotPossibleDto";
 import { ClosedContractPartnerDto } from "./dto/ClosedContractPartnerDto";
+import { DoneDto } from "src/auftrag/dto/create-done.dto";
 
 @UseGuards(JwtGuard)
 @ApiTags('ISTA API')
@@ -154,7 +155,7 @@ export class IstaController {
                 suppliedDocuments: [],
                 recordedSystem: [],
                 reportOrderStatusRequest: [], // Assuming this is an array of DTOs
-                
+                customerContacts: [] // Add the missing property
             }
         ],
 
@@ -349,16 +350,20 @@ export class IstaController {
         return this.istaService.deleteOrder(orderId);
     }
 
-    @Post('/order/cp')
+    @Post('/cp')
     closedContractPartner(@Body() dto: ClosedContractPartnerDto){
-        console.log("closedContractPartner", dto);
-        return this.istaService.orderClosedContractPartner(dto.orderId, dto);
+        const closedContractPartner = this.istaService.orderClosedContractPartner(dto.orderId, dto);
+        console.log("closedContractPartner", closedContractPartner);
+        if (closedContractPartner !== null) {
+            return this.closedContractPartner;
+        }
+
     }
 
     @Post('/done')
-    done(@Body() dto: OrderDto){
+    done(@Body() dto: DoneDto){
         console.log("done", dto);
-        return this.istaService.doneOrder(dto.id);
+        return this.istaService.doneOrder(dto.orderId);
     }
 
     @Post('/sync-ista')

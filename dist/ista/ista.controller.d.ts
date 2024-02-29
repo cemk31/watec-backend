@@ -6,6 +6,7 @@ import { PostponedDto } from "./dto/PostponedDto";
 import { CancelledDto } from "./dto/CancelledDto";
 import { NotPossibleDto } from "./dto/NotPossibleDto";
 import { ClosedContractPartnerDto } from "./dto/ClosedContractPartnerDto";
+import { DoneDto } from "src/auftrag/dto/create-done.dto";
 export declare class IstaController {
     private istaService;
     mockOrderDto: OrderDto;
@@ -1023,7 +1024,70 @@ export declare class IstaController {
             createdAt: Date;
             updatedAt: Date;
         }, unknown, never> & {})[];
-        ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
+        ClosedContractPartner: ({
+            recordedSystem: ({
+                property: import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    hotwatersupplyType_central: boolean;
+                    hotwatersupplyType_decentral: boolean;
+                }, unknown, never> & {};
+                drinkingWaterFacility: import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    consecutiveNumber: number;
+                    usageType: string;
+                    usageTypeOthers: string;
+                    numberSuppliedUnits: number;
+                    numberDrinkingWaterHeater: number;
+                    totalVolumeLitres: number;
+                    pipingSystemType_Circulation: boolean;
+                    pipingSystemType_Waterbranchline: boolean;
+                    pipingSystemType_Pipetraceheater: boolean;
+                    pipingVolumeGr3Litres: boolean;
+                    deadPipeKnown: boolean;
+                    deadPipesPosition: string;
+                    numberAscendingPipes: number;
+                    aerosolformation: boolean;
+                    explanation: string;
+                    numberSuppliedPersons: number;
+                    pipeworkSchematicsAvailable: boolean;
+                    numberColdWaterLegs: number;
+                    numberHotWaterLegs: number;
+                    temperatureCirculationDWH_A: number;
+                    temperatureCirculationDWH_B: number;
+                    heatExchangerSystem_central: boolean;
+                    heatExchangerSystem_districtheating: boolean;
+                    heatExchangerSystem_continuousflowprinciple: boolean;
+                }, unknown, never> & {};
+                services: (import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    articleNumber_ista: number;
+                    quantity: number;
+                    unit: string;
+                    extraordinaryExpenditure: boolean;
+                    purchasePrice_ista: number;
+                    warranty: boolean;
+                    addressId: number;
+                    recordedSystemId: number;
+                }, unknown, never> & {})[];
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                closedContractPartnerId: number;
+                drinkingWaterFacilityId: number;
+                propertyId: number;
+            }, unknown, never> & {})[];
+            suppliedDocuments: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                closedContractPartnerId: number;
+                documentId: number;
+            }, unknown, never> & {})[];
+            ReportOrderStatusRequest: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                closedContractPartnerId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             orderstatusType: number;
             setOn: Date;
@@ -1218,18 +1282,8 @@ export declare class IstaController {
         customerId: number;
         updatedAt: Date;
     }, unknown, never> & {}>;
-    closedContractPartner(dto: ClosedContractPartnerDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        orderstatusType: number;
-        setOn: Date;
-        deficiencyDescription: string;
-        registrationHealthAuthoritiesOn: Date;
-        extraordinaryExpenditureReason: string;
-        orderId: number;
-        createdAt: Date;
-        updatedAt: Date;
-    }, unknown, never> & {}>;
-    done(dto: OrderDto): Promise<import("@prisma/client/runtime").GetResult<{
+    closedContractPartner(dto: ClosedContractPartnerDto): (dto: ClosedContractPartnerDto) => any;
+    done(dto: DoneDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         number: string;
         remarkExternal: string;

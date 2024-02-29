@@ -215,7 +215,19 @@ let IstaService = class IstaService {
                 Postponed: true,
                 Cancelled: true,
                 Rejected: true,
-                ClosedContractPartner: true,
+                ClosedContractPartner: {
+                    include: {
+                        recordedSystem: {
+                            include: {
+                                property: true,
+                                drinkingWaterFacility: true,
+                                services: true,
+                            },
+                        },
+                        suppliedDocuments: true,
+                        ReportOrderStatusRequest: true,
+                    },
+                },
                 Customer: true,
             },
         });
@@ -461,7 +473,7 @@ let IstaService = class IstaService {
             await this.prisma.order.update({
                 where: { id: orderId },
                 data: { updatedAt: new Date(),
-                    actualStatus: "CLOSED" }
+                    actualStatus: client_1.Status.CLOSEDCONTRACTPARTNER }
             });
             const closedContractPartnerEntry = await this.prisma.closedContractPartner.create({
                 data: {
@@ -475,11 +487,12 @@ let IstaService = class IstaService {
                             id: orderId,
                         },
                     } : undefined,
-                    Contact: {},
-                    recordedSystem: {},
-                    ReportOrderStatusRequest: {},
-                    suppliedDocuments: {},
-                    CustomerContact: {},
+                },
+            });
+            this.prisma.suppliedDocuments.create({
+                data: {
+                    closedContractPartnerId: closedContractPartnerEntry.id,
+                    documentId: dto.suppliedDocuments[0].documentId,
                 },
             });
             return closedContractPartnerEntry;
@@ -551,6 +564,7 @@ let IstaService = class IstaService {
     }
     async doneOrder(orderId) {
         try {
+            console.log('Updating order with id:', orderId);
             const updatedOrder = await this.prisma.order.update({
                 where: { id: orderId },
                 data: {

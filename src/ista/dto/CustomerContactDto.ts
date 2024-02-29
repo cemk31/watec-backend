@@ -4,7 +4,7 @@
   export class CustomerContactDto {
     
     @ApiProperty({ example: '2023-01-01T00:00:00Z' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     contactAttemptOn: Date;
 

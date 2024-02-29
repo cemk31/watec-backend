@@ -6,7 +6,7 @@ import { DocumentDto, IDocument } from "./DocumentDto";
 
 export class SuppliedDocumentsDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     id: number;
   

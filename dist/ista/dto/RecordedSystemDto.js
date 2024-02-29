@@ -20,13 +20,13 @@ class RecordedSystemDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], RecordedSystemDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ type: () => DrinkingWaterFacilityDto_1.DrinkingWaterFacilityDto }),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", DrinkingWaterFacilityDto_1.DrinkingWaterFacilityDto)
 ], RecordedSystemDto.prototype, "drinkingWaterFacility", void 0);
 __decorate([
@@ -36,7 +36,7 @@ __decorate([
 ], RecordedSystemDto.prototype, "property", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ type: () => [ServiceDto_1.ServiceDto] }),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], RecordedSystemDto.prototype, "services", void 0);
 __decorate([

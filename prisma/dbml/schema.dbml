@@ -220,7 +220,7 @@ Table ClosedContractPartner {
   orderstatusType Int
   setOn DateTime [default: `now()`]
   deficiencyDescription String
-  registrationHealthAuthoritiesOn DateTime
+  registrationHealthAuthoritiesOn DateTime [default: `now()`]
   extraordinaryExpenditureReason String
   orderId Int
   order Order
@@ -582,6 +582,7 @@ Enum Status {
   CLOSED
   CANCELLED
   DONE
+  CLOSEDCONTRACTPARTNER
 }
 
 Ref: bookmarks.userId > users.id

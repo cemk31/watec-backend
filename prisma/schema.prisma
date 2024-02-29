@@ -279,7 +279,7 @@ model ClosedContractPartner {
   orderstatusType                 Int?
   setOn                           DateTime?                  @default(now())
   deficiencyDescription           String?
-  registrationHealthAuthoritiesOn DateTime?
+  registrationHealthAuthoritiesOn DateTime?                  @default(now())
   extraordinaryExpenditureReason  String?
   
   orderId                         Int?
@@ -686,4 +686,5 @@ enum Status {
   CLOSED
   CANCELLED
   DONE
+  CLOSEDCONTRACTPARTNER
 }

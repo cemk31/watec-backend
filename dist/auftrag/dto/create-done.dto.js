@@ -9,36 +9,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CustomerContactDto = void 0;
-const swagger_1 = require("@nestjs/swagger");
+exports.DoneDto = void 0;
 const class_validator_1 = require("class-validator");
-class CustomerContactDto {
+class DoneDto {
 }
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '2023-01-01T00:00:00Z' }),
+    (0, class_validator_1.IsInt)(),
+    __metadata("design:type", Number)
+], DoneDto.prototype, "orderId", void 0);
+__decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsDate)(),
-    __metadata("design:type", Date)
-], CustomerContactDto.prototype, "contactAttemptOn", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CustomerContactDto.prototype, "contactPersonCustomer", void 0);
+], DoneDto.prototype, "orderstatusType", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CustomerContactDto.prototype, "agentCP", void 0);
+], DoneDto.prototype, "executionOnSiteDoneReason", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CustomerContactDto.prototype, "result", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CustomerContactDto.prototype, "remark", void 0);
-exports.CustomerContactDto = CustomerContactDto;
-//# sourceMappingURL=CustomerContactDto.js.map
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], DoneDto.prototype, "done", void 0);
+exports.DoneDto = DoneDto;
+//# sourceMappingURL=create-done.dto.js.map

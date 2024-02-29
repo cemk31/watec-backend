@@ -9,64 +9,61 @@ import { CustomerContactDto } from "./CustomerContactDto";
 
 export class ClosedContractPartnerDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     id: number;
   
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
     orderId: number;
-  
-    @ApiProperty({ example: 20 })
-    @IsNotEmpty()
+    
+    @ApiProperty({ example: 40 })
     @IsNumber()
-    orderstatusType: number;
-  
+    @IsOptional()
+    orderstatusType: number = 40;
+    
     @ApiProperty({ example: '2023-06-16' })
-    @IsNotEmpty()
+    @IsOptional()
     @IsDate()
     @Type(() => Date)
-    setOn: Date;
-  
-    // @ApiProperty({ type: () => [CustomerContactDto] })
-    // @IsNotEmpty()
-    // @IsArray()
-    // customerContacts: CustomerContactDto[]; 
+    setOn: Date = new Date();
+    
+    @ApiProperty({ type: () => [CustomerContactDto] })
+    @IsOptional()
+    @IsArray()
+    customerContacts: CustomerContactDto[]; 
   
     @ApiProperty({ example: 'Deficiency Description' })
     @IsOptional()
     @IsString()
     deficiencyDescription?: string;
-  
-    @ApiProperty({ example: '2023-06-16' })
-    @IsOptional()
-    @IsDate()
-    @Type(() => Date)
-    registrationHealthAuthoritiesOn?: Date;
-  
+
     @ApiProperty({ example: 'Expenditure Reason' })
     @IsOptional()
     @IsString()
     extraordinaryExpenditureReason?: string;
-  
+
     @ApiProperty({ })
-    @IsNotEmpty()
+    @IsOptional()
     @Type(() => SuppliedDocumentsDto)
     suppliedDocuments: SuppliedDocumentsDto[];
-  
-    @ApiProperty({ })
-    @IsNotEmpty()
-    @Type(() => RecordedSystemDto)
+    
+    @ApiProperty({ example: '2023-06-16' })
+    @IsOptional()
+    @IsDate()
+    @Type(() => Date)
+    registrationHealthAuthoritiesOn: Date;
+    
+    @ApiProperty({ type: () => [RecordedSystemDto] })
+    @IsOptional()
     recordedSystem: RecordedSystemDto[];
   
-    @ApiProperty({ })
-    @IsNotEmpty()
-    @Type(() => ReportOrderStatusRequestDto)
+    @ApiProperty({ type: () => [ReportOrderStatusRequestDto] })
+    @IsOptional()
     reportOrderStatusRequest: ReportOrderStatusRequestDto[];
 
     @ApiProperty({ type: [ContactDto] })
-    @IsNotEmpty()
-    @Type(() => ContactDto)
+    @IsOptional()
     contact: ContactDto[];
   }
