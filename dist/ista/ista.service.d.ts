@@ -808,8 +808,9 @@ export declare class IstaService {
                     id: number;
                     hotwatersupplyType_central: boolean;
                     hotwatersupplyType_decentral: boolean;
+                    recordedSystemId: number;
                 }, unknown, never> & {};
-                drinkingWaterFacility: import("@prisma/client/runtime").GetResult<{
+                drinkingWaterFacility: (import("@prisma/client/runtime").GetResult<{
                     id: number;
                     consecutiveNumber: number;
                     usageType: string;
@@ -835,7 +836,8 @@ export declare class IstaService {
                     heatExchangerSystem_central: boolean;
                     heatExchangerSystem_districtheating: boolean;
                     heatExchangerSystem_continuousflowprinciple: boolean;
-                }, unknown, never> & {};
+                    recordedSystemId: number;
+                }, unknown, never> & {})[];
                 services: (import("@prisma/client/runtime").GetResult<{
                     id: number;
                     articleNumber_ista: number;
@@ -850,8 +852,6 @@ export declare class IstaService {
             } & import("@prisma/client/runtime").GetResult<{
                 id: number;
                 closedContractPartnerId: number;
-                drinkingWaterFacilityId: number;
-                propertyId: number;
             }, unknown, never> & {})[];
             suppliedDocuments: (import("@prisma/client/runtime").GetResult<{
                 id: number;

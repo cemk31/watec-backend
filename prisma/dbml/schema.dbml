@@ -250,11 +250,9 @@ Table Document {
 
 Table RecordedSystem {
   id Int [pk, increment]
-  closedContractPartnerId Int
+  closedContractPartnerId Int [increment, unique]
   ClosedContractPartner ClosedContractPartner
-  drinkingWaterFacilityId Int
-  drinkingWaterFacility DrinkingWaterFacility
-  propertyId Int
+  drinkingWaterFacility DrinkingWaterFacility [not null]
   property Property
   services Service [not null]
 }
@@ -263,7 +261,8 @@ Table Property {
   id Int [pk, increment]
   hotwatersupplyType_central Boolean [not null]
   hotwatersupplyType_decentral Boolean [not null]
-  RecordedSystem RecordedSystem [not null]
+  recordedSystemId Int [unique]
+  recordedSystem RecordedSystem
 }
 
 Table Service {
@@ -282,7 +281,7 @@ Table Service {
 
 Table DrinkingWaterFacility {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
+  consecutiveNumber Int
   usageType String
   usageTypeOthers String
   numberSuppliedUnits Int
@@ -308,7 +307,8 @@ Table DrinkingWaterFacility {
   heatExchangerSystem_continuousflowprinciple Boolean
   ascendingPipes AscendingPipe [not null]
   drinkingWaterHeaters DrinkingWaterHeater [not null]
-  RecordedSystem RecordedSystem [not null]
+  recordedSystemId Int [unique]
+  RecordedSystem RecordedSystem
   samplingPoints SamplingPoint [not null]
 }
 
@@ -629,13 +629,13 @@ Ref: SuppliedDocuments.documentId > Document.id
 
 Ref: RecordedSystem.closedContractPartnerId > ClosedContractPartner.id
 
-Ref: RecordedSystem.drinkingWaterFacilityId > DrinkingWaterFacility.id
-
-Ref: RecordedSystem.propertyId > Property.id
+Ref: Property.recordedSystemId - RecordedSystem.id
 
 Ref: Service.addressId > Address.id
 
 Ref: Service.recordedSystemId > RecordedSystem.id
+
+Ref: DrinkingWaterFacility.recordedSystemId > RecordedSystem.id
 
 Ref: DrinkingWaterHeater.drinkingWaterFacilityId > DrinkingWaterFacility.id
 

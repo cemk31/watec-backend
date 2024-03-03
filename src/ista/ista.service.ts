@@ -614,99 +614,101 @@ export class IstaService {
             recordedSystem: {
               create:
                 dto.recordedSystem?.map((rs) => ({
-                  drinkingWaterFacility: {
-                    create:
-                      rs.drinkingWaterFacility?.map((dwf) => ({
-                        data: {
-                          consecutiveNumber: dwf?.consecutiveNumber,
-                          usageType: dwf?.usageType,
-                          usageTypeOthers: dwf?.usageTypeOthers,
-                          numberSuppliedUnits: dwf?.numberSuppliedUnits,
-                          numberDrinkingWaterHeater:
-                            dwf?.numberDrinkingWaterHeater,
-                          totalVolumeLitres: dwf?.totalVolumeLitres,
-                          pipingSystemType_Circulation:
-                            dwf?.pipingSystemType_Circulation,
-                          pipingSystemType_Waterbranchline:
-                            dwf?.pipingSystemType_Waterbranchline,
-                          pipingSystemType_Pipetraceheater:
-                            dwf?.pipingSystemType_Pipetraceheater,
-                          pipingVolumeGr3Litres: dwf?.pipingVolumeGr3Litres,
-                          deadPipeKnown: dwf?.deadPipeKnown,
-                          deadPipesPosition: dwf?.deadPipesPosition,
-                          numberAscendingPipes: dwf?.numberAscendingPipes,
-                          explanation: dwf?.explanation,
-                          numberSuppliedPersons: dwf?.numberSuppliedPersons,
-                          aerosolformation: dwf?.aerosolformation,
-                          pipeworkSchematicsAvailable:
-                            dwf?.pipeworkSchematicsAvailable,
-                          numberColdWaterLegs: dwf?.numberColdWaterLegs,
-                          numberHotWaterLegs: dwf?.numberHotWaterLegs,
-                          temperatureCirculationDWH_A:
-                            dwf?.temperatureCirculationDWH_A,
-                          temperatureCirculationDWH_B:
-                            dwf?.temperatureCirculationDWH_B,
-                          heatExchangerSystem_central:
-                            dwf?.heatExchangerSystem_central,
-                          heatExchangerSystem_districtheating:
-                            dwf?.heatExchangerSystem_districtheating,
-                          heatExchangerSystem_continuousflowprinciple:
-                            dwf?.heatExchangerSystem_continuousflowprinciple,
-                          samplingPoints:
-                            dwf?.samplingPoints?.map((sp) => ({
-                              consecutiveNumber: sp?.consecutiveNumber,
-                              installationNumber: sp?.installationNumber,
-                              numberObjectInstallationLocation:
-                                sp?.numberObjectInstallationLocation,
-                              pipingSystemType: sp?.pipingSystemType,
-                              remoteSamplingPoint: sp?.remoteSamplingPoint,
-                              roomType: sp?.roomType,
-                              roomPosition: sp?.roomPosition,
-                              positionDetail: sp?.positionDetail,
-                            })) ?? [ SamplingPointDto ],
-                          ascendingPipes:
-                            dwf?.ascendingPipes?.map((ap) => ({
-                              consecutiveNumber: ap?.consecutiveNumber,
-                              ascendingPipeTemperatureDisplayPresent:
-                                ap?.ascendingPipeTemperatureDisplayPresent,
-                              flowTemperature: ap?.flowTemperature,
-                              circulationTemperatureDisplayPresent:
-                                ap?.circulationTemperatureDisplayPresent,
-                              circulationTemperature:
-                                ap?.circulationTemperature,
-                              pipeDiameter: ap?.pipeDiameter,
-                              pipeMaterialtype: ap?.pipeMaterialtype,
-                            })) ?? [ AscendingPipeDto ],
-                          drinkingWaterHeaters:
-                            dwf?.drinkingWaterHeaters?.map((dwh) => ({
-                              consecutiveNumber: dwh?.consecutiveNumber,
-                              inletTemperatureDisplayPresent:
-                                dwh?.inletTemperatureDisplayPresent,
-                              inletTemperature: dwh?.inletTemperature,
-                              outletTemperatureDisplayPresent:
-                                dwh?.outletTemperatureDisplayPresent,
-                              outletTemperature: dwh?.outletTemperature,
-                              pipeDiameterOutlet: dwh?.pipeDiameterOutlet,
-                              pipeMaterialtypeOutlet:
-                                dwh?.pipeMaterialtypeOutlet,
-                              volumeLitre: dwh?.volumeLitre,
-                              roomType: dwh?.roomType,
-                              roomPosition: dwh?.roomPosition,
-                              positionDetail: dwh?.positionDetail,
-                              unit: {
-                                create: {
-                                  floor: dwh?.unit?.floor,
-                                  storey: dwh?.unit?.storey,
-                                  position: dwh?.unit?.position,
-                                  userName: dwh?.unit?.userName,
-                                  generalUnit: dwh?.unit?.generalUnit,
-                                  buildingId: dwh?.unit?.buildingId,
+                  drinkingWaterFacility:
+                    {
+                      create: [
+                        rs.drinkingWaterFacility?.map((dwf) => ({
+                          data: {
+                            consecutiveNumber: dwf?.consecutiveNumber,
+                            usageType: dwf?.usageType,
+                            usageTypeOthers: dwf?.usageTypeOthers,
+                            numberSuppliedUnits: dwf?.numberSuppliedUnits,
+                            numberDrinkingWaterHeater:
+                              dwf?.numberDrinkingWaterHeater,
+                            totalVolumeLitres: dwf?.totalVolumeLitres,
+                            pipingSystemType_Circulation:
+                              dwf?.pipingSystemType_Circulation,
+                            pipingSystemType_Waterbranchline:
+                              dwf?.pipingSystemType_Waterbranchline,
+                            pipingSystemType_Pipetraceheater:
+                              dwf?.pipingSystemType_Pipetraceheater,
+                            pipingVolumeGr3Litres: dwf?.pipingVolumeGr3Litres,
+                            deadPipeKnown: dwf?.deadPipeKnown,
+                            deadPipesPosition: dwf?.deadPipesPosition,
+                            numberAscendingPipes: dwf?.numberAscendingPipes,
+                            explanation: dwf?.explanation,
+                            numberSuppliedPersons: dwf?.numberSuppliedPersons,
+                            aerosolformation: dwf?.aerosolformation,
+                            pipeworkSchematicsAvailable:
+                              dwf?.pipeworkSchematicsAvailable,
+                            numberColdWaterLegs: dwf?.numberColdWaterLegs,
+                            numberHotWaterLegs: dwf?.numberHotWaterLegs,
+                            temperatureCirculationDWH_A:
+                              dwf?.temperatureCirculationDWH_A,
+                            temperatureCirculationDWH_B:
+                              dwf?.temperatureCirculationDWH_B,
+                            heatExchangerSystem_central:
+                              dwf?.heatExchangerSystem_central,
+                            heatExchangerSystem_districtheating:
+                              dwf?.heatExchangerSystem_districtheating,
+                            heatExchangerSystem_continuousflowprinciple:
+                              dwf?.heatExchangerSystem_continuousflowprinciple,
+                            samplingPoints:
+                              dwf?.samplingPoints?.map((sp) => ({
+                                consecutiveNumber: sp?.consecutiveNumber,
+                                installationNumber: sp?.installationNumber,
+                                numberObjectInstallationLocation:
+                                  sp?.numberObjectInstallationLocation,
+                                pipingSystemType: sp?.pipingSystemType,
+                                remoteSamplingPoint: sp?.remoteSamplingPoint,
+                                roomType: sp?.roomType,
+                                roomPosition: sp?.roomPosition,
+                                positionDetail: sp?.positionDetail,
+                              })) ?? [ SamplingPointDto ],
+                            ascendingPipes:
+                              dwf?.ascendingPipes?.map((ap) => ({
+                                consecutiveNumber: ap?.consecutiveNumber,
+                                ascendingPipeTemperatureDisplayPresent:
+                                  ap?.ascendingPipeTemperatureDisplayPresent,
+                                flowTemperature: ap?.flowTemperature,
+                                circulationTemperatureDisplayPresent:
+                                  ap?.circulationTemperatureDisplayPresent,
+                                circulationTemperature:
+                                  ap?.circulationTemperature,
+                                pipeDiameter: ap?.pipeDiameter,
+                                pipeMaterialtype: ap?.pipeMaterialtype,
+                              })) ?? [ AscendingPipeDto ],
+                            drinkingWaterHeaters:
+                              dwf?.drinkingWaterHeaters?.map((dwh) => ({
+                                consecutiveNumber: dwh?.consecutiveNumber,
+                                inletTemperatureDisplayPresent:
+                                  dwh?.inletTemperatureDisplayPresent,
+                                inletTemperature: dwh?.inletTemperature,
+                                outletTemperatureDisplayPresent:
+                                  dwh?.outletTemperatureDisplayPresent,
+                                outletTemperature: dwh?.outletTemperature,
+                                pipeDiameterOutlet: dwh?.pipeDiameterOutlet,
+                                pipeMaterialtypeOutlet:
+                                  dwh?.pipeMaterialtypeOutlet,
+                                volumeLitre: dwh?.volumeLitre,
+                                roomType: dwh?.roomType,
+                                roomPosition: dwh?.roomPosition,
+                                positionDetail: dwh?.positionDetail,
+                                unit: {
+                                  create: {
+                                    floor: dwh?.unit?.floor,
+                                    storey: dwh?.unit?.storey,
+                                    position: dwh?.unit?.position,
+                                    userName: dwh?.unit?.userName,
+                                    generalUnit: dwh?.unit?.generalUnit,
+                                    buildingId: dwh?.unit?.buildingId,
+                                  },
                                 },
-                              },
-                            })) ?? [ DrinkingWaterHeaterDto ],
-                        },
-                      })) ?? [ DrinkingWaterFacilityDto ],
-                  },
+                              })),
+                          },
+                        })),
+                      ],
+                    },
                   property: {
                     create: {
                       hotwatersupplyType_central:
@@ -715,26 +717,30 @@ export class IstaService {
                         rs?.property?.hotwatersupplyType_decentral,
                     },
                   },
-                  services: {
-                    create: rs?.services.map((s) => ({
-                      articleNumber_ista: s?.articleNumber_ista,
-                      quantity: s?.quantity,
-                      unit: s?.unit,
-                      extraordinaryExpenditure: s?.extraordinaryExpenditure,
-                      purchasePrice_ista: s?.purchasePrice_ista,
-                      warranty: s?.warranty,
-                      serviceRenderedIn: {
-                        create: {
-                          street: s?.serviceRenderedIn?.street,
-                          streetnumber: s?.serviceRenderedIn?.streetnumber,
-                          postcode: s?.serviceRenderedIn?.postcode,
-                          city: s?.serviceRenderedIn?.city,
-                          country: s?.serviceRenderedIn?.country,
+                  services:
+                    {
+                      create: rs?.services?.map((s) => ({
+                        articleNumber_ista: s?.articleNumber_ista,
+                        quantity: s?.quantity,
+                        unit: s?.unit,
+                        extraordinaryExpenditure: s?.extraordinaryExpenditure,
+                        purchasePrice_ista: s?.purchasePrice_ista,
+                        warranty: s?.warranty,
+                        serviceRenderedIn: {
+                          create: {
+                            street: s?.serviceRenderedIn?.street,
+                            streetnumber: s?.serviceRenderedIn?.streetnumber,
+                            postcode: s?.serviceRenderedIn?.postcode,
+                            city: s?.serviceRenderedIn?.city,
+                            country: s?.serviceRenderedIn?.country,
+                          },
                         },
-                      },
-                    })),
-                  },
+                      })),
+                    },
+                  
                 })) ?? [ undefined ],
+              
+
             },
           },
         });

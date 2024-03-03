@@ -315,14 +315,12 @@ model Document {
 model RecordedSystem {
   id                      Int                    @id @default(autoincrement())
   
-  closedContractPartnerId Int?
+  closedContractPartnerId Int?                   @default(autoincrement()) @unique
   ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
   
-  drinkingWaterFacilityId Int?
-  drinkingWaterFacility   DrinkingWaterFacility?  @relation(fields: [drinkingWaterFacilityId], references: [id])
+  drinkingWaterFacility   DrinkingWaterFacility[]
   
-  propertyId              Int?
-  property                Property?              @relation(fields: [propertyId], references: [id])
+  property                Property?
   
   services                Service[]
 }
@@ -331,7 +329,9 @@ model Property {
   id                           Int              @id @default(autoincrement())
   hotwatersupplyType_central   Boolean
   hotwatersupplyType_decentral Boolean
-  RecordedSystem               RecordedSystem[]
+
+  recordedSystemId             Int?            @unique
+  recordedSystem               RecordedSystem? @relation(fields: [recordedSystemId], references: [id])
 }
 
 model Service {
@@ -350,7 +350,7 @@ model Service {
 
 model DrinkingWaterFacility {
   id                                          Int                   @id @default(autoincrement())
-  consecutiveNumber                           Int
+  consecutiveNumber                           Int?
   usageType                                   String?
   usageTypeOthers                             String?
   numberSuppliedUnits                         Int?
@@ -376,7 +376,11 @@ model DrinkingWaterFacility {
   heatExchangerSystem_continuousflowprinciple Boolean?
   ascendingPipes                              AscendingPipe[]
   drinkingWaterHeaters                        DrinkingWaterHeater[]
-  RecordedSystem                              RecordedSystem[]
+
+  recordedSystemId                            Int?                  @unique
+  RecordedSystem                              RecordedSystem?       @relation(fields: [recordedSystemId], references: [id])
+
+
   samplingPoints                              SamplingPoint[]
 }
 
