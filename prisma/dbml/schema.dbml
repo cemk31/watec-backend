@@ -314,7 +314,7 @@ Table DrinkingWaterFacility {
 
 Table DrinkingWaterHeater {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
+  consecutiveNumber Int
   inletTemperatureDisplayPresent Boolean
   inletTemperature Int
   outletTemperatureDisplayPresent Boolean
@@ -333,13 +333,13 @@ Table DrinkingWaterHeater {
 
 Table AscendingPipe {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
-  ascendingPipeTemperatureDisplayPresent Boolean [not null]
+  consecutiveNumber Int
+  ascendingPipeTemperatureDisplayPresent Boolean
   flowTemperature Int
-  circulationTemperatureDisplayPresent Boolean [not null]
+  circulationTemperatureDisplayPresent Boolean
   circulationTemperature Int
-  pipeDiameter String [not null]
-  pipeMaterialtype String [not null]
+  pipeDiameter String
+  pipeMaterialtype String
   drinkingWaterFacilityId Int [not null]
   DrinkingWaterFacility DrinkingWaterFacility [not null]
 }
@@ -358,7 +358,7 @@ Table SamplingPoint {
   remoteSamplingPoint Boolean
   roomType String
   roomPosition Int
-  positionDetail String [not null]
+  positionDetail String
   unitId Int [not null]
   drinkingWaterFacilityId Int [not null]
   samplingPointsId Int
@@ -369,11 +369,11 @@ Table SamplingPoint {
 
 Table Unit {
   id Int [pk, increment]
-  floor Int [not null]
-  storey String [not null]
+  floor Int
+  storey String
   position Int
   userName String
-  generalUnit Boolean [not null]
+  generalUnit Boolean
   buildingId Int [not null]
   DrinkingWaterHeater DrinkingWaterHeater [not null]
   SamplingPoint SamplingPoint [not null]
@@ -392,8 +392,8 @@ Table Address {
   street String [not null]
   streetnumber String
   houseNumber String
-  postcode String [not null]
-  city String [not null]
+  postcode String
+  city String
   country String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]

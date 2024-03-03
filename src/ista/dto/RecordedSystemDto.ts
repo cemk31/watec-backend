@@ -11,9 +11,9 @@ export class RecordedSystemDto {
     @IsInt()
     id: number;
   
-    @ApiProperty({ type: () => DrinkingWaterFacilityDto })
+    @ApiProperty({ type: () => [DrinkingWaterFacilityDto] })
     @IsOptional()
-    drinkingWaterFacility: DrinkingWaterFacilityDto;
+    drinkingWaterFacility: DrinkingWaterFacilityDto[];
   
     @ApiProperty({ type: () => PropertyDto })
     @IsOptional()
@@ -21,7 +21,7 @@ export class RecordedSystemDto {
   
     @ApiProperty({ type: () => [ServiceDto] })
     @IsOptional()
-    services: ServiceDto[];
+    services?: ServiceDto[];
   
     @ApiProperty({ type: () => ClosedContractPartnerDto })
     @IsOptional()

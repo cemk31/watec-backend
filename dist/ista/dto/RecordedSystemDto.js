@@ -25,9 +25,9 @@ __decorate([
     __metadata("design:type", Number)
 ], RecordedSystemDto.prototype, "id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: () => DrinkingWaterFacilityDto_1.DrinkingWaterFacilityDto }),
+    (0, swagger_1.ApiProperty)({ type: () => [DrinkingWaterFacilityDto_1.DrinkingWaterFacilityDto] }),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", DrinkingWaterFacilityDto_1.DrinkingWaterFacilityDto)
+    __metadata("design:type", Array)
 ], RecordedSystemDto.prototype, "drinkingWaterFacility", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ type: () => PropertyDto_1.PropertyDto }),

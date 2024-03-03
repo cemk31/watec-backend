@@ -5,18 +5,22 @@ import { AddressDto } from "./AddressDto";
 export class ServiceDto {
     @ApiProperty({ example: 123 })
     @IsInt()
+    @IsOptional()
     articleNumber_ista: number;
   
     @ApiProperty({ example: 5 })
     @IsInt()
+    @IsOptional()
     quantity: number;
   
     @ApiProperty({ example: 'kg' })
     @IsString()
+    @IsOptional()
     unit: string;
   
     @ApiProperty({ example: true })
     @IsBoolean()
+    @IsOptional()
     extraordinaryExpenditure: boolean;
   
     @ApiProperty({ example: 23.5 })
