@@ -20,7 +20,6 @@ let IstaHelperService = class IstaHelperService {
     }
     async createService(dto, closedContractPartnerId) {
         var _a, _b, _c, _d, _e;
-        console.log('closedContractPartnerId', closedContractPartnerId);
         const service = await this.prisma.service.create({
             data: {
                 ClosedContractPartner: {
@@ -33,7 +32,7 @@ let IstaHelperService = class IstaHelperService {
                 unit: (dto === null || dto === void 0 ? void 0 : dto.unit) || null,
                 extraordinaryExpenditure: (dto === null || dto === void 0 ? void 0 : dto.extraordinaryExpenditure) || null,
                 purchasePrice_ista: (dto === null || dto === void 0 ? void 0 : dto.purchasePrice_ista) || null,
-                warranty: (dto === null || dto === void 0 ? void 0 : dto.warranty) || null,
+                warranty: (dto === null || dto === void 0 ? void 0 : dto.warranty) || false,
                 serviceRenderedIn: {
                     create: {
                         street: ((_a = dto === null || dto === void 0 ? void 0 : dto.serviceRenderedIn) === null || _a === void 0 ? void 0 : _a.street) || null,
