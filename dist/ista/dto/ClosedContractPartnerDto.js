@@ -18,6 +18,7 @@ const RecordedSystemDto_1 = require("./RecordedSystemDto");
 const ReportOrderStatusRequestDto_1 = require("./ReportOrderStatusRequestDto");
 const SuppliedDocumentsDto_1 = require("./SuppliedDocumentsDto");
 const CustomerContactDto_1 = require("./CustomerContactDto");
+const ServiceDto_1 = require("./ServiceDto");
 class ClosedContractPartnerDto {
     constructor() {
         this.orderstatusType = 40;
@@ -95,5 +96,10 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], ClosedContractPartnerDto.prototype, "contact", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ type: () => [ServiceDto_1.ServiceDto] }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Array)
+], ClosedContractPartnerDto.prototype, "services", void 0);
 exports.ClosedContractPartnerDto = ClosedContractPartnerDto;
 //# sourceMappingURL=ClosedContractPartnerDto.js.map

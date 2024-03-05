@@ -229,6 +229,7 @@ Table ClosedContractPartner {
   ReportOrderStatusRequest ReportOrderStatusRequest [not null]
   suppliedDocuments SuppliedDocuments [not null]
   CustomerContact CustomerContact [not null]
+  services Service [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
 }
@@ -250,33 +251,32 @@ Table Document {
 
 Table RecordedSystem {
   id Int [pk, increment]
-  closedContractPartnerId Int [increment, unique]
+  closedContractPartnerId Int [increment]
   ClosedContractPartner ClosedContractPartner
   drinkingWaterFacility DrinkingWaterFacility [not null]
   property Property
-  services Service [not null]
 }
 
 Table Property {
   id Int [pk, increment]
-  hotwatersupplyType_central Boolean [not null]
-  hotwatersupplyType_decentral Boolean [not null]
+  hotwatersupplyType_central Boolean
+  hotwatersupplyType_decentral Boolean
   recordedSystemId Int [unique]
   recordedSystem RecordedSystem
 }
 
 Table Service {
   id Int [pk, increment]
-  articleNumber_ista Int [not null]
-  quantity Int [not null]
-  unit String [not null]
-  extraordinaryExpenditure Boolean [not null]
+  articleNumber_ista Int
+  quantity Int
+  unit String
+  extraordinaryExpenditure Boolean
   purchasePrice_ista Float
   warranty Boolean
-  addressId Int [not null]
-  recordedSystemId Int
-  serviceRenderedIn Address [not null]
-  RecordedSystem RecordedSystem
+  addressId Int
+  serviceRenderedIn Address
+  closedContractPartnerId Int
+  ClosedContractPartner ClosedContractPartner
 }
 
 Table DrinkingWaterFacility {
@@ -327,8 +327,21 @@ Table DrinkingWaterHeater {
   positionDetail String
   drinkingWaterFacilityId Int
   DrinkingWaterFacility DrinkingWaterFacility
-  unitId Int
+  unitId Int [unique]
   unit Unit
+}
+
+Table Unit {
+  id Int [pk, increment]
+  floor Int
+  storey String
+  position Int
+  userName String
+  generalUnit Boolean
+  drinkingWaterHeater DrinkingWaterHeater
+  SamplingPoint SamplingPoint [not null]
+  buildingId Int [not null]
+  building Building [not null]
 }
 
 Table AscendingPipe {
@@ -351,7 +364,7 @@ Table SamplingPoints {
 
 Table SamplingPoint {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
+  consecutiveNumber Int
   installationNumber Int
   numberObjectInstallationLocation Int
   pipingSystemType String
@@ -367,19 +380,6 @@ Table SamplingPoint {
   unit Unit [not null]
 }
 
-Table Unit {
-  id Int [pk, increment]
-  floor Int
-  storey String
-  position Int
-  userName String
-  generalUnit Boolean
-  buildingId Int [not null]
-  DrinkingWaterHeater DrinkingWaterHeater [not null]
-  SamplingPoint SamplingPoint [not null]
-  building Building [not null]
-}
-
 Table Building {
   id Int [pk, increment]
   addressId Int [not null]
@@ -389,7 +389,7 @@ Table Building {
 
 Table Address {
   id Int [pk, increment]
-  street String [not null]
+  street String
   streetnumber String
   houseNumber String
   postcode String
@@ -633,13 +633,15 @@ Ref: Property.recordedSystemId - RecordedSystem.id
 
 Ref: Service.addressId > Address.id
 
-Ref: Service.recordedSystemId > RecordedSystem.id
+Ref: Service.closedContractPartnerId > ClosedContractPartner.id
 
 Ref: DrinkingWaterFacility.recordedSystemId > RecordedSystem.id
 
 Ref: DrinkingWaterHeater.drinkingWaterFacilityId > DrinkingWaterFacility.id
 
-Ref: DrinkingWaterHeater.unitId > Unit.id
+Ref: DrinkingWaterHeater.unitId - Unit.id
+
+Ref: Unit.buildingId > Building.id
 
 Ref: AscendingPipe.drinkingWaterFacilityId > DrinkingWaterFacility.id
 
@@ -648,8 +650,6 @@ Ref: SamplingPoint.drinkingWaterFacilityId > DrinkingWaterFacility.id
 Ref: SamplingPoint.samplingPointsId > SamplingPoints.id
 
 Ref: SamplingPoint.unitId > Unit.id
-
-Ref: Unit.buildingId > Building.id
 
 Ref: Building.addressId > Address.id
 

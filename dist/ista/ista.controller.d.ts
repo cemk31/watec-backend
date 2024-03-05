@@ -1060,17 +1060,6 @@ export declare class IstaController {
                     heatExchangerSystem_continuousflowprinciple: boolean;
                     recordedSystemId: number;
                 }, unknown, never> & {})[];
-                services: (import("@prisma/client/runtime").GetResult<{
-                    id: number;
-                    articleNumber_ista: number;
-                    quantity: number;
-                    unit: string;
-                    extraordinaryExpenditure: boolean;
-                    purchasePrice_ista: number;
-                    warranty: boolean;
-                    addressId: number;
-                    recordedSystemId: number;
-                }, unknown, never> & {})[];
             } & import("@prisma/client/runtime").GetResult<{
                 id: number;
                 closedContractPartnerId: number;
@@ -1085,6 +1074,17 @@ export declare class IstaController {
                 environment: string;
                 language: string;
                 consumer: string;
+                closedContractPartnerId: number;
+            }, unknown, never> & {})[];
+            services: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                articleNumber_ista: number;
+                quantity: number;
+                unit: string;
+                extraordinaryExpenditure: boolean;
+                purchasePrice_ista: number;
+                warranty: boolean;
+                addressId: number;
                 closedContractPartnerId: number;
             }, unknown, never> & {})[];
         } & import("@prisma/client/runtime").GetResult<{

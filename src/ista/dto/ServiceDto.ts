@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsString, IsBoolean, IsOptional } from "class-validator";
 import { AddressDto } from "./AddressDto";
+import { isFloat32Array, isFloat64Array } from "util/types";
 
 export class ServiceDto {
     @ApiProperty({ example: 123 })

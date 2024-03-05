@@ -8,10 +8,12 @@ import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
 import { ConfigService } from '@nestjs/config';
+import { IstaHelperService } from './ista.helper.service';
 export declare class IstaService {
     private prisma;
     private configService;
-    constructor(prisma: PrismaService, configService: ConfigService);
+    private istaHelpService;
+    constructor(prisma: PrismaService, configService: ConfigService, istaHelpService: IstaHelperService);
     receivedOrder(dto: CreateCustomerOrderDTO): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -838,17 +840,6 @@ export declare class IstaService {
                     heatExchangerSystem_continuousflowprinciple: boolean;
                     recordedSystemId: number;
                 }, unknown, never> & {})[];
-                services: (import("@prisma/client/runtime").GetResult<{
-                    id: number;
-                    articleNumber_ista: number;
-                    quantity: number;
-                    unit: string;
-                    extraordinaryExpenditure: boolean;
-                    purchasePrice_ista: number;
-                    warranty: boolean;
-                    addressId: number;
-                    recordedSystemId: number;
-                }, unknown, never> & {})[];
             } & import("@prisma/client/runtime").GetResult<{
                 id: number;
                 closedContractPartnerId: number;
@@ -863,6 +854,17 @@ export declare class IstaService {
                 environment: string;
                 language: string;
                 consumer: string;
+                closedContractPartnerId: number;
+            }, unknown, never> & {})[];
+            services: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                articleNumber_ista: number;
+                quantity: number;
+                unit: string;
+                extraordinaryExpenditure: boolean;
+                purchasePrice_ista: number;
+                warranty: boolean;
+                addressId: number;
                 closedContractPartnerId: number;
             }, unknown, never> & {})[];
         } & import("@prisma/client/runtime").GetResult<{
@@ -1096,5 +1098,4 @@ export declare class IstaService {
     updateOrderReceived(orderId: number | null, dto: ReceivedDto): Promise<Order | null>;
     deleteOrder(orderId: number): Promise<Order | null>;
     doneOrder(orderId: number): Promise<Order | null>;
-    reportStatusToISTA(order: OrderDto): Promise<void>;
 }

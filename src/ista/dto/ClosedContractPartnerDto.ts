@@ -6,6 +6,7 @@ import { RecordedSystemDto } from "./RecordedSystemDto";
 import { ReportOrderStatusRequestDto } from "./ReportOrderStatusRequestDto";
 import { SuppliedDocumentsDto } from "./SuppliedDocumentsDto";
 import { CustomerContactDto } from "./CustomerContactDto";
+import { ServiceDto } from "./ServiceDto";
 
 export class ClosedContractPartnerDto {
     @ApiProperty({ example: 1 })
@@ -66,4 +67,8 @@ export class ClosedContractPartnerDto {
     @ApiProperty({ type: [ContactDto] })
     @IsOptional()
     contact: ContactDto[];
+
+    @ApiProperty({ type: () => [ServiceDto] })
+    @IsOptional()
+    services?: ServiceDto[];
   }
