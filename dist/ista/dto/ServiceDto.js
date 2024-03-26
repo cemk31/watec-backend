@@ -19,6 +19,7 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: 123 }),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], ServiceDto.prototype, "articleNumber_ista", void 0);
 __decorate([

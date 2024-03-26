@@ -546,40 +546,6 @@ export class IstaService {
     }
   }
 
-  // async CP(
-  //   orderId: number | null,
-  //   dto: ClosedContractPartnerDto,
-  // ): Promise<ClosedContractPartner | null> {
-  //   console.log('CP: ', dto);
-  //   try {
-  //     const CP = await this.prisma.closedContractPartner.create({
-  //       data: {
-  //         order: {
-  //           connect: {
-  //             id: orderId,
-  //           },
-  //         },
-  //         orderstatusType: dto?.orderstatusType,
-  //         setOn: dto?.setOn,
-  //         deficiencyDescription: dto?.deficiencyDescription,
-  //         registrationHealthAuthoritiesOn: dto?.registrationHealthAuthoritiesOn,
-  //         extraordinaryExpenditureReason: dto?.extraordinaryExpenditureReason,
-  //         CustomerContact: {
-  //           create: dto.customerContacts,
-  //         },
-  //         recordedSystem: {
-  //           create: dto.recordedSystem.map((system) => ({
-  //             drinkingWaterFacility: system.drinkingWaterFacility,
-  //           })),
-  //         },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error('Error creating closed contract partner entry:', error);
-  //     return null;
-  //   }
-  // }
-
   async orderClosedContractPartner(
     orderId: number | null,
     dto: ClosedContractPartnerDto,
@@ -743,11 +709,6 @@ export class IstaService {
             //   })),
             // },
           },
-        });
-        
-
-        dto?.services?.map(async (s) => {
-          let service = await this.istaHelpService.createService(s, closedContractPartnerEntry.id);
         });
       return closedContractPartnerEntry;
     } catch (error) {

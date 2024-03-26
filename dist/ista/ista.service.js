@@ -475,7 +475,7 @@ let IstaService = class IstaService {
         }
     }
     async orderClosedContractPartner(orderId, dto) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         try {
             await this.prisma.order.update({
                 where: { id: orderId },
@@ -591,9 +591,6 @@ let IstaService = class IstaService {
                         })) !== null && _d !== void 0 ? _d : [undefined],
                     },
                 },
-            });
-            (_e = dto === null || dto === void 0 ? void 0 : dto.services) === null || _e === void 0 ? void 0 : _e.map(async (s) => {
-                let service = await this.istaHelpService.createService(s, closedContractPartnerEntry.id);
             });
             return closedContractPartnerEntry;
         }
