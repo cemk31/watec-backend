@@ -71,4 +71,6 @@ export class ClosedContractPartnerDto {
     @ApiProperty({ type: () => [ServiceDto] })
     @IsOptional()
     services?: ServiceDto[];
+
+    
   }

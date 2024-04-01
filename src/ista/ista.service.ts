@@ -37,7 +37,7 @@ export class IstaService {
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
-    private istaHelpService: IstaHelperService
+    private istaHelpService: IstaHelperService,
   ) {}
 
   //create Order with status Received
@@ -255,7 +255,6 @@ export class IstaService {
             suppliedDocuments: true, // include Request related to ClosedContractPartner
             ReportOrderStatusRequest: true,
             services: true, // include Service related to recordedSystem
-
           },
         },
         Customer: true,
@@ -553,7 +552,10 @@ export class IstaService {
     try {
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(), actualStatus: Status.CLOSEDCONTRACTPARTNER },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.CLOSEDCONTRACTPARTNER,
+        },
       });
 
       const closedContractPartnerEntry =
@@ -569,7 +571,8 @@ export class IstaService {
             deficiencyDescription: dto?.deficiencyDescription || null,
             registrationHealthAuthoritiesOn:
               dto?.registrationHealthAuthoritiesOn || new Date(),
-            extraordinaryExpenditureReason: dto?.extraordinaryExpenditureReason || null,
+            extraordinaryExpenditureReason:
+              dto?.extraordinaryExpenditureReason || null,
             CustomerContact: {
               create:
                 dto.customerContacts?.map((contact) => ({
@@ -588,7 +591,8 @@ export class IstaService {
                     usageType: dwf?.usageType || null,
                     usageTypeOthers: dwf?.usageTypeOthers || null,
                     numberSuppliedUnits: dwf?.numberSuppliedUnits || null,
-                    numberDrinkingWaterHeater: dwf?.numberDrinkingWaterHeater || null,
+                    numberDrinkingWaterHeater:
+                      dwf?.numberDrinkingWaterHeater || null,
                     totalVolumeLitres: dwf?.totalVolumeLitres || null,
                     pipingSystemType_Circulation:
                       dwf?.pipingSystemType_Circulation || null,
@@ -638,7 +642,8 @@ export class IstaService {
                         flowTemperature: ap?.flowTemperature || null,
                         circulationTemperatureDisplayPresent:
                           ap?.circulationTemperatureDisplayPresent || null,
-                        circulationTemperature: ap?.circulationTemperature || null,
+                        circulationTemperature:
+                          ap?.circulationTemperature || null,
                         pipeDiameter: ap?.pipeDiameter || null,
                         pipeMaterialtype: ap?.pipeMaterialtype || null,
                       })) ?? [AscendingPipeDto],
@@ -648,12 +653,13 @@ export class IstaService {
                         consecutiveNumber: dwh?.consecutiveNumber || null,
                         inletTemperatureDisplayPresent:
                           dwh?.inletTemperatureDisplayPresent || null,
-                        inletTemperature: dwh?.inletTemperature  || null,
+                        inletTemperature: dwh?.inletTemperature || null,
                         outletTemperatureDisplayPresent:
                           dwh?.outletTemperatureDisplayPresent || null,
                         outletTemperature: dwh?.outletTemperature || null,
                         pipeDiameterOutlet: dwh?.pipeDiameterOutlet || null,
-                        pipeMaterialtypeOutlet: dwh?.pipeMaterialtypeOutlet || null,
+                        pipeMaterialtypeOutlet:
+                          dwh?.pipeMaterialtypeOutlet || null,
                         volumeLitre: dwh?.volumeLitre || null,
                         roomType: dwh?.roomType || null,
                         roomPosition: dwh?.roomPosition || null,
@@ -683,31 +689,25 @@ export class IstaService {
                 },
               })) ?? [undefined],
             },
-            // services: {
-            //   create: dto?.services?.map((s) => ({
-            //     articleNumber_ista: s?.articleNumber_ista,
-            //     quantity: s?.quantity,
-            //     unit: s?.unit,
-            //     extraordinaryExpenditure: s?.extraordinaryExpenditure,
-            //     purchasePrice_ista: s?.purchasePrice_ista,
-            //     warranty: s?.warranty,
-            //     serviceRenderedIn: {
-            //       create: s?.serviceRenderedIn,
-            //       service: {
-            //         connect: {
-            //           id: s?.serviceRenderedIn?.serviceId,
-            //         },
-            //       }
-            //       // create: {
-            //       //   street: s?.serviceRenderedIn?.street,
-            //       //   streetnumber: s?.serviceRenderedIn?.streetnumber,
-            //       //   postcode: s?.serviceRenderedIn?.postcode,
-            //       //   city: s?.serviceRenderedIn?.city,
-            //       //   country: s?.serviceRenderedIn?.country,
-            //       // } ?? {},
-            //     } ?? undefined,
-            //   })),
-            // },
+            services: {
+              create:
+                dto.services?.map((service) => ({
+                  articleNumber_ista: service.articleNumber_ista || null,
+                  quantity: service.quantity || null,
+                  unit: service.unit || null,
+                  extraordinaryExpenditure: service.extraordinaryExpenditure || null,
+                  purchasePrice_ista: service.purchasePrice_ista || null,
+                  warranty: service.warranty || null,
+                  serviceRenderedIn: {
+                    create: {
+                      street: service.serviceRenderedIn.street || null,
+                      zipCode: service.serviceRenderedIn.postcode || null,
+                      place: service.serviceRenderedIn.city || null,
+                      country: service.serviceRenderedIn.country || null,
+                    } ? service.serviceRenderedIn : null,
+                  },
+                })) ?? [],
+            },
           },
         });
       return closedContractPartnerEntry;

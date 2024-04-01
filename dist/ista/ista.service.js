@@ -475,11 +475,14 @@ let IstaService = class IstaService {
         }
     }
     async orderClosedContractPartner(orderId, dto) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         try {
             await this.prisma.order.update({
                 where: { id: orderId },
-                data: { updatedAt: new Date(), actualStatus: client_1.Status.CLOSEDCONTRACTPARTNER },
+                data: {
+                    updatedAt: new Date(),
+                    actualStatus: client_1.Status.CLOSEDCONTRACTPARTNER,
+                },
             });
             const closedContractPartnerEntry = await this.prisma.closedContractPartner.create({
                 data: {
@@ -589,6 +592,24 @@ let IstaService = class IstaService {
                                 },
                             });
                         })) !== null && _d !== void 0 ? _d : [undefined],
+                    },
+                    services: {
+                        create: (_f = (_e = dto.services) === null || _e === void 0 ? void 0 : _e.map((service) => ({
+                            articleNumber_ista: service.articleNumber_ista || null,
+                            quantity: service.quantity || null,
+                            unit: service.unit || null,
+                            extraordinaryExpenditure: service.extraordinaryExpenditure || null,
+                            purchasePrice_ista: service.purchasePrice_ista || null,
+                            warranty: service.warranty || null,
+                            serviceRenderedIn: {
+                                create: {
+                                    street: service.serviceRenderedIn.street || null,
+                                    zipCode: service.serviceRenderedIn.postcode || null,
+                                    place: service.serviceRenderedIn.city || null,
+                                    country: service.serviceRenderedIn.country || null,
+                                } ? service.serviceRenderedIn : null,
+                            },
+                        }))) !== null && _f !== void 0 ? _f : [],
                     },
                 },
             });

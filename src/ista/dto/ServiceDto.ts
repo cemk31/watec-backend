@@ -13,6 +13,7 @@ export class ServiceDto {
     @ApiProperty({ example: 5 })
     @IsInt()
     @IsOptional()
+    @IsNumber()
     quantity: number;
   
     @ApiProperty({ example: 'kg' })
