@@ -25,23 +25,23 @@ export class AuthService {
 
   async sendSuccessFullRegistrationEmail(email: string): Promise<void> {
     const transporter = nodemailer.createTransport({
-      host: "send.one.com",
+      host: 'send.one.com',
       port: 465,
       secure: true,
       auth: {
-        user: "info@spootech.com",
-        pass: "Welcome123.",
+        user: 'info@spootech.com',
+        pass: 'Welcome123.',
       },
       tls: {
-          // do not fail on invalid certs
-          rejectUnauthorized: false,
-        },
+        // do not fail on invalid certs
+        rejectUnauthorized: false,
+      },
     });
-    console.log("email", email);
+    console.log('email', email);
     let mailOptions = {
       from: '"Spootech", <info@spootech.com>', // sender address
       to: email, // list of receivers
-      subject: "Registrierung erfolgreich!", // Subject line
+      subject: 'Registrierung erfolgreich!', // Subject line
       // text: "Hello world?", // plain text body
       html: `<b>Registrierung erfolgreich!</b><p>Ihre Registrierung war erfolgreich!</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Support Team</b></p>`, // html body
     };
@@ -54,27 +54,28 @@ export class AuthService {
   ): Promise<void> {
     try {
       const transporter = nodemailer.createTransport({
-        host: "send.one.com",
+        host: 'send.one.com',
         port: 465,
         secure: true,
         auth: {
-          user: "info@spootech.com",
-          pass: "Welcome123.",
+          user: 'info@spootech.com',
+          pass: 'Welcome123.',
         },
         tls: {
-            // do not fail on invalid certs
-            rejectUnauthorized: false,
-          },
+          // do not fail on invalid certs
+          rejectUnauthorized: false,
+        },
       });
       // const confirmationLink = `http://localhost:3000/auth/verify-email/${confirmationToken}`;
-      console.log("email", email);
+      console.log('email', email);
       let mailOptions = {
         from: '"Spootech", <info@spootech.com>', // sender address
         to: email, // list of receivers
-        subject: confirmationToken + " Ihr Token zum zurücksetzen Ihres Passwortes", // Subject line
+        subject:
+          confirmationToken + ' Ihr Token zum zurücksetzen Ihres Passwortes', // Subject line
         // text: "Hello world?", // plain text body
         html: `<b>${confirmationToken}</b><p>Ihr Token zur Wiederherstellung Ihres Passwortes!</p> <p>Bitte geben Sie diesen Token in der App ein, um Ihr Passwort zurückzusetzen.</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Support Team</b></p>`, // html body
-    };
+      };
       await transporter.sendMail(mailOptions);
 
       console.log('Confirmation email sent successfully');
@@ -91,7 +92,7 @@ export class AuthService {
   async signup(dto: AuthDto) {
     // generate the password hash
     const hash = await argon.hash(dto.password);
-    console.log("hash", hash);
+    console.log('hash', hash);
 
     const confirmationToken = this.generateToken();
 
@@ -162,7 +163,6 @@ export class AuthService {
     console.log('Email verified successfully');
   }
 
-  
   async signin(dto: LoginAuthDto) {
     // find the user by email
     const user = await this.prisma.user.findUnique({
@@ -173,18 +173,15 @@ export class AuthService {
     // if user does not exist throw exception
     if (!user || user.isConfirmed == false)
       throw new ForbiddenException('Credentials incorrect');
-
-    const pwMatches = await argon.verify(
-      user.hash,
-      dto.password,
-    );
+    console.log('user', user);
+    const pwMatches = await argon.verify(user.hash, dto.password);
     // if password incorrect throw exception
-    
+
     if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
     return this.signToken(user.id, user.email);
   }
 
-  async signToken(
+  private async signToken(
     userId: number,
     email: string,
   ): Promise<{ access_token: string }> {
@@ -204,7 +201,7 @@ export class AuthService {
       email: email,
       userId: userId,
       expires: new Date(Date.now() + 60 * 60 * 1000),
-    } as { access_token: string; email: string; userId: number, expires: Date };
+    } as { access_token: string; email: string; userId: number; expires: Date };
   }
 
   async updateUser(userId: number, newEmail: string, newPassword: string) {
@@ -234,7 +231,7 @@ export class AuthService {
   }
 
   async forgotPassword(email: string) {
-    console.log("email", email);
+    console.log('email', email);
     // Find the user by email
     const user = await this.prisma.user.findFirst({
       where: { email },
@@ -247,17 +244,20 @@ export class AuthService {
 
     // Generate a new password reset token
     const passwordResetToken = this.generateToken();
-    console.log("passwordResetToken", passwordResetToken);
+    console.log('passwordResetToken', passwordResetToken);
     // Update user's password reset token in the db
     const updatedUser = await this.prisma.user.update({
       where: { email: user.email }, // Add a default value or initializer for the "id" property
       data: { confirmationToken: passwordResetToken },
     });
-    console.log("updatedUser", updatedUser);
-    console.log("email", email);
-    console.log("passwordResetToken", passwordResetToken);
+    console.log('updatedUser', updatedUser);
+    console.log('email', email);
+    console.log('passwordResetToken', passwordResetToken);
     // Send a password reset email
-    await this.sendConfirmationEmail(updatedUser.email, updatedUser.confirmationToken);
+    await this.sendConfirmationEmail(
+      updatedUser.email,
+      updatedUser.confirmationToken,
+    );
 
     return updatedUser;
   }
@@ -288,27 +288,33 @@ export class AuthService {
   async deleteOrder(orderId: number): Promise<Order | null> {
     console.log('Deleting order with id:', orderId);
     try {
-    // Löschen der abhängigen Datensätze
-    await this.prisma.cancelled.deleteMany({ where: { orderId } });
-    await this.prisma.closedContractPartner.deleteMany({ where: { orderId } });
-    await this.prisma.notPossible.deleteMany({ where: { orderId } });
-    await this.prisma.planned.deleteMany({ where: { orderId } });
-    await this.prisma.postponed.deleteMany({ where: { orderId } });
-    await this.prisma.received.deleteMany({ where: { orderId } });
-    await this.prisma.rejected.deleteMany({ where: { orderId } });
-    await this.prisma.orderStatus.deleteMany({ where: { orderId } });
-    await this.prisma.customerContact.deleteMany({ where: { orderId } });
-    // Fügen Sie hier ähnliche Löschvorgänge für andere abhängige Tabellen hinzu...
+      // Löschen der abhängigen Datensätze
+      await this.prisma.cancelled.deleteMany({ where: { orderId } });
+      await this.prisma.closedContractPartner.deleteMany({
+        where: { orderId },
+      });
+      await this.prisma.notPossible.deleteMany({ where: { orderId } });
+      await this.prisma.planned.deleteMany({ where: { orderId } });
+      await this.prisma.postponed.deleteMany({ where: { orderId } });
+      await this.prisma.received.deleteMany({ where: { orderId } });
+      await this.prisma.rejected.deleteMany({ where: { orderId } });
+      await this.prisma.orderStatus.deleteMany({ where: { orderId } });
+      await this.prisma.customerContact.deleteMany({ where: { orderId } });
+      // Fügen Sie hier ähnliche Löschvorgänge für andere abhängige Tabellen hinzu...
 
-    // Löschen des Auftrags
-    const deletedOrder = await this.prisma.order.delete({ where: { id: orderId } });
-    console.log('Deleted order:', deletedOrder);
-    
-    return deletedOrder;
+      // Löschen des Auftrags
+      const deletedOrder = await this.prisma.order.delete({
+        where: { id: orderId },
+      });
+      console.log('Deleted order:', deletedOrder);
+
+      return deletedOrder;
     } catch (error) {
       console.error('Error deleting order:', error);
       // Hier könnten Sie einen spezifischen Fehlercode zurückgeben oder eine benutzerfreundliche Fehlermeldung
-      throw new Error('Order could not be deleted. Please check for related data.');
+      throw new Error(
+        'Order could not be deleted. Please check for related data.',
+      );
     }
   }
 }
