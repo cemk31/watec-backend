@@ -361,6 +361,9 @@ export class IstaService {
   async getCustomerById(customerId: number) {
     return this.prisma.customer.findFirst({
       where: { id: customerId },
+      include: {
+        orders: true,
+      },
     });
   }
 
@@ -695,7 +698,8 @@ export class IstaService {
                   articleNumber_ista: service.articleNumber_ista || null,
                   quantity: service.quantity || null,
                   unit: service.unit || null,
-                  extraordinaryExpenditure: service.extraordinaryExpenditure || null,
+                  extraordinaryExpenditure:
+                    service.extraordinaryExpenditure || null,
                   purchasePrice_ista: service.purchasePrice_ista || null,
                   warranty: service.warranty || null,
                   serviceRenderedIn: {
@@ -704,7 +708,9 @@ export class IstaService {
                       zipCode: service.serviceRenderedIn.postcode || null,
                       place: service.serviceRenderedIn.city || null,
                       country: service.serviceRenderedIn.country || null,
-                    } ? service.serviceRenderedIn : null,
+                    }
+                      ? service.serviceRenderedIn
+                      : null,
                   },
                 })) ?? [],
             },

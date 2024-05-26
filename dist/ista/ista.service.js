@@ -327,6 +327,9 @@ let IstaService = class IstaService {
     async getCustomerById(customerId) {
         return this.prisma.customer.findFirst({
             where: { id: customerId },
+            include: {
+                orders: true,
+            },
         });
     }
     async orderRejected(orderId, requestId, dto) {
@@ -607,7 +610,9 @@ let IstaService = class IstaService {
                                     zipCode: service.serviceRenderedIn.postcode || null,
                                     place: service.serviceRenderedIn.city || null,
                                     country: service.serviceRenderedIn.country || null,
-                                } ? service.serviceRenderedIn : null,
+                                }
+                                    ? service.serviceRenderedIn
+                                    : null,
                             },
                         }))) !== null && _f !== void 0 ? _f : [],
                     },

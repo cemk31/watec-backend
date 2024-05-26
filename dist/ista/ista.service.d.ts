@@ -1071,7 +1071,17 @@ export declare class IstaService {
         createdAt: Date;
         updatedAt: Date;
     }, unknown, never> & {}>;
-    getCustomerById(customerId: number): Promise<import("@prisma/client/runtime").GetResult<{
+    getCustomerById(customerId: number): Promise<{
+        orders: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            number: string;
+            remarkExternal: string;
+            createdAt: Date;
+            actualStatus: Status;
+            customerId: number;
+            updatedAt: Date;
+        }, unknown, never> & {})[];
+    } & import("@prisma/client/runtime").GetResult<{
         id: number;
         firstName: string;
         lastName: string;

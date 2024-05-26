@@ -1,12 +1,12 @@
-import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from "./dto";
-import { PlannedDto } from "./dto/PlannedDto";
-import { IstaService } from "./ista.service";
-import { RejectedDto } from "./dto/RejectedDto";
-import { PostponedDto } from "./dto/PostponedDto";
-import { CancelledDto } from "./dto/CancelledDto";
-import { NotPossibleDto } from "./dto/NotPossibleDto";
-import { ClosedContractPartnerDto } from "./dto/ClosedContractPartnerDto";
-import { DoneDto } from "src/auftrag/dto/create-done.dto";
+import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from './dto';
+import { PlannedDto } from './dto/PlannedDto';
+import { IstaService } from './ista.service';
+import { RejectedDto } from './dto/RejectedDto';
+import { PostponedDto } from './dto/PostponedDto';
+import { CancelledDto } from './dto/CancelledDto';
+import { NotPossibleDto } from './dto/NotPossibleDto';
+import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
+import { DoneDto } from 'src/auftrag/dto/create-done.dto';
 export declare class IstaController {
     private istaService;
     mockOrderDto: OrderDto;
@@ -530,7 +530,17 @@ export declare class IstaController {
         createdAt: Date;
         updatedAt: Date;
     }, unknown, never> & {}>;
-    getCustomerById(customerId: number): Promise<import("@prisma/client/runtime").GetResult<{
+    getCustomerById(customerId: number): Promise<{
+        orders: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            number: string;
+            remarkExternal: string;
+            createdAt: Date;
+            actualStatus: import(".prisma/client").Status;
+            customerId: number;
+            updatedAt: Date;
+        }, unknown, never> & {})[];
+    } & import("@prisma/client/runtime").GetResult<{
         id: number;
         firstName: string;
         lastName: string;

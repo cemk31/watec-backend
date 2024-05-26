@@ -34,12 +34,30 @@ let CustomerService = class CustomerService {
         });
         return customer;
     }
-    async getCustomers(userId) {
+    async getCustomers() {
         return this.prisma.customer.findMany({
-            where: {
-                userId,
+            include: {
+                orders: true,
             },
         });
+    }
+    async updateCustomer(userId, dto) {
+        const customer = await this.prisma.customer.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                firstName: dto.firstName,
+                lastName: dto.lastName,
+                street: dto.street,
+                zipCode: dto.zipCode,
+                place: dto.place,
+                country: dto.country,
+                email: dto.email,
+                phoneNumber: dto.phoneNumber,
+            },
+        });
+        return customer;
     }
 };
 CustomerService = __decorate([

@@ -1,4 +1,13 @@
-import { UseGuards, Controller, Get, Body, Post } from '@nestjs/common';
+import {
+  UseGuards,
+  Controller,
+  Get,
+  Body,
+  Post,
+  Put,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { CustomerDTO } from './dto/create-customer.dto';
 import { GetUser } from 'src/auth/decorator';
@@ -10,17 +19,20 @@ export class CustomerController {
   constructor(private customerService: CustomerService) {}
 
   @Post()
-  createCustomer(
-    @GetUser('id') userId: number,
-    @Body() dto: CustomerDTO,
-  ) {
+  createCustomer(@GetUser('id') userId: number, @Body() dto: CustomerDTO) {
     return this.customerService.createCustomer(userId, dto);
   }
-  
-  @Get()
-  getAllCustomersForUser(
-    @GetUser('id') userId: number,
+
+  @Put('/:id')
+  updateCustomer(
+    @Param('id', ParseIntPipe) customerId: number,
+    @Body() dto: CustomerDTO,
   ) {
-    return this.customerService.getCustomers(userId);
+    return this.customerService.updateCustomer(customerId, dto);
+  }
+
+  @Get()
+  getAllCustomersForUser() {
+    return this.customerService.getCustomers();
   }
 }
