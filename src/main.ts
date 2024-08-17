@@ -6,15 +6,18 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
-    origin: [
-      'https://watec-admin-angular-fe.vercel.app',
-      'https://watec-dashboard-dev.vercel.app',
-      'http://localhost:4200',
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  app.enableCors();
+
+  // app.enableCors({
+  //   origin: [
+  //     'https://watec-admin-angular-fe.vercel.app',
+  //     'https://watec-dashboard-dev.vercel.app',
+  //     'http://localhost:4200',
+  //   ],
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   credentials: true,
+  //   allowedHeaders: ['Content-Type', 'Authorization'],
+  // });
 
   app.useGlobalPipes(
     new ValidationPipe({
