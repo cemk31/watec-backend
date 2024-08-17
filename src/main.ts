@@ -17,6 +17,7 @@ async function bootstrap() {
       origin: [
         'https://watec-admin-angular-fe.vercel.app',
         'https://watec-dashboard-dev.vercel.app',
+        'https://localhost:4200',
       ],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
