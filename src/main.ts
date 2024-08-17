@@ -7,73 +7,47 @@ import * as serverless from 'serverless-http';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  if (
-    process.env.NODE_ENV === 'production' ||
-    process.env.NODE_ENV === 'development'
-  ) {
-    const server = express();
-    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-    app.enableCors({
-      origin: [
-        'https://watec-admin-angular-fe.vercel.app',
-        'https://watec-dashboard-dev.vercel.app',
-        'https://localhost:4200',
-      ],
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      credentials: true,
-    });
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-      }),
-    );
-    await app.init();
-    const handler = serverless(server); // Pass the Express server instance here
-    module.exports.main = async (req, res) => {
-      return await handler(req, res);
-    };
-  } else {
-    // Assuming 'development'
-    const app = await NestFactory.create(AppModule);
-    app.enableCors({
-      origin: [
-        'https://watec-admin-angular-fe.vercel.app',
-        'https://watec-dashboard-dev.vercel.app',
-        'http://localhost:4200',
-      ],
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      credentials: true,
-    });
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-      }),
-    );
-    // Use process.env.PORT if it's available, otherwise default to 3000
-    const port = process.env.PORT || 3000;
+  const app = await NestFactory.create(AppModule);
 
-    const config = new DocumentBuilder()
-      .setTitle('WATEC Backend')
-      .setDescription(
-        'WATEC-Backend API Description - Documentation generated on 05-10-2023',
-      )
-      .setVersion('1.0.0.')
-      .addTag('WATEC', 'Endpoints related to the WATEC Backend Services')
-      .addBearerAuth(
-        { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-        'access-token',
-      )
-      .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
-      .setLicense('WATEC License', 'https://yourwebsite.com/license')
-      .addServer('http://localhost:3000', 'Local Development Server')
-      .addServer('https://watec-backend.vercel.app', 'Production Server')
-      .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
-      .build();
+  app.enableCors({
+    origin: [
+      'https://watec-admin-angular-fe.vercel.app',
+      'https://watec-dashboard-dev.vercel.app',
+      'http://localhost:4200',
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
 
-    await app.listen(port);
-  }
+  const port = process.env.PORT || 3000;
+
+  const config = new DocumentBuilder()
+    .setTitle('WATEC Backend')
+    .setDescription(
+      'WATEC-Backend API Description - Documentation generated on 05-10-2023',
+    )
+    .setVersion('1.0.0.')
+    .addTag('WATEC', 'Endpoints related to the WATEC Backend Services')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
+    .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
+    .setLicense('WATEC License', 'https://yourwebsite.com/license')
+    .addServer('http://localhost:3000', 'Local Development Server')
+    .addServer('https://watec-backend.vercel.app', 'Production Server')
+    .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  await app.listen(port);
 }
 bootstrap();
