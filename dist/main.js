@@ -8,10 +8,18 @@ const app_module_1 = require("./app.module");
 const serverless = require("serverless-http");
 const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
-    if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+    if (process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development') {
         const server = express();
         const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(server));
-        app.enableCors();
+        app.enableCors({
+            origin: [
+                'https://watec-admin-angular-fe.vercel.app/',
+                'https://watec-admin-angular-fe-git-development-spootech.vercel.app',
+            ],
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+        });
         app.useGlobalPipes(new common_1.ValidationPipe({
             whitelist: true,
         }));
