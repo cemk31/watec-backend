@@ -7,7 +7,7 @@ import { SamplingPointDto } from "./SamplingPointDto";
 
 export class DrinkingWaterFacilityDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsInt()
     id: number;
   
@@ -31,7 +31,7 @@ export class DrinkingWaterFacilityDto {
     @IsInt()
     numberSuppliedUnits: number;
   
-    @ApiProperty({ example: 2 })
+    @ApiProperty({ example: 3 })
     @IsOptional()
     @IsInt()
     numberDrinkingWaterHeater: number;
@@ -66,30 +66,31 @@ export class DrinkingWaterFacilityDto {
     @IsBoolean()
     deadPipeKnown: boolean;
   
+    //Enumeration left or right
     @ApiProperty({ example: 'Position of dead pipes' })
     @IsOptional()
     @IsString()
     deadPipesPosition: string;
   
-    @ApiProperty({ example: 1 })
+    @ApiProperty({ example: 22 })
     @IsOptional()
     @IsInt()
     numberAscendingPipes: number;
+
+    @ApiProperty({ example: 'Explanation for aerosol formation' })
+    @IsOptional()
+    @IsString()
+    explanation: string;
+
+    @ApiProperty({ example: 5 })
+    @IsOptional()
+    @IsInt()
+    numberSuppliedPersons: number;
   
     @ApiProperty({ example: true })
     @IsOptional()
     @IsBoolean()
     aerosolformation: boolean;
-  
-    @ApiProperty({ example: 'Explanation for aerosol formation' })
-    @IsOptional()
-    @IsString()
-    explanation: string;
-  
-    @ApiProperty({ example: 50 })
-    @IsOptional()
-    @IsInt()
-    numberSuppliedPersons: number;
   
     @ApiProperty({ example: false })
     @IsOptional()
@@ -131,19 +132,19 @@ export class DrinkingWaterFacilityDto {
     @IsBoolean()
     heatExchangerSystem_continuousflowprinciple: boolean;
   
-    @ApiProperty()
+    @ApiProperty({ type: () => DrinkingWaterHeaterDto })
     @IsOptional()
     drinkingWaterHeaters: DrinkingWaterHeaterDto[];
   
-    @ApiProperty()
+    @ApiProperty({ type: () => AscendingPipeDto })
     @IsOptional()
     ascendingPipes: AscendingPipeDto[];
   
-    @ApiProperty()
+    @ApiProperty({ type: () => SamplingPointDto })
     @IsOptional()
     samplingPoints: SamplingPointDto[];
   
-    @ApiProperty({ type: [RecordedSystemDto] })
-    @IsOptional()
-    recordedSystems: RecordedSystemDto[];
+    // @ApiProperty({ type: [RecordedSystemDto] })
+    // @IsOptional()
+    // recordedSystems: RecordedSystemDto[];
   }

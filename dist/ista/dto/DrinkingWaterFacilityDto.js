@@ -12,12 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DrinkingWaterFacilityDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
-const RecordedSystemDto_1 = require("./RecordedSystemDto");
+const AscendingPipeDto_1 = require("./AscendingPipeDto");
+const DrinkingWaterHeaterDto_1 = require("./DrinkingWaterHeaterDto");
+const SamplingPointDto_1 = require("./SamplingPointDto");
 class DrinkingWaterFacilityDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], DrinkingWaterFacilityDto.prototype, "id", void 0);
@@ -46,7 +48,7 @@ __decorate([
     __metadata("design:type", Number)
 ], DrinkingWaterFacilityDto.prototype, "numberSuppliedUnits", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 2 }),
+    (0, swagger_1.ApiProperty)({ example: 3 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
@@ -94,17 +96,11 @@ __decorate([
     __metadata("design:type", String)
 ], DrinkingWaterFacilityDto.prototype, "deadPipesPosition", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 1 }),
+    (0, swagger_1.ApiProperty)({ example: 22 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], DrinkingWaterFacilityDto.prototype, "numberAscendingPipes", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: true }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], DrinkingWaterFacilityDto.prototype, "aerosolformation", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Explanation for aerosol formation' }),
     (0, class_validator_1.IsOptional)(),
@@ -112,11 +108,17 @@ __decorate([
     __metadata("design:type", String)
 ], DrinkingWaterFacilityDto.prototype, "explanation", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 50 }),
+    (0, swagger_1.ApiProperty)({ example: 5 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], DrinkingWaterFacilityDto.prototype, "numberSuppliedPersons", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], DrinkingWaterFacilityDto.prototype, "aerosolformation", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: false }),
     (0, class_validator_1.IsOptional)(),
@@ -166,24 +168,19 @@ __decorate([
     __metadata("design:type", Boolean)
 ], DrinkingWaterFacilityDto.prototype, "heatExchangerSystem_continuousflowprinciple", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ type: () => DrinkingWaterHeaterDto_1.DrinkingWaterHeaterDto }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], DrinkingWaterFacilityDto.prototype, "drinkingWaterHeaters", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ type: () => AscendingPipeDto_1.AscendingPipeDto }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], DrinkingWaterFacilityDto.prototype, "ascendingPipes", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ type: () => SamplingPointDto_1.SamplingPointDto }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], DrinkingWaterFacilityDto.prototype, "samplingPoints", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ type: [RecordedSystemDto_1.RecordedSystemDto] }),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Array)
-], DrinkingWaterFacilityDto.prototype, "recordedSystems", void 0);
 exports.DrinkingWaterFacilityDto = DrinkingWaterFacilityDto;
 //# sourceMappingURL=DrinkingWaterFacilityDto.js.map

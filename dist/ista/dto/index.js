@@ -19,4 +19,5 @@ __exportStar(require("./CustomerDTO"), exports);
 __exportStar(require("./ReceivedDto"), exports);
 __exportStar(require("./CustomerContactDto"), exports);
 __exportStar(require("./CreateCustomerOrderDTO"), exports);
+__exportStar(require("./SyncDto"), exports);
 //# sourceMappingURL=index.js.map

@@ -10,12 +10,13 @@ exports.IstaModule = void 0;
 const common_1 = require("@nestjs/common");
 const ista_service_1 = require("./ista.service");
 const ista_controller_1 = require("./ista.controller");
+const ista_helper_service_1 = require("./ista.helper.service");
 let IstaModule = class IstaModule {
 };
 IstaModule = __decorate([
     (0, common_1.Module)({
         controllers: [ista_controller_1.IstaController],
-        providers: [ista_service_1.IstaService],
+        providers: [ista_service_1.IstaService, ista_helper_service_1.IstaHelperService],
     })
 ], IstaModule);
 exports.IstaModule = IstaModule;

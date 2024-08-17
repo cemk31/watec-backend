@@ -16,6 +16,7 @@ Table users {
   auftraege auftraege [not null]
   auftraggeber auftraggeber [not null]
   bookmarks bookmarks [not null]
+  sync Sync [not null]
 }
 
 Table bookmarks {
@@ -167,7 +168,7 @@ Table Order {
   Customer Customer [not null]
   Cancelled Cancelled [not null]
   ClosedContractPartner ClosedContractPartner [not null]
-  CustomerContacts CustomerContact [not null]
+  customerContacts CustomerContact [not null]
   NotPossible NotPossible [not null]
   status OrderStatus [not null]
   Planned Planned [not null]
@@ -220,7 +221,7 @@ Table ClosedContractPartner {
   orderstatusType Int
   setOn DateTime [default: `now()`]
   deficiencyDescription String
-  registrationHealthAuthoritiesOn DateTime
+  registrationHealthAuthoritiesOn DateTime [default: `now()`]
   extraordinaryExpenditureReason String
   orderId Int
   order Order
@@ -228,9 +229,12 @@ Table ClosedContractPartner {
   recordedSystem RecordedSystem [not null]
   ReportOrderStatusRequest ReportOrderStatusRequest [not null]
   suppliedDocuments SuppliedDocuments [not null]
-  CustomerContact CustomerContact [not null]
+  customerContacts CustomerContact [not null]
+  services Service [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table SuppliedDocuments {
@@ -250,39 +254,37 @@ Table Document {
 
 Table RecordedSystem {
   id Int [pk, increment]
-  closedContractPartnerId Int
+  closedContractPartnerId Int [increment]
   ClosedContractPartner ClosedContractPartner
-  drinkingWaterFacilityId Int
-  drinkingWaterFacility DrinkingWaterFacility
-  propertyId Int
+  drinkingWaterFacility DrinkingWaterFacility [not null]
   property Property
-  services Service [not null]
 }
 
 Table Property {
   id Int [pk, increment]
-  hotwatersupplyType_central Boolean [not null]
-  hotwatersupplyType_decentral Boolean [not null]
-  RecordedSystem RecordedSystem [not null]
+  hotwatersupplyType_central Boolean
+  hotwatersupplyType_decentral Boolean
+  recordedSystemId Int [unique]
+  recordedSystem RecordedSystem
 }
 
 Table Service {
   id Int [pk, increment]
-  articleNumber_ista Int [not null]
-  quantity Int [not null]
-  unit String [not null]
-  extraordinaryExpenditure Boolean [not null]
+  articleNumber_ista Int
+  quantity Int
+  unit String
+  extraordinaryExpenditure Boolean
   purchasePrice_ista Float
   warranty Boolean
-  addressId Int [not null]
-  recordedSystemId Int
-  serviceRenderedIn Address [not null]
-  RecordedSystem RecordedSystem
+  addressId Int
+  serviceRenderedIn Address
+  closedContractPartnerId Int
+  ClosedContractPartner ClosedContractPartner
 }
 
 Table DrinkingWaterFacility {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
+  consecutiveNumber Int
   usageType String
   usageTypeOthers String
   numberSuppliedUnits Int
@@ -308,13 +310,14 @@ Table DrinkingWaterFacility {
   heatExchangerSystem_continuousflowprinciple Boolean
   ascendingPipes AscendingPipe [not null]
   drinkingWaterHeaters DrinkingWaterHeater [not null]
-  RecordedSystem RecordedSystem [not null]
+  recordedSystemId Int [unique]
+  RecordedSystem RecordedSystem
   samplingPoints SamplingPoint [not null]
 }
 
 Table DrinkingWaterHeater {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
+  consecutiveNumber Int
   inletTemperatureDisplayPresent Boolean
   inletTemperature Int
   outletTemperatureDisplayPresent Boolean
@@ -327,19 +330,32 @@ Table DrinkingWaterHeater {
   positionDetail String
   drinkingWaterFacilityId Int
   DrinkingWaterFacility DrinkingWaterFacility
-  unitId Int
+  unitId Int [unique]
   unit Unit
+}
+
+Table Unit {
+  id Int [pk, increment]
+  floor Int
+  storey String
+  position Int
+  userName String
+  generalUnit Boolean
+  drinkingWaterHeater DrinkingWaterHeater
+  SamplingPoint SamplingPoint [not null]
+  buildingId Int [not null]
+  building Building [not null]
 }
 
 Table AscendingPipe {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
-  ascendingPipeTemperatureDisplayPresent Boolean [not null]
+  consecutiveNumber Int
+  ascendingPipeTemperatureDisplayPresent Boolean
   flowTemperature Int
-  circulationTemperatureDisplayPresent Boolean [not null]
+  circulationTemperatureDisplayPresent Boolean
   circulationTemperature Int
-  pipeDiameter String [not null]
-  pipeMaterialtype String [not null]
+  pipeDiameter String
+  pipeMaterialtype String
   drinkingWaterFacilityId Int [not null]
   DrinkingWaterFacility DrinkingWaterFacility [not null]
 }
@@ -351,33 +367,20 @@ Table SamplingPoints {
 
 Table SamplingPoint {
   id Int [pk, increment]
-  consecutiveNumber Int [not null]
+  consecutiveNumber Int
   installationNumber Int
   numberObjectInstallationLocation Int
   pipingSystemType String
   remoteSamplingPoint Boolean
   roomType String
   roomPosition Int
-  positionDetail String [not null]
+  positionDetail String
   unitId Int [not null]
   drinkingWaterFacilityId Int [not null]
   samplingPointsId Int
   DrinkingWaterFacility DrinkingWaterFacility [not null]
   SamplingPoints SamplingPoints
   unit Unit [not null]
-}
-
-Table Unit {
-  id Int [pk, increment]
-  floor Int [not null]
-  storey String [not null]
-  position Int
-  userName String
-  generalUnit Boolean [not null]
-  buildingId Int [not null]
-  DrinkingWaterHeater DrinkingWaterHeater [not null]
-  SamplingPoint SamplingPoint [not null]
-  building Building [not null]
 }
 
 Table Building {
@@ -389,11 +392,11 @@ Table Building {
 
 Table Address {
   id Int [pk, increment]
-  street String [not null]
+  street String
   streetnumber String
   houseNumber String
-  postcode String [not null]
-  city String [not null]
+  postcode String
+  city String
   country String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -456,6 +459,8 @@ Table Postponed {
   Request Request
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Rejected {
@@ -471,6 +476,8 @@ Table Rejected {
   Order Order [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table NotPossible {
@@ -484,6 +491,8 @@ Table NotPossible {
   Request Request
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Contact {
@@ -521,6 +530,8 @@ Table Cancelled {
   requestId Int [unique]
   Request Request
   Contact Contact [not null]
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Planned {
@@ -529,29 +540,33 @@ Table Planned {
   orderstatusType String
   setOn DateTime [default: `now()`]
   detailedScheduleDate DateTime
-  detailedScheduleTimeFrom DateTime
-  detailedScheduleTimeTo DateTime
+  detailedScheduleTimeFrom String
+  detailedScheduleTimeTo String
   detailedScheduleDelayReason String
   requestId Int [unique]
   Request Request
-  CustomerContact CustomerContact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Received {
   id Int [pk, increment]
-  orderId Int [not null]
-  orderstatusType String [not null]
+  orderstatusType String [not null, default: '007']
   setOn DateTime [default: `now()`]
   requestId Int [unique]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
-  CustomerContact CustomerContact [not null]
+  customerContacts CustomerContact [not null]
   Contact Contact [not null]
+  orderId Int [not null]
   Order Order [not null]
   Request Request
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table StatusReport {
@@ -559,6 +574,33 @@ Table StatusReport {
   orderNo String [not null]
   currentDatetime DateTime [not null]
   customerContacts CustomerContact [not null]
+}
+
+Table Sync {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  lastSyncTime DateTime [default: `now()`, not null]
+  statusType Status [not null]
+  syncStatus String [not null]
+  syncError String
+  userEmail String
+  userId Int [not null]
+  user users [not null]
+  receivedId Int [unique]
+  Received Received
+  plannedId Int [unique]
+  Planned Planned
+  postponedId Int [unique]
+  Postponed Postponed
+  rejectedId Int [unique]
+  Rejected Rejected
+  cancelledId Int [unique]
+  Cancelled Cancelled
+  notPossibleId Int [unique]
+  NotPossible NotPossible
+  closedContractPartnerId Int [unique]
+  ClosedContractPartner ClosedContractPartner
 }
 
 Enum Auftragsstatus {
@@ -581,6 +623,8 @@ Enum Status {
   REJECTED
   CLOSED
   CANCELLED
+  DONE
+  CLOSEDCONTRACTPARTNER
 }
 
 Ref: bookmarks.userId > users.id
@@ -627,17 +671,19 @@ Ref: SuppliedDocuments.documentId > Document.id
 
 Ref: RecordedSystem.closedContractPartnerId > ClosedContractPartner.id
 
-Ref: RecordedSystem.drinkingWaterFacilityId > DrinkingWaterFacility.id
-
-Ref: RecordedSystem.propertyId > Property.id
+Ref: Property.recordedSystemId - RecordedSystem.id
 
 Ref: Service.addressId > Address.id
 
-Ref: Service.recordedSystemId > RecordedSystem.id
+Ref: Service.closedContractPartnerId > ClosedContractPartner.id
+
+Ref: DrinkingWaterFacility.recordedSystemId > RecordedSystem.id
 
 Ref: DrinkingWaterHeater.drinkingWaterFacilityId > DrinkingWaterFacility.id
 
-Ref: DrinkingWaterHeater.unitId > Unit.id
+Ref: DrinkingWaterHeater.unitId - Unit.id
+
+Ref: Unit.buildingId > Building.id
 
 Ref: AscendingPipe.drinkingWaterFacilityId > DrinkingWaterFacility.id
 
@@ -646,8 +692,6 @@ Ref: SamplingPoint.drinkingWaterFacilityId > DrinkingWaterFacility.id
 Ref: SamplingPoint.samplingPointsId > SamplingPoints.id
 
 Ref: SamplingPoint.unitId > Unit.id
-
-Ref: Unit.buildingId > Building.id
 
 Ref: Building.addressId > Address.id
 
@@ -694,3 +738,19 @@ Ref: Planned.orderId > Order.id
 Ref: Received.orderId > Order.id
 
 Ref: Received.requestId - Request.id
+
+Ref: Sync.userId > users.id
+
+Ref: Sync.receivedId - Received.id
+
+Ref: Sync.plannedId - Planned.id
+
+Ref: Sync.postponedId - Postponed.id
+
+Ref: Sync.rejectedId - Rejected.id
+
+Ref: Sync.cancelledId - Cancelled.id
+
+Ref: Sync.notPossibleId - NotPossible.id
+
+Ref: Sync.closedContractPartnerId - ClosedContractPartner.id

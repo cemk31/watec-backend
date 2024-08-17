@@ -13,6 +13,7 @@ exports.ReceivedDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const CustomerContactDto_1 = require("./CustomerContactDto");
+const class_transformer_1 = require("class-transformer");
 class ReceivedDto {
 }
 __decorate([
@@ -28,7 +29,7 @@ __decorate([
     __metadata("design:type", Number)
 ], ReceivedDto.prototype, "orderId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Order Status', default: 'RECEIVED' }),
+    (0, swagger_1.ApiProperty)({ example: 'Order Status', default: '007' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -37,6 +38,7 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: '2023-01-01T00:00:00Z' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
     __metadata("design:type", Date)
 ], ReceivedDto.prototype, "setOn", void 0);
 __decorate([

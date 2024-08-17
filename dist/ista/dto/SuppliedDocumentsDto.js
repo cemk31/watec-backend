@@ -19,7 +19,7 @@ class SuppliedDocumentsDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], SuppliedDocumentsDto.prototype, "id", void 0);

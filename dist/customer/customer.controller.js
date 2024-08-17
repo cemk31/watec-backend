@@ -25,8 +25,11 @@ let CustomerController = class CustomerController {
     createCustomer(userId, dto) {
         return this.customerService.createCustomer(userId, dto);
     }
-    getAllCustomersForUser(userId) {
-        return this.customerService.getCustomers(userId);
+    updateCustomer(customerId, dto) {
+        return this.customerService.updateCustomer(customerId, dto);
+    }
+    getAllCustomersForUser() {
+        return this.customerService.getCustomers();
     }
 };
 __decorate([
@@ -38,10 +41,17 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CustomerController.prototype, "createCustomer", null);
 __decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, decorator_1.GetUser)('id')),
+    (0, common_1.Put)('/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, create_customer_dto_1.CustomerDTO]),
+    __metadata("design:returntype", void 0)
+], CustomerController.prototype, "updateCustomer", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], CustomerController.prototype, "getAllCustomersForUser", null);
 CustomerController = __decorate([

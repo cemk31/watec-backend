@@ -8,10 +8,19 @@ const app_module_1 = require("./app.module");
 const serverless = require("serverless-http");
 const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
-    if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+    if (process.env.NODE_ENV === 'production' ||
+        process.env.NODE_ENV === 'development') {
         const server = express();
         const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(server));
-        app.enableCors();
+        app.enableCors({
+            origin: [
+                'https://watec-admin-angular-fe.vercel.app',
+                'https://watec-dashboard-dev.vercel.app',
+                'https://localhost:4200',
+            ],
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+        });
         app.useGlobalPipes(new common_1.ValidationPipe({
             whitelist: true,
         }));
@@ -34,9 +43,11 @@ async function bootstrap() {
             .setVersion('1.0.0.')
             .addTag('WATEC', 'Endpoints related to the WATEC Backend Services')
             .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
-            .setContact('WATEC Support', 'https://yourwebsite.com', 'support@yourwebsite.com')
+            .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
             .setLicense('WATEC License', 'https://yourwebsite.com/license')
             .addServer('http://localhost:3000/', 'Local Development Server')
+            .addServer('https://watec-backend.vercel.app/', 'Production Server')
+            .addServer('https://watec-backend-dev.vercel.app/', 'Development Server')
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, config);
         swagger_1.SwaggerModule.setup('api', app, document);

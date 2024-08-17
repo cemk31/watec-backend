@@ -1,42 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto } from './dto';
+import {
+  CreateCustomerOrderDTO,
+  CustomerDTO,
+  OrderDto,
+  ReceivedDto,
+} from './dto';
 import { RejectedDto } from './dto/RejectedDto';
 import { PostponedDto } from './dto/PostponedDto';
-import { Cancelled, ClosedContractPartner, NotPossible, Order, Planned, Postponed, Received } from '@prisma/client';
+import {
+  Cancelled,
+  ClosedContractPartner,
+  NotPossible,
+  Order,
+  Planned,
+  Postponed,
+  Received,
+  Status,
+} from '@prisma/client';
 import { CancelledDto } from './dto/CancelledDto';
 import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
-import * as soap from 'soap';
 import { ConfigService } from '@nestjs/config';
+import { DrinkingWaterFacilityDto } from './dto/DrinkingWaterFacilityDto';
+import { SamplingPointsDto } from './dto/SamplingPointsDto';
+import { AscendingPipeDto } from './dto/AscendingPipeDto';
+import { SamplingPointDto } from './dto/SamplingPointDto';
+import { DrinkingWaterHeaterDto } from './dto/DrinkingWaterHeaterDto';
+import { IstaHelperService } from './ista.helper.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class IstaService {
-  private client: soap.Client | null = null;
+  // private client: soap.Client | null = null;
 
-  constructor(private prisma: PrismaService,
-    private configService: ConfigService) {
-    // const soapUrl = this.configService.get<string>('SOAP_URL');
-    // console.log('SOAP_URL:', soapUrl);
-    // soap.createClientAsync(soapUrl)
-    // .then(client => {
-    //   this.client = client;
-    // })
-    // .catch(err => {
-    //   console.error('Error initializing SOAP client:', err);
-    // });
-
-    const soapUrl = this.configService.get<string>('SOAP_URL');
-    console.log('SOAP_URL:', soapUrl);
-    soap.createClientAsync(soapUrl)
-    .then(client => {
-      this.client = client;
-    })
-    .catch(err => {
-      console.error('Error initializing SOAP client:', err);
-    });
-  }
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+    private istaHelpService: IstaHelperService,
+  ) {}
 
   //create Order with status Received
   async receivedOrder(dto: CreateCustomerOrderDTO) {
@@ -45,23 +48,26 @@ export class IstaService {
         data: {
           number: dto.number,
           remarkExternal: dto.remarkExternal,
+          actualStatus: Status.RECEIVED,
           Received: {
-            create: dto.Received?.map(received => ({
-              orderstatusType: "RECEIVED",
-              setOn: received.setOn,
-              CustomerContact: {
-                create: received.customerContacts?.map(contact => ({
-                  contactAttemptOn: contact.contactAttemptOn,
-                  contactPersonCustomer: contact.contactPersonCustomer,
-                  agentCP: contact.agentCP,
-                  result: contact.result,
-                  remark: contact.remark,
-                })) ?? []
-              }
-            })) ?? [] 
+            create:
+              dto.Received?.map((received) => ({
+                orderstatusType: 'RECEIVED',
+                setOn: received.setOn,
+                CustomerContact: {
+                  create:
+                    received.customerContacts?.map((contact) => ({
+                      contactAttemptOn: contact.contactAttemptOn,
+                      contactPersonCustomer: contact.contactPersonCustomer,
+                      agentCP: contact.agentCP,
+                      result: contact.result,
+                      remark: contact.remark,
+                    })) ?? [],
+                },
+              })) ?? [],
           },
           Customer: {
-            create: { 
+            create: {
               firstName: dto.Customer?.firstName,
               lastName: dto.Customer?.lastName,
               companyName: dto.Customer?.companyName,
@@ -72,14 +78,14 @@ export class IstaService {
               country: dto.Customer?.country,
               email: dto.Customer?.email,
               phoneNumber: dto.Customer?.phoneNumber,
-             },
+            },
           },
         },
         include: {
           status: true,
           Received: true,
           Planned: true,
-          CustomerContacts: true,
+          customerContacts: true,
           NotPossible: true,
           Postponed: true,
           Cancelled: true,
@@ -90,11 +96,61 @@ export class IstaService {
       });
       return order;
     } catch (error) {
-      console.error("Fehler beim Speichern:", error);
-      throw new Error("Fehler beim Speichern der Bestellung und des Kunden");
+      console.error('Fehler beim Speichern:', error);
+      throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
     }
   }
-  
+
+  async receivedOrderWithCustomerId(customerId: number, dto: ReceivedDto) {
+    console.log('customerId:', customerId);
+    console.log('receivedDto:', dto);
+
+    try {
+      const order = await this.prisma.order.create({
+        data: {
+          actualStatus: Status.RECEIVED,
+          Customer: {
+            connect: {
+              id: customerId,
+            },
+          },
+          Received: {
+            create: {
+              orderstatusType: dto.orderstatusType || '007',
+              setOn: dto.setOn,
+              customerContacts: {
+                create:
+                  dto.customerContacts?.map((contact) => ({
+                    contactAttemptOn: contact.contactAttemptOn,
+                    contactPersonCustomer: contact.contactPersonCustomer,
+                    agentCP: contact.agentCP,
+                    result: contact.result,
+                    remark: contact.remark,
+                  })) ?? [],
+              },
+            },
+          },
+        },
+        include: {
+          status: true,
+          Received: true,
+          Planned: true,
+          customerContacts: true,
+          NotPossible: true,
+          Postponed: true,
+          Cancelled: true,
+          Rejected: true,
+          ClosedContractPartner: true,
+          Customer: true,
+        },
+      });
+
+      return order;
+    } catch (error) {
+      console.error('Fehler beim Speichern:', error);
+      throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
+    }
+  }
 
   async createOrder(dto: OrderDto) {
     const order = await this.prisma.order.create({
@@ -105,9 +161,6 @@ export class IstaService {
         status: {
           create: dto.status,
         },
-        // CustomerContacts: {
-        //   create: dto.CustomerContacts,
-        // },
         NotPossible: {
           create: dto.notPossible,
         },
@@ -123,12 +176,9 @@ export class IstaService {
         // ClosedContractPartner: {
         //   create: dto.closedContractPartner,
         // },
-        Planned: {
-          create: dto.planned,
-        },
-        Received: {
-          create: dto.received,
-        },
+        // Planned: {
+        //   create: dto.planned,
+        // },
         // Die Annahme hier ist, dass `customer` in dto ein Array ist, und Sie möchten mehrere Kunden erstellen
         Customer: {
           create: {
@@ -148,7 +198,7 @@ export class IstaService {
         status: true,
         Received: true,
         Planned: true,
-        CustomerContacts: true,
+        customerContacts: true,
         NotPossible: true,
         Postponed: true,
         Cancelled: true,
@@ -166,13 +216,13 @@ export class IstaService {
         status: true,
         Received: {
           include: {
-            CustomerContact: true, // include CustomerContact related to Received
+            customerContacts: true, // include CustomerContact related to Received
             Request: true, // include Request related to Received
           },
         },
         Planned: {
           include: {
-            CustomerContact: true, // include CustomerContact related to Planned
+            customerContacts: true, // include CustomerContact related to Planned
             Request: true, // include Request related to Planned
           },
         },
@@ -211,14 +261,15 @@ export class IstaService {
   async orderReceived(dto: CreateCustomerOrderDTO) {
     const { Customer, number, remarkExternal, Received } = dto;
     try {
-      // const customer = await this.createCustomer(dto.Customer);
       const order = await this.receivedOrder(dto);
       return order;
     } catch (error) {
-      console.error("Fehler beim Speichern:", error);
-      throw new Error("Fehler beim Speichern der Bestellung und des Kunden");
+      console.error('Fehler beim Speichern:', error);
+      throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
     }
-  }  
+  }
+
+  async orderReceivedWithCustomerId(dto: Received) {}
 
   async getOrderById(orderId: number) {
     return this.prisma.order.findFirst({
@@ -227,15 +278,15 @@ export class IstaService {
         status: true,
         Received: {
           include: {
-            CustomerContact: true, // include CustomerContact related to Received
+            customerContacts: true, // include CustomerContact related to Received
             Request: true, // include Request related to Received
           },
         },
-        CustomerContacts: {
+        customerContacts: {
           include: {
-            ClosedContractPartner: true, // include ClosedContractPartner related to customerContacts
-            planned: true, // include planned related to customerContacts
-            received: true, // include received related to customerContacts
+            ClosedContractPartner: true,
+            planned: true,
+            received: true,
           },
         },
         Planned: true,
@@ -243,7 +294,19 @@ export class IstaService {
         Postponed: true,
         Cancelled: true,
         Rejected: true,
-        ClosedContractPartner: true,
+        ClosedContractPartner: {
+          include: {
+            recordedSystem: {
+              include: {
+                property: true,
+                drinkingWaterFacility: true,
+              },
+            },
+            suppliedDocuments: true, // include Request related to ClosedContractPartner
+            ReportOrderStatusRequest: true,
+            services: true, // include Service related to recordedSystem
+          },
+        },
         Customer: true,
       },
     });
@@ -282,12 +345,9 @@ export class IstaService {
         // ClosedContractPartner: {
         //   create: dto.closedContractPartner,
         // },
-        Planned: {
-          create: dto.planned,
-        },
-        Received: {
-          create: dto.received,
-        },
+        // Planned: {
+        //   create: dto.planned,
+        // },
         Customer: {
           create: {
             firstName: dto.customer?.firstName,
@@ -308,12 +368,12 @@ export class IstaService {
         status: true,
         Received: {
           include: {
-            CustomerContact: true, // include CustomerContact related to Received
-            Request: true, // include Request related to Received
+            customerContacts: true,
+            Request: true,
           },
         },
         Planned: true,
-        CustomerContacts: true,
+        customerContacts: true,
         NotPossible: true,
         Postponed: true,
         Cancelled: true,
@@ -327,8 +387,10 @@ export class IstaService {
   }
 
   async createCustomer(dto: CustomerDTO) {
+    console.log('company name:', dto.companyName);
     const customer = await this.prisma.customer.create({
       data: {
+        companyName: dto.companyName, // hinzugefügt
         firstName: dto.firstName,
         lastName: dto.lastName,
         phoneNumber: dto.phoneNumber, // hinzugefügt
@@ -338,9 +400,27 @@ export class IstaService {
         email: dto.email, // hinzugefügt
         country: dto.country, // hinzugefügt
         fax: dto.fax, // hinzugefügt
-        companyName: dto.companyName, // hinzugefügt
         propertyNumber: dto.propertyNumber, // hinzugefügt
-        // ... andere Felder entsprechend der CustomerDTO-Definition
+      },
+    });
+    return customer;
+  }
+
+  async updateCustomer(customerId: number, dto: CustomerDTO) {
+    const customer = await this.prisma.customer.update({
+      where: { id: customerId },
+      data: {
+        companyName: dto.companyName,
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        phoneNumber: dto.phoneNumber,
+        street: dto.street,
+        zipCode: dto.zipCode,
+        place: dto.place,
+        email: dto.email,
+        country: dto.country,
+        fax: dto.fax,
+        propertyNumber: dto.propertyNumber,
       },
     });
     return customer;
@@ -349,6 +429,9 @@ export class IstaService {
   async getCustomerById(customerId: number) {
     return this.prisma.customer.findFirst({
       where: { id: customerId },
+      include: {
+        orders: true,
+      },
     });
   }
 
@@ -365,61 +448,59 @@ export class IstaService {
             id: orderId,
           },
         },
-        // Verbindet den Rejected-Eintrag mit einem Request-Eintrag
-        // Request: {
-        //   connect: {
-        //     id: requestId,
-        //   },
-        // },
       },
     });
   }
 
-  async orderPostponed(orderId: number, requestId: number | null, dto: PostponedDto): Promise<Postponed | null> {
+  async orderPostponed(
+    orderId: number,
+    requestId: number | null,
+    dto: PostponedDto,
+  ): Promise<Postponed | null> {
     try {
-      console.log("orderPostponed: ", dto);
-      console.log("orderID: ", orderId);
-      console.log("requestID: ", requestId);  // Log the requestId to debug
-  
       // Aktualisieren des updatedAt Feldes der Order
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(),
-                actualStatus: "POSTPONED" }
+        data: { updatedAt: new Date(), actualStatus: Status.POSTPONED },
       });
-  
+
       const postponedEntry = await this.prisma.postponed.create({
         data: {
-          statusType: dto.statusType,
-          setOn: dto.setOn,
-          nextContactAttemptOn: dto.nextContactAttemptOn,
+          statusType: Status.POSTPONED || 'POSTPONED',
+          setOn: dto.setOn || new Date(), // Set new date if empty
+          nextContactAttemptOn: dto.nextContactAttemptOn || new Date(),
           postponedReason: dto.postponedReason,
           Order: {
-            connect: { id: orderId }
+            connect: { id: orderId },
           },
-          Request: requestId ? {
-            connect: { id: requestId }
-          } : undefined,
+          Request: requestId
+            ? {
+                connect: { id: requestId },
+              }
+            : undefined,
         },
       });
-      
+
       return postponedEntry;
     } catch (error) {
       console.error('Error creating postponed entry:', error);
       return null;
     }
-  }  
+  }
 
-  async orderCancelled(orderId: number, requestId: number | null, dto: CancelledDto): Promise<Cancelled | null> {
+  async orderCancelled(
+    orderId: number,
+    requestId: number | null,
+    dto: CancelledDto,
+  ): Promise<Cancelled | null> {
     try {
-      console.log("orderCancelled: ", dto);
-      console.log("orderID: ", orderId);
-      console.log("requestID: ", requestId);  // Log the requestId to debug
-  
+      console.log('orderCancelled: ', dto);
+      console.log('orderID: ', orderId);
+      console.log('requestID: ', requestId); // Log the requestId to debug
+
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(),
-                actualStatus: "CANCELLED" }
+        data: { updatedAt: new Date(), actualStatus: Status.CANCELLED },
       });
 
       const cancelledEntry = await this.prisma.cancelled.create({
@@ -432,11 +513,13 @@ export class IstaService {
               id: orderId,
             },
           },
-          Request: requestId ? {
-            connect: {
-              id: requestId,
-            },
-          } : undefined,
+          Request: requestId
+            ? {
+                connect: {
+                  id: requestId,
+                },
+              }
+            : undefined,
           // Wenn Sie auch Contact-Daten haben, fügen Sie diese hier hinzu
         },
       });
@@ -447,40 +530,56 @@ export class IstaService {
     }
   }
 
-  async orderPlanned(orderId: number, requestId: number | null, dto: PlannedDto): Promise<Planned | null> {
+  async orderPlanned(
+    orderId: number,
+    requestId: number | null,
+    dto: PlannedDto,
+  ): Promise<Planned | null> {
     try {
-      console.log("orderPlanned: ", dto);
-      console.log("orderID: ", orderId);
-      console.log("requestID: ", requestId);  // Log the requestId to debug
-  
+      const detailedScheduleTimeFrom = dto.detailedScheduleTimeFrom + ':00';
+      const detailedScheduleTimeTo = dto.detailedScheduleTimeTo + ':00';
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(),
-                actualStatus: "PLANNED" }
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.PLANNED,
+          remarkExternal: dto.remarkExternal,
+        },
       });
 
       const plannedEntry = await this.prisma.planned.create({
         data: {
-          orderstatusType: dto.orderstatusType, // Optional, gemäß Ihrem Schema
-          setOn: dto.setOn, // Optional, gemäß Ihrem Schema
-          detailedScheduleDate: dto.detailedScheduleDate, // Optional, gemäß Ihrem Schema
-          detailedScheduleTimeFrom: dto.detailedScheduleTimeFrom, // Optional, gemäß Ihrem Schema
-          detailedScheduleTimeTo: dto.detailedScheduleTimeTo, // Optional, gemäß Ihrem Schema
-          detailedScheduleDelayReason: dto.detailedScheduleDelayReason, // Optional, gemäß Ihrem Schema
-          Order: { // Verbindung zur Order-Entität durch die orderId
+          orderstatusType: Status.PLANNED,
+          setOn: dto.setOn,
+          detailedScheduleDate: dto.detailedScheduleDate,
+          detailedScheduleTimeFrom: detailedScheduleTimeFrom,
+          detailedScheduleTimeTo: detailedScheduleTimeTo,
+          detailedScheduleDelayReason: dto.detailedScheduleDelayReason,
+          Order: {
+            // Verbindung zur Order-Entität durch die orderId
             connect: {
               id: orderId,
             },
           },
-          Request: requestId ? { // Verbindung zur Request-Entität, falls requestId vorhanden ist
-            connect: {
-              id: requestId,
-            },
-          } : undefined,
-          // Falls notwendig, fügen Sie hier die Logik hinzu, um CustomerContacts zu verbinden
+          customerContacts: {
+            create: dto.customerContacts?.map((contact) => ({
+              contactAttemptOn: contact.contactAttemptOn,
+              contactPersonCustomer: contact.contactPersonCustomer,
+              agentCP: contact.agentCP,
+              result: contact.result,
+              remark: contact.remark,
+            })),
+          },
+          Request: requestId
+            ? {
+                connect: {
+                  id: requestId,
+                },
+              }
+            : undefined,
         },
       });
-      
+
       return plannedEntry;
     } catch (error) {
       console.error('Error creating planned entry:', error);
@@ -488,16 +587,15 @@ export class IstaService {
     }
   }
 
-  async orderNotPossible(orderId: number, requestId: number | null, dto: NotPossibleDto): Promise<NotPossible | null> {
+  async orderNotPossible(
+    orderId: number,
+    requestId: number | null,
+    dto: NotPossibleDto,
+  ): Promise<NotPossible | null> {
     try {
-      console.log("createNotPossibleEntry: ", dto);
-      console.log("orderID: ", orderId);
-      console.log("requestID: ", requestId); // Log the requestId to debug
-  
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(),
-                actualStatus: "NOTPOSSIBLE" }
+        data: { updatedAt: new Date(), actualStatus: Status.NOTPOSSIBLE },
       });
 
       const notPossibleEntry = await this.prisma.notPossible.create({
@@ -507,19 +605,23 @@ export class IstaService {
           Contact: {
             // Hier können Sie Logik zum Verbinden von Kontakten hinzufügen, wenn notwendig
           },
-          Order: { // Verbindung zur Order-Entität durch die orderId
+          Order: {
+            // Verbindung zur Order-Entität durch die orderId
             connect: {
               id: orderId,
             },
           },
-          Request: requestId ? { // Verbindung zur Request-Entität, falls requestId vorhanden ist
-            connect: {
-              id: requestId,
-            },
-          } : undefined,
+          Request: requestId
+            ? {
+                // Verbindung zur Request-Entität, falls requestId vorhanden ist
+                connect: {
+                  id: requestId,
+                },
+              }
+            : undefined,
         },
       });
-  
+
       return notPossibleEntry;
     } catch (error) {
       console.error('Error creating not possible entry:', error);
@@ -527,45 +629,174 @@ export class IstaService {
     }
   }
 
-  async orderClosedContractPartner(orderId: number | null, dto: ClosedContractPartnerDto): Promise<ClosedContractPartner | null> {
-    try {  
+  async orderClosedContractPartner(
+    orderId: number | null,
+    dto: ClosedContractPartnerDto,
+  ): Promise<ClosedContractPartner | null> {
+    try {
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(),
-                actualStatus: "CLOSED" }
-      });
-
-      const closedContractPartnerEntry = await this.prisma.closedContractPartner.create({
         data: {
-          orderstatusType: dto.orderstatusType,
-          setOn: dto.setOn,
-          deficiencyDescription: dto.deficiencyDescription,
-          registrationHealthAuthoritiesOn: dto.registrationHealthAuthoritiesOn,
-          extraordinaryExpenditureReason: dto.extraordinaryExpenditureReason,
-          order: orderId ? {
-            connect: {
-              id: orderId,
-            },
-          } : undefined,
-          // Für die nachfolgenden Beziehungen könnten Sie zusätzliche Logik hinzufügen, um sie je nach den in dto übergebenen Daten zu verbinden oder zu erstellen
-          Contact: {
-            // ... (Logik zum Verbinden oder Erstellen von Kontakten)
-          },
-          recordedSystem: {
-            // ... (Logik zum Verbinden oder Erstellen von recordedSystem Einträgen)
-          },
-          ReportOrderStatusRequest: {
-            // ... (Logik zum Verbinden oder Erstellen von ReportOrderStatusRequest Einträgen)
-          },
-          suppliedDocuments: {
-            // ... (Logik zum Verbinden oder Erstellen von suppliedDocuments Einträgen)
-          },
-          CustomerContact: {
-            // ... (Logik zum Verbinden oder Erstellen von CustomerContact Einträgen)
-          },
+          updatedAt: new Date(),
+          actualStatus: Status.CLOSEDCONTRACTPARTNER,
         },
       });
-  
+
+      const closedContractPartnerEntry =
+        await this.prisma.closedContractPartner.create({
+          data: {
+            order: {
+              connect: {
+                id: orderId,
+              },
+            },
+            orderstatusType: dto?.orderstatusType || null,
+            setOn: dto?.setOn || new Date(),
+            deficiencyDescription: dto?.deficiencyDescription || null,
+            registrationHealthAuthoritiesOn:
+              dto?.registrationHealthAuthoritiesOn || new Date(),
+            extraordinaryExpenditureReason:
+              dto?.extraordinaryExpenditureReason || null,
+            customerContacts: {
+              create:
+                dto.customerContacts?.map((contact) => ({
+                  contactAttemptOn: contact?.contactAttemptOn || new Date(),
+                  contactPersonCustomer: contact?.contactPersonCustomer || null,
+                  agentCP: contact?.agentCP || null,
+                  result: contact?.result || null,
+                  remark: contact?.remark || null,
+                })) ?? [],
+            },
+            recordedSystem: {
+              create: dto.recordedSystem?.map((rs) => ({
+                drinkingWaterFacility: {
+                  create: rs.drinkingWaterFacility?.map((dwf) => ({
+                    consecutiveNumber: dwf?.consecutiveNumber || null,
+                    usageType: dwf?.usageType || null,
+                    usageTypeOthers: dwf?.usageTypeOthers || null,
+                    numberSuppliedUnits: dwf?.numberSuppliedUnits || null,
+                    numberDrinkingWaterHeater:
+                      dwf?.numberDrinkingWaterHeater || null,
+                    totalVolumeLitres: dwf?.totalVolumeLitres || null,
+                    pipingSystemType_Circulation:
+                      dwf?.pipingSystemType_Circulation || null,
+                    pipingSystemType_Waterbranchline:
+                      dwf?.pipingSystemType_Waterbranchline || null,
+                    pipingSystemType_Pipetraceheater:
+                      dwf?.pipingSystemType_Pipetraceheater || null,
+                    pipingVolumeGr3Litres: dwf?.pipingVolumeGr3Litres,
+                    deadPipeKnown: dwf?.deadPipeKnown || null,
+                    deadPipesPosition: dwf?.deadPipesPosition || null,
+                    numberAscendingPipes: dwf?.numberAscendingPipes || null,
+                    explanation: dwf?.explanation || null,
+                    numberSuppliedPersons: dwf?.numberSuppliedPersons || null,
+                    aerosolformation: dwf?.aerosolformation || null,
+                    pipeworkSchematicsAvailable:
+                      dwf?.pipeworkSchematicsAvailable || null,
+                    numberColdWaterLegs: dwf?.numberColdWaterLegs || null,
+                    numberHotWaterLegs: dwf?.numberHotWaterLegs || null,
+                    temperatureCirculationDWH_A:
+                      dwf?.temperatureCirculationDWH_A || null,
+                    temperatureCirculationDWH_B:
+                      dwf?.temperatureCirculationDWH_B || null,
+                    heatExchangerSystem_central:
+                      dwf?.heatExchangerSystem_central || null,
+                    heatExchangerSystem_districtheating:
+                      dwf?.heatExchangerSystem_districtheating || null,
+                    heatExchangerSystem_continuousflowprinciple:
+                      dwf?.heatExchangerSystem_continuousflowprinciple || null,
+                    samplingPoints: {
+                      create: dwf?.samplingPoints?.map((sp) => ({
+                        consecutiveNumber: sp?.consecutiveNumber || null,
+                        installationNumber: sp?.installationNumber || null,
+                        numberObjectInstallationLocation:
+                          sp?.numberObjectInstallationLocation || null,
+                        pipingSystemType: sp?.pipingSystemType || null,
+                        remoteSamplingPoint: sp?.remoteSamplingPoint || null,
+                        roomType: sp?.roomType || null,
+                        roomPosition: sp?.roomPosition || null,
+                        positionDetail: sp?.positionDetail || null,
+                      })) ?? [SamplingPointDto],
+                    },
+                    ascendingPipes: {
+                      create: dwf?.ascendingPipes?.map((ap) => ({
+                        consecutiveNumber: ap?.consecutiveNumber || null,
+                        ascendingPipeTemperatureDisplayPresent:
+                          ap?.ascendingPipeTemperatureDisplayPresent || null,
+                        flowTemperature: ap?.flowTemperature || null,
+                        circulationTemperatureDisplayPresent:
+                          ap?.circulationTemperatureDisplayPresent || null,
+                        circulationTemperature:
+                          ap?.circulationTemperature || null,
+                        pipeDiameter: ap?.pipeDiameter || null,
+                        pipeMaterialtype: ap?.pipeMaterialtype || null,
+                      })) ?? [AscendingPipeDto],
+                    },
+                    drinkingWaterHeaters: {
+                      create: dwf?.drinkingWaterHeaters?.map((dwh) => ({
+                        consecutiveNumber: dwh?.consecutiveNumber || null,
+                        inletTemperatureDisplayPresent:
+                          dwh?.inletTemperatureDisplayPresent || null,
+                        inletTemperature: dwh?.inletTemperature || null,
+                        outletTemperatureDisplayPresent:
+                          dwh?.outletTemperatureDisplayPresent || null,
+                        outletTemperature: dwh?.outletTemperature || null,
+                        pipeDiameterOutlet: dwh?.pipeDiameterOutlet || null,
+                        pipeMaterialtypeOutlet:
+                          dwh?.pipeMaterialtypeOutlet || null,
+                        volumeLitre: dwh?.volumeLitre || null,
+                        roomType: dwh?.roomType || null,
+                        roomPosition: dwh?.roomPosition || null,
+                        positionDetail: dwh?.positionDetail || null,
+                        unit: {
+                          create: dwh?.unit ?? undefined,
+                          // create:{
+                          //   floor: dwh?.unit?.floor,
+                          //   storey: dwh?.unit?.storey,
+                          //   position: dwh?.unit?.position,
+                          //   userName: dwh?.unit?.userName,
+                          //   generalUnit: dwh?.unit?.generalUnit,
+                          //   buildingId: dwh?.unit?.buildingId,
+                          // },
+                        },
+                      })),
+                    },
+                  })) ?? [DrinkingWaterFacilityDto],
+                },
+                property: {
+                  create: {
+                    hotwatersupplyType_central:
+                      rs?.property?.hotwatersupplyType_central || false,
+                    hotwatersupplyType_decentral:
+                      rs?.property?.hotwatersupplyType_decentral || false,
+                  },
+                },
+              })) ?? [undefined],
+            },
+            services: {
+              create:
+                dto.services?.map((service) => ({
+                  articleNumber_ista: service.articleNumber_ista || null,
+                  quantity: service.quantity || null,
+                  unit: service.unit || null,
+                  extraordinaryExpenditure:
+                    service.extraordinaryExpenditure || null,
+                  purchasePrice_ista: service.purchasePrice_ista || null,
+                  warranty: service.warranty || null,
+                  serviceRenderedIn: {
+                    create: {
+                      street: service.serviceRenderedIn.street || null,
+                      zipCode: service.serviceRenderedIn.postcode || null,
+                      place: service.serviceRenderedIn.city || null,
+                      country: service.serviceRenderedIn.country || null,
+                    }
+                      ? service.serviceRenderedIn
+                      : null,
+                  },
+                })) ?? [],
+            },
+          },
+        });
       return closedContractPartnerEntry;
     } catch (error) {
       console.error('Error creating closed contract partner entry:', error);
@@ -574,38 +805,48 @@ export class IstaService {
   }
 
   //Received
-  async updateOrderReceived(orderId:number | null, dto: ReceivedDto): Promise<Order | null> {
+  async updateOrderReceived(
+    orderId: number | null,
+    dto: ReceivedDto,
+  ): Promise<Order | null> {
     try {
-      console.log("createReceivedEntry: ", dto);
-      console.log("orderID: ", orderId); // Log the orderId to debug
-  
       const receivedEntry = await this.prisma.received.create({
         data: {
-          orderstatusType: "RECEIVED", // Optional, gemäß Ihrem Schema
-          setOn: dto.setOn, // Optional, gemäß Ihrem Schema
-          CustomerContact: {
+          orderstatusType: Status.RECEIVED,
+          setOn: dto.setOn,
+          customerContacts: {
             create: {
-              contactAttemptOn: new Date(dto.contactAttemptOn),
+              contactAttemptOn: dto?.contactAttemptOn
+                ? new Date(dto?.contactAttemptOn)
+                : new Date(),
               contactPersonCustomer: dto?.contactPersonCustomer,
               agentCP: dto?.agentCP,
               result: dto?.result,
               remark: dto?.remark,
-            }
-          },
-          Order: orderId ? { // Verbindung zur Order-Entität durch die orderId
-            connect: {
-              id: orderId,
             },
-          } : undefined,
+          },
+          Order: orderId
+            ? {
+                // Verbindung zur Order-Entität durch die orderId
+                connect: {
+                  id: orderId,
+                },
+              }
+            : undefined,
           // Falls notwendig, fügen Sie hier die Logik hinzu, um CustomerContacts zu verbinden
         },
       });
-  
+
+      console.log('receivedEntry: ', receivedEntry);
+
       // Find and return the updated Order entity
       if (orderId) {
         const updatedOrder = await this.prisma.order.findUnique({
           where: { id: orderId },
-          include: { Received: true } // Include the Received entities related to the Order
+          include: {
+            Received: true, // Include the Received entities related to the Order
+            customerContacts: true, // Include the CustomerContact entities related to the Order
+          },
         });
         return updatedOrder;
       }
@@ -613,44 +854,67 @@ export class IstaService {
       console.error('Error creating received entry:', error);
       return null;
     }
-  }  
-
-  reportOrderStatus(payload: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.client.reportOrderStatus(payload, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
   }
 
   async deleteOrder(orderId: number): Promise<Order | null> {
     console.log('Deleting order with id:', orderId);
     try {
-    // Löschen der abhängigen Datensätze
-    await this.prisma.cancelled.deleteMany({ where: { orderId } });
-    await this.prisma.closedContractPartner.deleteMany({ where: { orderId } });
-    await this.prisma.notPossible.deleteMany({ where: { orderId } });
-    await this.prisma.planned.deleteMany({ where: { orderId } });
-    await this.prisma.postponed.deleteMany({ where: { orderId } });
-    await this.prisma.received.deleteMany({ where: { orderId } });
-    await this.prisma.rejected.deleteMany({ where: { orderId } });
-    await this.prisma.orderStatus.deleteMany({ where: { orderId } });
-    await this.prisma.customerContact.deleteMany({ where: { orderId } });
-    // Fügen Sie hier ähnliche Löschvorgänge für andere abhängige Tabellen hinzu...
+      // Löschen der abhängigen Datensätze
+      await this.prisma.cancelled.deleteMany({ where: { orderId } });
+      await this.prisma.closedContractPartner.deleteMany({
+        where: { orderId },
+      });
+      await this.prisma.notPossible.deleteMany({ where: { orderId } });
+      await this.prisma.planned.deleteMany({ where: { orderId } });
+      await this.prisma.postponed.deleteMany({ where: { orderId } });
+      await this.prisma.received.deleteMany({ where: { orderId } });
+      await this.prisma.rejected.deleteMany({ where: { orderId } });
+      await this.prisma.orderStatus.deleteMany({ where: { orderId } });
+      await this.prisma.customerContact.deleteMany({ where: { orderId } });
+      // Fügen Sie hier ähnliche Löschvorgänge für andere abhängige Tabellen hinzu...
 
-    // Löschen des Auftrags
-    const deletedOrder = await this.prisma.order.delete({ where: { id: orderId } });
-    console.log('Deleted order:', deletedOrder);
-    
-    return deletedOrder;
+      // Löschen des Auftrags
+      const deletedOrder = await this.prisma.order.delete({
+        where: { id: orderId },
+      });
+      console.log('Deleted order:', deletedOrder);
+
+      return deletedOrder;
     } catch (error) {
       console.error('Error deleting order:', error);
       // Hier könnten Sie einen spezifischen Fehlercode zurückgeben oder eine benutzerfreundliche Fehlermeldung
-      throw new Error('Order could not be deleted. Please check for related data.');
+      throw new Error(
+        'Order could not be deleted. Please check for related data.',
+      );
+    }
+  }
+
+  async doneOrder(orderId: number): Promise<Order | null> {
+    try {
+      console.log('Updating order with id:', orderId);
+      const updatedOrder = await this.prisma.order.update({
+        where: { id: orderId },
+        data: {
+          actualStatus: Status.DONE,
+          updatedAt: new Date(),
+        },
+        include: {
+          status: true,
+          Received: true,
+          Planned: true,
+          customerContacts: true,
+          NotPossible: true,
+          Postponed: true,
+          Cancelled: true,
+          Rejected: true,
+          ClosedContractPartner: true,
+          Customer: true,
+        },
+      });
+      return updatedOrder;
+    } catch (error) {
+      console.error('Error updating order:', error);
+      return null;
     }
   }
 }

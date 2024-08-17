@@ -1,6 +1,5 @@
 import { AscendingPipeDto } from "./AscendingPipeDto";
 import { DrinkingWaterHeaterDto } from "./DrinkingWaterHeaterDto";
-import { RecordedSystemDto } from "./RecordedSystemDto";
 import { SamplingPointDto } from "./SamplingPointDto";
 export declare class DrinkingWaterFacilityDto {
     id: number;
@@ -17,9 +16,9 @@ export declare class DrinkingWaterFacilityDto {
     deadPipeKnown: boolean;
     deadPipesPosition: string;
     numberAscendingPipes: number;
-    aerosolformation: boolean;
     explanation: string;
     numberSuppliedPersons: number;
+    aerosolformation: boolean;
     pipeworkSchematicsAvailable: boolean;
     numberColdWaterLegs: number;
     numberHotWaterLegs: number;
@@ -31,5 +30,4 @@ export declare class DrinkingWaterFacilityDto {
     drinkingWaterHeaters: DrinkingWaterHeaterDto[];
     ascendingPipes: AscendingPipeDto[];
     samplingPoints: SamplingPointDto[];
-    recordedSystems: RecordedSystemDto[];
 }

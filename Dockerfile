@@ -2,7 +2,7 @@
 ARG NODE_ENV=production
 
 # Base image for both development and production
-FROM node:18-alpine As base
+FROM node:20-alpine As base
 WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 

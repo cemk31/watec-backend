@@ -18,21 +18,27 @@ class ServiceDto {
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 123 }),
     (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], ServiceDto.prototype, "articleNumber_ista", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 5 }),
     (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], ServiceDto.prototype, "quantity", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'kg' }),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], ServiceDto.prototype, "unit", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: true }),
     (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], ServiceDto.prototype, "extraordinaryExpenditure", void 0);
 __decorate([

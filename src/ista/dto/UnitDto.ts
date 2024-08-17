@@ -1,13 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsString, IsOptional, IsBoolean } from "class-validator";
+import { IsInt, IsString, IsOptional, IsBoolean, IsNumber } from "class-validator";
 
 export class UnitDto {
     @ApiProperty({ example: 1 })
-    @IsInt()
+    @IsNumber()
+    @IsOptional()
     floor: number;
   
     @ApiProperty({ example: 'First Floor' })
     @IsString()
+    @IsOptional()
     storey: string;
   
     @ApiProperty({ example: 2 })
@@ -22,9 +24,11 @@ export class UnitDto {
   
     @ApiProperty({ example: true })
     @IsBoolean()
+    @IsOptional()
     generalUnit: boolean;
   
     @ApiProperty({ example: 1 })
     @IsInt()
+    @IsOptional()
     buildingId: number;
   }

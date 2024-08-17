@@ -19,9 +19,7 @@ export declare class AuthService {
     signin(dto: LoginAuthDto): Promise<{
         access_token: string;
     }>;
-    signToken(userId: number, email: string): Promise<{
-        access_token: string;
-    }>;
+    private signToken;
     updateUser(userId: number, newEmail: string, newPassword: string): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         createdAt: Date;

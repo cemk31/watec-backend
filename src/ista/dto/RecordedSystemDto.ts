@@ -7,21 +7,21 @@ import { ServiceDto } from "./ServiceDto";
 
 export class RecordedSystemDto {
     @ApiProperty({ example: 1 })
-    @IsNotEmpty()
+    @IsOptional()
     @IsInt()
     id: number;
   
-    @ApiProperty({ type: () => DrinkingWaterFacilityDto })
-    @IsNotEmpty()
-    drinkingWaterFacility: DrinkingWaterFacilityDto;
+    @ApiProperty({ type: () => [DrinkingWaterFacilityDto] })
+    @IsOptional()
+    drinkingWaterFacility: DrinkingWaterFacilityDto[];
   
     @ApiProperty({ type: () => PropertyDto })
     @IsOptional()
     property?: PropertyDto;
   
     @ApiProperty({ type: () => [ServiceDto] })
-    @IsNotEmpty()
-    services: ServiceDto[];
+    @IsOptional()
+    services?: ServiceDto[];
   
     @ApiProperty({ type: () => ClosedContractPartnerDto })
     @IsOptional()

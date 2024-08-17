@@ -16,7 +16,7 @@ class CustomerContactDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '2023-01-01T00:00:00Z' }),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], CustomerContactDto.prototype, "contactAttemptOn", void 0);

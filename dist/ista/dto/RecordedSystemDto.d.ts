@@ -4,8 +4,8 @@ import { PropertyDto } from "./PropertyDto";
 import { ServiceDto } from "./ServiceDto";
 export declare class RecordedSystemDto {
     id: number;
-    drinkingWaterFacility: DrinkingWaterFacilityDto;
+    drinkingWaterFacility: DrinkingWaterFacilityDto[];
     property?: PropertyDto;
-    services: ServiceDto[];
+    services?: ServiceDto[];
     closedContractPartner?: ClosedContractPartnerDto;
 }

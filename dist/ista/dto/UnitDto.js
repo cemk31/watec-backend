@@ -16,12 +16,14 @@ class UnitDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
-    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UnitDto.prototype, "floor", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'First Floor' }),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UnitDto.prototype, "storey", void 0);
 __decorate([
@@ -39,11 +41,13 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: true }),
     (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], UnitDto.prototype, "generalUnit", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
     (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], UnitDto.prototype, "buildingId", void 0);
 exports.UnitDto = UnitDto;

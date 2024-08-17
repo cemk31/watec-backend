@@ -29,22 +29,22 @@ let AuthService = class AuthService {
     }
     async sendSuccessFullRegistrationEmail(email) {
         const transporter = nodemailer.createTransport({
-            host: "send.one.com",
+            host: 'send.one.com',
             port: 465,
             secure: true,
             auth: {
-                user: "info@spootech.com",
-                pass: "Welcome123.",
+                user: 'info@spootech.com',
+                pass: 'Welcome123.',
             },
             tls: {
                 rejectUnauthorized: false,
             },
         });
-        console.log("email", email);
+        console.log('email', email);
         let mailOptions = {
             from: '"Spootech", <info@spootech.com>',
             to: email,
-            subject: "Registrierung erfolgreich!",
+            subject: 'Registrierung erfolgreich!',
             html: `<b>Registrierung erfolgreich!</b><p>Ihre Registrierung war erfolgreich!</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Support Team</b></p>`,
         };
         await transporter.sendMail(mailOptions);
@@ -52,22 +52,22 @@ let AuthService = class AuthService {
     async sendConfirmationEmail(email, confirmationToken) {
         try {
             const transporter = nodemailer.createTransport({
-                host: "send.one.com",
+                host: 'send.one.com',
                 port: 465,
                 secure: true,
                 auth: {
-                    user: "info@spootech.com",
-                    pass: "Welcome123.",
+                    user: 'info@spootech.com',
+                    pass: 'Welcome123.',
                 },
                 tls: {
                     rejectUnauthorized: false,
                 },
             });
-            console.log("email", email);
+            console.log('email', email);
             let mailOptions = {
                 from: '"Spootech", <info@spootech.com>',
                 to: email,
-                subject: confirmationToken + " Ihr Token zum zurücksetzen Ihres Passwortes",
+                subject: confirmationToken + ' Ihr Token zum zurücksetzen Ihres Passwortes',
                 html: `<b>${confirmationToken}</b><p>Ihr Token zur Wiederherstellung Ihres Passwortes!</p> <p>Bitte geben Sie diesen Token in der App ein, um Ihr Passwort zurückzusetzen.</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Support Team</b></p>`,
             };
             await transporter.sendMail(mailOptions);
@@ -79,7 +79,7 @@ let AuthService = class AuthService {
     }
     async signup(dto) {
         const hash = await argon.hash(dto.password);
-        console.log("hash", hash);
+        console.log('hash', hash);
         const confirmationToken = this.generateToken();
         const existingUser = await this.prisma.user.findUnique({
             where: { email: dto.email },
@@ -135,6 +135,7 @@ let AuthService = class AuthService {
         });
         if (!user || user.isConfirmed == false)
             throw new common_1.ForbiddenException('Credentials incorrect');
+        console.log('user', user);
         const pwMatches = await argon.verify(user.hash, dto.password);
         if (!pwMatches)
             throw new common_1.ForbiddenException('Credentials incorrect');
@@ -175,7 +176,7 @@ let AuthService = class AuthService {
         return updatedUser;
     }
     async forgotPassword(email) {
-        console.log("email", email);
+        console.log('email', email);
         const user = await this.prisma.user.findFirst({
             where: { email },
         });
@@ -183,14 +184,14 @@ let AuthService = class AuthService {
             throw new common_1.ForbiddenException('User not found');
         }
         const passwordResetToken = this.generateToken();
-        console.log("passwordResetToken", passwordResetToken);
+        console.log('passwordResetToken', passwordResetToken);
         const updatedUser = await this.prisma.user.update({
             where: { email: user.email },
             data: { confirmationToken: passwordResetToken },
         });
-        console.log("updatedUser", updatedUser);
-        console.log("email", email);
-        console.log("passwordResetToken", passwordResetToken);
+        console.log('updatedUser', updatedUser);
+        console.log('email', email);
+        console.log('passwordResetToken', passwordResetToken);
         await this.sendConfirmationEmail(updatedUser.email, updatedUser.confirmationToken);
         return updatedUser;
     }
@@ -212,7 +213,9 @@ let AuthService = class AuthService {
         console.log('Deleting order with id:', orderId);
         try {
             await this.prisma.cancelled.deleteMany({ where: { orderId } });
-            await this.prisma.closedContractPartner.deleteMany({ where: { orderId } });
+            await this.prisma.closedContractPartner.deleteMany({
+                where: { orderId },
+            });
             await this.prisma.notPossible.deleteMany({ where: { orderId } });
             await this.prisma.planned.deleteMany({ where: { orderId } });
             await this.prisma.postponed.deleteMany({ where: { orderId } });
@@ -220,7 +223,9 @@ let AuthService = class AuthService {
             await this.prisma.rejected.deleteMany({ where: { orderId } });
             await this.prisma.orderStatus.deleteMany({ where: { orderId } });
             await this.prisma.customerContact.deleteMany({ where: { orderId } });
-            const deletedOrder = await this.prisma.order.delete({ where: { id: orderId } });
+            const deletedOrder = await this.prisma.order.delete({
+                where: { id: orderId },
+            });
             console.log('Deleted order:', deletedOrder);
             return deletedOrder;
         }
