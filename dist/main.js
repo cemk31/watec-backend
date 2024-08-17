@@ -15,7 +15,7 @@ async function bootstrap() {
         app.enableCors({
             origin: [
                 'https://watec-admin-angular-fe.vercel.app',
-                'https://watec-admin-angular-fe-git-development-spootech.vercel.app',
+                'https://watec-dashboard-dev.vercel.app',
             ],
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
             credentials: true,
