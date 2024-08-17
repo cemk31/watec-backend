@@ -25,6 +25,7 @@ model User {
   auftraege         Auftrag[]
   auftraggeber      Auftraggeber[]
   bookmarks         Bookmark[]
+  sync              Sync[]
 
   @@map("users")
 }
@@ -223,7 +224,7 @@ model Order {
 
   Cancelled             Cancelled[]
   ClosedContractPartner ClosedContractPartner[]
-  CustomerContacts      CustomerContact[]
+  customerContacts      CustomerContact[]
   NotPossible           NotPossible[]
   status                OrderStatus[]
   Planned               Planned[]
@@ -293,11 +294,14 @@ model ClosedContractPartner {
   recordedSystem           RecordedSystem[]
   ReportOrderStatusRequest ReportOrderStatusRequest[]
   suppliedDocuments        SuppliedDocuments[]
-  CustomerContact          CustomerContact[]          @relation("ClosedContractPartnerToCustomerContact")
+  customerContacts         CustomerContact[]          @relation("ClosedContractPartnerToCustomerContact")
 
   services  Service[]
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+
+  syncDataId Int?  @unique
+  syncData   Sync?
 }
 
 model SuppliedDocuments {
@@ -555,6 +559,9 @@ model Postponed {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  syncDataId Int?  @unique
+  syncData   Sync?
 }
 
 model Rejected {
@@ -574,6 +581,9 @@ model Rejected {
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+
+  syncDataId Int?  @unique
+  syncData   Sync?
 }
 
 model NotPossible {
@@ -592,6 +602,9 @@ model NotPossible {
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+
+  syncDataId Int?  @unique
+  syncData   Sync?
 }
 
 model Contact {
@@ -638,6 +651,9 @@ model Cancelled {
   requestId Int?      @unique
   Request   Request?  @relation(fields: [requestId], references: [id])
   Contact   Contact[]
+
+  syncDataId Int?  @unique
+  syncData   Sync?
 }
 
 model Planned {
@@ -646,32 +662,40 @@ model Planned {
   orderstatusType             String?
   setOn                       DateTime? @default(now())
   detailedScheduleDate        DateTime?
-  detailedScheduleTimeFrom    DateTime?
-  detailedScheduleTimeTo      DateTime?
+  detailedScheduleTimeFrom    String?
+  detailedScheduleTimeTo      String?
   detailedScheduleDelayReason String?
 
   requestId Int?     @unique
   Request   Request? @relation(fields: [requestId], references: [id])
 
-  CustomerContact CustomerContact[]
-  Order           Order             @relation(fields: [orderId], references: [id])
+  customerContacts CustomerContact[]
+  Order            Order             @relation(fields: [orderId], references: [id])
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+
+  syncDataId Int?  @unique
+  syncData   Sync?
 }
 
 model Received {
-  id              Int               @id @default(autoincrement())
-  orderId         Int
-  orderstatusType String
-  setOn           DateTime?         @default(now())
-  requestId       Int?              @unique
-  createdAt       DateTime?         @default(now())
-  updatedAt       DateTime?         @updatedAt
-  CustomerContact CustomerContact[]
-  Contact         Contact[]
-  Order           Order             @relation(fields: [orderId], references: [id])
-  Request         Request?          @relation(fields: [requestId], references: [id])
+  id               Int               @id @default(autoincrement())
+  orderstatusType  String            @default("007")
+  setOn            DateTime?         @default(now())
+  requestId        Int?              @unique
+  createdAt        DateTime?         @default(now())
+  updatedAt        DateTime?         @updatedAt
+  customerContacts CustomerContact[]
+  Contact          Contact[]
+
+  orderId Int
+  Order   Order @relation(fields: [orderId], references: [id])
+
+  Request Request? @relation(fields: [requestId], references: [id])
+
+  syncDataId Int?  @unique
+  syncData   Sync?
 }
 
 model StatusReport {
@@ -703,4 +727,41 @@ enum Status {
   CANCELLED
   DONE
   CLOSEDCONTRACTPARTNER
+}
+
+model Sync {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastSyncTime DateTime @default(now())
+
+  statusType Status
+
+  syncStatus String
+  syncError  String?
+
+  userEmail String?
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+
+  receivedId Int?      @unique
+  Received   Received? @relation(fields: [receivedId], references: [id])
+
+  plannedId Int?     @unique
+  Planned   Planned? @relation(fields: [plannedId], references: [id])
+
+  postponedId Int?       @unique
+  Postponed   Postponed? @relation(fields: [postponedId], references: [id])
+
+  rejectedId Int?      @unique
+  Rejected   Rejected? @relation(fields: [rejectedId], references: [id])
+
+  cancelledId Int?       @unique
+  Cancelled   Cancelled? @relation(fields: [cancelledId], references: [id])
+
+  notPossibleId Int?         @unique
+  NotPossible   NotPossible? @relation(fields: [notPossibleId], references: [id])
+
+  closedContractPartnerId Int?                   @unique
+  ClosedContractPartner   ClosedContractPartner? @relation(fields: [closedContractPartnerId], references: [id])
 }

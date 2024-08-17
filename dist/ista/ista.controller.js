@@ -28,212 +28,6 @@ const create_done_dto_1 = require("../auftrag/dto/create-done.dto");
 let IstaController = class IstaController {
     constructor(istaService) {
         this.istaService = istaService;
-        this.mockOrderDto = {
-            id: 1,
-            number: '123456789',
-            remarkExternal: 'External Remark',
-            createdAt: new Date(),
-            status: [
-                {
-                    id: 1,
-                    orderId: null,
-                    setOn: new Date(),
-                    executionOnSiteDone: true,
-                    type: 'Type1',
-                },
-            ],
-            CustomerContacts: [
-                {
-                    agentCP: 'Agent CP',
-                    contactPersonCustomer: 'Customer',
-                    contactAttemptOn: new Date(),
-                    remark: 'Remark',
-                    result: 'Success',
-                },
-            ],
-            notPossible: [
-                {
-                    id: 1,
-                    requestId: 1,
-                    orderId: null,
-                    statusType: 'Type1',
-                    setOn: new Date(),
-                    contact: [
-                        {
-                            id: 1,
-                            contactAttemptOn: new Date(),
-                            contactPerson: 'John Doe',
-                            agentCP: 'Agent A',
-                            result: 'Result',
-                            remark: 'Remark',
-                            notPossibleId: 1,
-                            rejectedId: 1,
-                            postponedId: 1,
-                            cancelledId: 1,
-                        },
-                    ],
-                },
-            ],
-            postponed: [
-                {
-                    id: 1,
-                    requestId: 1,
-                    orderId: null,
-                    statusType: 'Type1',
-                    setOn: new Date(),
-                    contact: [
-                        {
-                            id: 1,
-                            contactAttemptOn: new Date(),
-                            contactPerson: 'John Doe',
-                            agentCP: 'Agent A',
-                            result: 'Result',
-                            remark: 'Remark',
-                            notPossibleId: 1,
-                            rejectedId: 1,
-                            postponedId: 1,
-                            cancelledId: 1,
-                        },
-                    ],
-                    nextContactAttemptOn: new Date(),
-                    postponedReason: 'Postponed due to XYZ',
-                },
-            ],
-            cancelled: [
-                {
-                    id: 1,
-                    requestId: 1,
-                    orderId: null,
-                    statusType: 'Cancelled',
-                    setOn: new Date(),
-                    contact: [
-                        {
-                            id: 1,
-                            contactAttemptOn: new Date(),
-                            contactPerson: 'John Doe',
-                            agentCP: 'Agent A',
-                            result: 'Result',
-                            remark: 'Remark',
-                            notPossibleId: 1,
-                            rejectedId: 1,
-                            postponedId: 1,
-                            cancelledId: 1,
-                        },
-                    ],
-                    cancellationReason: 'Cancelled due to XYZ',
-                },
-            ],
-            rejected: [
-                {
-                    id: 1,
-                    requestId: 1,
-                    orderId: null,
-                    statusType: 2,
-                    setOn: new Date(),
-                    contact: [
-                        {
-                            id: 1,
-                            contactAttemptOn: new Date(),
-                            contactPerson: 'John Doe',
-                            agentCP: 'Agent A',
-                            result: 'Result',
-                            remark: 'Remark',
-                            notPossibleId: 1,
-                            rejectedId: 1,
-                            postponedId: 1,
-                            cancelledId: 1,
-                        },
-                    ],
-                    reason: 'Rejected due to ABC',
-                    reasonText: 'Additional Rejection Details',
-                },
-            ],
-            closedContractPartner: [
-                {
-                    id: 1,
-                    orderId: null,
-                    orderstatusType: 1,
-                    setOn: new Date(),
-                    contact: [
-                        {
-                            id: 1,
-                            contactAttemptOn: new Date(),
-                            contactPerson: 'John Doe',
-                            agentCP: 'Agent A',
-                            result: 'Result',
-                            remark: 'Remark',
-                            notPossibleId: 1,
-                            rejectedId: 1,
-                            postponedId: 1,
-                            cancelledId: 1,
-                        },
-                    ],
-                    deficiencyDescription: 'Deficiency Description',
-                    registrationHealthAuthoritiesOn: new Date(),
-                    extraordinaryExpenditureReason: 'Extraordinary Expenditure Reason',
-                    suppliedDocuments: [],
-                    recordedSystem: [],
-                    reportOrderStatusRequest: [],
-                    customerContacts: [],
-                },
-            ],
-            planned: [
-                {
-                    id: 1,
-                    orderId: null,
-                    orderstatusType: '1',
-                    setOn: new Date(),
-                    customerContact: [
-                        {
-                            agentCP: 'Agent CP',
-                            contactPersonCustomer: 'Customer',
-                            contactAttemptOn: new Date(),
-                            remark: 'Remark',
-                            result: 'Success',
-                        },
-                    ],
-                    detailedScheduleDate: new Date(),
-                    detailedScheduleTimeFrom: new Date(),
-                    detailedScheduleTimeTo: new Date(),
-                    detailedScheduleDelayReason: 'Delay Reason',
-                    requestId: 1,
-                },
-            ],
-            received: [
-                {
-                    id: null,
-                    orderId: null,
-                    orderstatusType: 'Status Type',
-                    setOn: new Date(),
-                    contactAttemptOn: new Date(),
-                    contactPersonCustomer: 'Customer',
-                    agentCP: 'Agent CP',
-                    result: 'Success',
-                    remark: 'Remark',
-                    customerContacts: [
-                        {
-                            agentCP: 'Agent CP',
-                            contactPersonCustomer: 'Customer',
-                            contactAttemptOn: new Date(),
-                            remark: 'Remark',
-                            result: 'Success',
-                        },
-                    ],
-                    requestId: 1,
-                },
-            ],
-            customer: {
-                name: 'John Doe',
-                email: 'john.doe@example.com',
-                phoneNumber: '+1234567890',
-                lastName: 'Doe',
-                firstName: 'John',
-                street: '123 Main St',
-                zipCode: '12345',
-                place: 'Springfield',
-                country: 'USA',
-            },
-        };
     }
     createOrder(dto) {
         return this.istaService.createOrder(dto);
@@ -248,23 +42,23 @@ let IstaController = class IstaController {
         const orderId = Number(dto.orderId);
         return this.istaService.updateOrderReceived(orderId, dto);
     }
-    createTestOrder() {
-        return this.istaService.createOrder(this.mockOrderDto);
-    }
-    createCustomerAndOrder(dto) {
-        console.log('customer', dto.Customer);
-        console.log('customer', dto.Received);
-        const order = this.istaService.orderReceived(dto);
+    createCustomerAndOrderById(customerId, received) {
+        console.log('received', received);
+        const order = this.istaService.receivedOrderWithCustomerId(customerId, received);
         return order;
     }
     createCustomer(dto) {
         const customer = this.istaService.createCustomer(dto);
         return customer;
     }
+    updateCustomer(customerId, dto) {
+        return this.istaService.updateCustomer(customerId, dto);
+    }
     getCustomerById(customerId) {
         return this.istaService.getCustomerById(customerId);
     }
     orderPlanned(dto) {
+        console.log('orderPlanned', dto);
         return this.istaService.orderPlanned(dto.orderId, dto.requestId, dto);
     }
     orderClosed(dto) {
@@ -341,18 +135,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "updateOrder", null);
 __decorate([
-    (0, common_1.Post)('/test'),
+    (0, common_1.Post)('/customerOrder/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, dto_1.ReceivedDto]),
     __metadata("design:returntype", void 0)
-], IstaController.prototype, "createTestOrder", null);
-__decorate([
-    (0, common_1.Post)('/customerOrder'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.CreateCustomerOrderDTO]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "createCustomerAndOrder", null);
+], IstaController.prototype, "createCustomerAndOrderById", null);
 __decorate([
     (0, common_1.Post)('/customer'),
     __param(0, (0, common_1.Body)()),
@@ -360,6 +149,14 @@ __decorate([
     __metadata("design:paramtypes", [dto_1.CustomerDTO]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "createCustomer", null);
+__decorate([
+    (0, common_1.Patch)('/customer/:id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, dto_1.CustomerDTO]),
+    __metadata("design:returntype", void 0)
+], IstaController.prototype, "updateCustomer", null);
 __decorate([
     (0, common_1.Get)('/customer/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -451,10 +248,10 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "done", null);
 __decorate([
-    (0, common_1.Post)('/sync-ista'),
+    (0, common_1.Post)('/sync'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.OrderDto]),
+    __metadata("design:paramtypes", [dto_1.SyncDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "reportStatusToISTA", null);
 IstaController = __decorate([

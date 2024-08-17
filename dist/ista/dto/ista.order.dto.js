@@ -60,7 +60,7 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
-], OrderDto.prototype, "CustomerContacts", void 0);
+], OrderDto.prototype, "customerContacts", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ type: () => [NotPossibleDto_1.NotPossibleDto] }),
     (0, class_validator_1.IsOptional)(),

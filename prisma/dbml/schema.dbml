@@ -16,6 +16,7 @@ Table users {
   auftraege auftraege [not null]
   auftraggeber auftraggeber [not null]
   bookmarks bookmarks [not null]
+  sync Sync [not null]
 }
 
 Table bookmarks {
@@ -167,7 +168,7 @@ Table Order {
   Customer Customer [not null]
   Cancelled Cancelled [not null]
   ClosedContractPartner ClosedContractPartner [not null]
-  CustomerContacts CustomerContact [not null]
+  customerContacts CustomerContact [not null]
   NotPossible NotPossible [not null]
   status OrderStatus [not null]
   Planned Planned [not null]
@@ -228,10 +229,12 @@ Table ClosedContractPartner {
   recordedSystem RecordedSystem [not null]
   ReportOrderStatusRequest ReportOrderStatusRequest [not null]
   suppliedDocuments SuppliedDocuments [not null]
-  CustomerContact CustomerContact [not null]
+  customerContacts CustomerContact [not null]
   services Service [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table SuppliedDocuments {
@@ -456,6 +459,8 @@ Table Postponed {
   Request Request
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Rejected {
@@ -471,6 +476,8 @@ Table Rejected {
   Order Order [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table NotPossible {
@@ -484,6 +491,8 @@ Table NotPossible {
   Request Request
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Contact {
@@ -521,6 +530,8 @@ Table Cancelled {
   requestId Int [unique]
   Request Request
   Contact Contact [not null]
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Planned {
@@ -529,29 +540,33 @@ Table Planned {
   orderstatusType String
   setOn DateTime [default: `now()`]
   detailedScheduleDate DateTime
-  detailedScheduleTimeFrom DateTime
-  detailedScheduleTimeTo DateTime
+  detailedScheduleTimeFrom String
+  detailedScheduleTimeTo String
   detailedScheduleDelayReason String
   requestId Int [unique]
   Request Request
-  CustomerContact CustomerContact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table Received {
   id Int [pk, increment]
-  orderId Int [not null]
-  orderstatusType String [not null]
+  orderstatusType String [not null, default: '007']
   setOn DateTime [default: `now()`]
   requestId Int [unique]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
-  CustomerContact CustomerContact [not null]
+  customerContacts CustomerContact [not null]
   Contact Contact [not null]
+  orderId Int [not null]
   Order Order [not null]
   Request Request
+  syncDataId Int [unique]
+  syncData Sync
 }
 
 Table StatusReport {
@@ -559,6 +574,33 @@ Table StatusReport {
   orderNo String [not null]
   currentDatetime DateTime [not null]
   customerContacts CustomerContact [not null]
+}
+
+Table Sync {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  lastSyncTime DateTime [default: `now()`, not null]
+  statusType Status [not null]
+  syncStatus String [not null]
+  syncError String
+  userEmail String
+  userId Int [not null]
+  user users [not null]
+  receivedId Int [unique]
+  Received Received
+  plannedId Int [unique]
+  Planned Planned
+  postponedId Int [unique]
+  Postponed Postponed
+  rejectedId Int [unique]
+  Rejected Rejected
+  cancelledId Int [unique]
+  Cancelled Cancelled
+  notPossibleId Int [unique]
+  NotPossible NotPossible
+  closedContractPartnerId Int [unique]
+  ClosedContractPartner ClosedContractPartner
 }
 
 Enum Auftragsstatus {
@@ -696,3 +738,19 @@ Ref: Planned.orderId > Order.id
 Ref: Received.orderId > Order.id
 
 Ref: Received.requestId - Request.id
+
+Ref: Sync.userId > users.id
+
+Ref: Sync.receivedId - Received.id
+
+Ref: Sync.plannedId - Planned.id
+
+Ref: Sync.postponedId - Postponed.id
+
+Ref: Sync.rejectedId - Rejected.id
+
+Ref: Sync.cancelledId - Cancelled.id
+
+Ref: Sync.notPossibleId - NotPossible.id
+
+Ref: Sync.closedContractPartnerId - ClosedContractPartner.id

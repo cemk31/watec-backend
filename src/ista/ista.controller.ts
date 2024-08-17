@@ -19,6 +19,7 @@ import {
   CustomerDTO,
   OrderDto,
   ReceivedDto,
+  SyncDto,
 } from './dto';
 import { PlannedDto } from './dto/PlannedDto';
 import { IstaService } from './ista.service';
@@ -36,214 +37,214 @@ import { DoneDto } from 'src/auftrag/dto/create-done.dto';
 @ApiTags('ISTA API')
 @Controller('ista')
 export class IstaController {
-  mockOrderDto: OrderDto = {
-    id: 1,
-    number: '123456789',
-    remarkExternal: 'External Remark',
-    createdAt: new Date(),
-    status: [
-      {
-        id: 1,
-        orderId: null,
-        setOn: new Date(),
-        executionOnSiteDone: true,
-        type: 'Type1',
-      },
-    ],
-    CustomerContacts: [
-      {
-        agentCP: 'Agent CP',
-        contactPersonCustomer: 'Customer',
-        contactAttemptOn: new Date(),
-        remark: 'Remark',
-        result: 'Success',
-      },
-    ],
-    notPossible: [
-      {
-        id: 1,
-        requestId: 1,
-        orderId: null,
-        statusType: 'Type1',
-        setOn: new Date(),
-        contact: [
-          {
-            id: 1,
-            contactAttemptOn: new Date(),
-            contactPerson: 'John Doe',
-            agentCP: 'Agent A',
-            result: 'Result',
-            remark: 'Remark',
-            notPossibleId: 1,
-            rejectedId: 1,
-            postponedId: 1,
-            cancelledId: 1,
-          },
-        ],
-      },
-    ],
-    postponed: [
-      {
-        id: 1,
-        requestId: 1,
-        orderId: null,
-        statusType: 'Type1',
-        setOn: new Date(),
-        contact: [
-          {
-            id: 1,
-            contactAttemptOn: new Date(),
-            contactPerson: 'John Doe',
-            agentCP: 'Agent A',
-            result: 'Result',
-            remark: 'Remark',
-            notPossibleId: 1,
-            rejectedId: 1,
-            postponedId: 1,
-            cancelledId: 1,
-          },
-        ],
-        nextContactAttemptOn: new Date(),
-        postponedReason: 'Postponed due to XYZ',
-      },
-    ],
-    cancelled: [
-      {
-        id: 1,
-        requestId: 1,
-        orderId: null,
-        statusType: 'Cancelled',
-        setOn: new Date(),
-        contact: [
-          {
-            id: 1,
-            contactAttemptOn: new Date(),
-            contactPerson: 'John Doe',
-            agentCP: 'Agent A',
-            result: 'Result',
-            remark: 'Remark',
-            notPossibleId: 1,
-            rejectedId: 1,
-            postponedId: 1,
-            cancelledId: 1,
-          },
-        ],
-        cancellationReason: 'Cancelled due to XYZ',
-      },
-    ],
-    rejected: [
-      {
-        id: 1,
-        requestId: 1,
-        orderId: null,
-        statusType: 2,
-        setOn: new Date(),
-        contact: [
-          {
-            id: 1,
-            contactAttemptOn: new Date(),
-            contactPerson: 'John Doe',
-            agentCP: 'Agent A',
-            result: 'Result',
-            remark: 'Remark',
-            notPossibleId: 1,
-            rejectedId: 1,
-            postponedId: 1,
-            cancelledId: 1,
-          },
-        ],
-        reason: 'Rejected due to ABC',
-        reasonText: 'Additional Rejection Details',
-      },
-    ],
-    closedContractPartner: [
-      {
-        id: 1,
-        orderId: null,
-        orderstatusType: 1,
-        setOn: new Date(),
-        contact: [
-          {
-            id: 1,
-            contactAttemptOn: new Date(),
-            contactPerson: 'John Doe',
-            agentCP: 'Agent A',
-            result: 'Result',
-            remark: 'Remark',
-            notPossibleId: 1,
-            rejectedId: 1,
-            postponedId: 1,
-            cancelledId: 1,
-          },
-        ],
-        deficiencyDescription: 'Deficiency Description',
-        registrationHealthAuthoritiesOn: new Date(),
-        extraordinaryExpenditureReason: 'Extraordinary Expenditure Reason',
-        suppliedDocuments: [],
-        recordedSystem: [],
-        reportOrderStatusRequest: [], // Assuming this is an array of DTOs
-        customerContacts: [], // Add the missing property
-      },
-    ],
+  // mockOrderDto: OrderDto = {
+  //   id: 1,
+  //   number: '123456789',
+  //   remarkExternal: 'External Remark',
+  //   createdAt: new Date(),
+  //   status: [
+  //     {
+  //       id: 1,
+  //       orderId: null,
+  //       setOn: new Date(),
+  //       executionOnSiteDone: true,
+  //       type: 'Type1',
+  //     },
+  //   ],
+  //   CustomerContacts: [
+  //     {
+  //       agentCP: 'Agent CP',
+  //       contactPersonCustomer: 'Customer',
+  //       contactAttemptOn: new Date(),
+  //       remark: 'Remark',
+  //       result: 'Success',
+  //     },
+  //   ],
+  //   notPossible: [
+  //     {
+  //       id: 1,
+  //       requestId: 1,
+  //       orderId: null,
+  //       statusType: 'Type1',
+  //       setOn: new Date(),
+  //       contact: [
+  //         {
+  //           id: 1,
+  //           contactAttemptOn: new Date(),
+  //           contactPerson: 'John Doe',
+  //           agentCP: 'Agent A',
+  //           result: 'Result',
+  //           remark: 'Remark',
+  //           notPossibleId: 1,
+  //           rejectedId: 1,
+  //           postponedId: 1,
+  //           cancelledId: 1,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  //   postponed: [
+  //     {
+  //       id: 1,
+  //       requestId: 1,
+  //       orderId: null,
+  //       statusType: 'Type1',
+  //       setOn: new Date(),
+  //       contact: [
+  //         {
+  //           id: 1,
+  //           contactAttemptOn: new Date(),
+  //           contactPerson: 'John Doe',
+  //           agentCP: 'Agent A',
+  //           result: 'Result',
+  //           remark: 'Remark',
+  //           notPossibleId: 1,
+  //           rejectedId: 1,
+  //           postponedId: 1,
+  //           cancelledId: 1,
+  //         },
+  //       ],
+  //       nextContactAttemptOn: new Date(),
+  //       postponedReason: 'Postponed due to XYZ',
+  //     },
+  //   ],
+  //   cancelled: [
+  //     {
+  //       id: 1,
+  //       requestId: 1,
+  //       orderId: null,
+  //       statusType: 'Cancelled',
+  //       setOn: new Date(),
+  //       contact: [
+  //         {
+  //           id: 1,
+  //           contactAttemptOn: new Date(),
+  //           contactPerson: 'John Doe',
+  //           agentCP: 'Agent A',
+  //           result: 'Result',
+  //           remark: 'Remark',
+  //           notPossibleId: 1,
+  //           rejectedId: 1,
+  //           postponedId: 1,
+  //           cancelledId: 1,
+  //         },
+  //       ],
+  //       cancellationReason: 'Cancelled due to XYZ',
+  //     },
+  //   ],
+  //   rejected: [
+  //     {
+  //       id: 1,
+  //       requestId: 1,
+  //       orderId: null,
+  //       statusType: 2,
+  //       setOn: new Date(),
+  //       contact: [
+  //         {
+  //           id: 1,
+  //           contactAttemptOn: new Date(),
+  //           contactPerson: 'John Doe',
+  //           agentCP: 'Agent A',
+  //           result: 'Result',
+  //           remark: 'Remark',
+  //           notPossibleId: 1,
+  //           rejectedId: 1,
+  //           postponedId: 1,
+  //           cancelledId: 1,
+  //         },
+  //       ],
+  //       reason: 'Rejected due to ABC',
+  //       reasonText: 'Additional Rejection Details',
+  //     },
+  //   ],
+  //   closedContractPartner: [
+  //     {
+  //       id: 1,
+  //       orderId: null,
+  //       orderstatusType: 1,
+  //       setOn: new Date(),
+  //       contact: [
+  //         {
+  //           id: 1,
+  //           contactAttemptOn: new Date(),
+  //           contactPerson: 'John Doe',
+  //           agentCP: 'Agent A',
+  //           result: 'Result',
+  //           remark: 'Remark',
+  //           notPossibleId: 1,
+  //           rejectedId: 1,
+  //           postponedId: 1,
+  //           cancelledId: 1,
+  //         },
+  //       ],
+  //       deficiencyDescription: 'Deficiency Description',
+  //       registrationHealthAuthoritiesOn: new Date(),
+  //       extraordinaryExpenditureReason: 'Extraordinary Expenditure Reason',
+  //       suppliedDocuments: [],
+  //       recordedSystem: [],
+  //       reportOrderStatusRequest: [], // Assuming this is an array of DTOs
+  //       customerContacts: [], // Add the missing property
+  //     },
+  //   ],
 
-    planned: [
-      {
-        id: 1,
-        orderId: null,
-        orderstatusType: '1',
-        setOn: new Date(),
-        customerContact: [
-          {
-            agentCP: 'Agent CP',
-            contactPersonCustomer: 'Customer',
-            contactAttemptOn: new Date(),
-            remark: 'Remark',
-            result: 'Success',
-          },
-        ],
-        detailedScheduleDate: new Date(),
-        detailedScheduleTimeFrom: new Date(),
-        detailedScheduleTimeTo: new Date(),
-        detailedScheduleDelayReason: 'Delay Reason',
-        requestId: 1,
-      },
-    ],
-    received: [
-      {
-        id: null,
-        orderId: null,
-        orderstatusType: 'Status Type',
-        setOn: new Date(),
-        contactAttemptOn: new Date(),
-        contactPersonCustomer: 'Customer',
-        agentCP: 'Agent CP',
-        result: 'Success',
-        remark: 'Remark',
-        customerContacts: [
-          {
-            agentCP: 'Agent CP',
-            contactPersonCustomer: 'Customer',
-            contactAttemptOn: new Date(),
-            remark: 'Remark',
-            result: 'Success',
-            // fill other properties for the CustomerContactDto
-          },
-        ],
-        requestId: 1,
-      },
-    ],
-    customer: {
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      phoneNumber: '+1234567890',
-      lastName: 'Doe',
-      firstName: 'John',
-      street: '123 Main St',
-      zipCode: '12345',
-      place: 'Springfield',
-      country: 'USA',
-    },
-  };
+  //   planned: [
+  //     {
+  //       id: 1,
+  //       orderId: null,
+  //       orderstatusType: '1',
+  //       setOn: new Date(),
+  //       customerContact: [
+  //         {
+  //           agentCP: 'Agent CP',
+  //           contactPersonCustomer: 'Customer',
+  //           contactAttemptOn: new Date(),
+  //           remark: 'Remark',
+  //           result: 'Success',
+  //         },
+  //       ],
+  //       detailedScheduleDate: new Date(),
+  //       detailedScheduleTimeFrom: new Date(),
+  //       detailedScheduleTimeTo: new Date(),
+  //       detailedScheduleDelayReason: 'Delay Reason',
+  //       requestId: 1,
+  //     },
+  //   ],
+  //   received: [
+  //     {
+  //       id: null,
+  //       orderId: null,
+  //       orderstatusType: 'Status Type',
+  //       setOn: new Date(),
+  //       contactAttemptOn: new Date(),
+  //       contactPersonCustomer: 'Customer',
+  //       agentCP: 'Agent CP',
+  //       result: 'Success',
+  //       remark: 'Remark',
+  //       customerContacts: [
+  //         {
+  //           agentCP: 'Agent CP',
+  //           contactPersonCustomer: 'Customer',
+  //           contactAttemptOn: new Date(),
+  //           remark: 'Remark',
+  //           result: 'Success',
+  //           // fill other properties for the CustomerContactDto
+  //         },
+  //       ],
+  //       requestId: 1,
+  //     },
+  //   ],
+  //   customer: {
+  //     name: 'John Doe',
+  //     email: 'john.doe@example.com',
+  //     phoneNumber: '+1234567890',
+  //     lastName: 'Doe',
+  //     firstName: 'John',
+  //     street: '123 Main St',
+  //     zipCode: '12345',
+  //     place: 'Springfield',
+  //     country: 'USA',
+  //   },
+  // };
 
   constructor(private istaService: IstaService) {}
 
@@ -269,19 +270,32 @@ export class IstaController {
   }
 
   //createTestOrder
-  @Post('/test')
-  createTestOrder() {
-    return this.istaService.createOrder(this.mockOrderDto);
-  }
+  // @Post('/test')
+  // createTestOrder() {
+  //   return this.istaService.createOrder(this.mockOrderDto);
+  // }
 
-  @Post('/customerOrder')
-  createCustomerAndOrder(@Body() dto: CreateCustomerOrderDTO) {
-    // const customer = this.istaService.createCustomer(dto.customer);
-    console.log('customer', dto.Customer);
-    console.log('customer', dto.Received);
+  // @Post('/customerOrder')
+  // createCustomerAndOrder(@Body() dto: CreateCustomerOrderDTO) {
+  //   // const customer = this.istaService.createCustomer(dto.customer);
+  //   console.log('customer', dto.Customer);
+  //   console.log('customer', dto.Received);
 
-    const order = this.istaService.orderReceived(dto);
+  //   const order = this.istaService.orderReceived(dto);
 
+  //   return order;
+  // }
+
+  @Post('/customerOrder/:id')
+  createCustomerAndOrderById(
+    @Param('id', ParseIntPipe) customerId: number,
+    @Body() received: ReceivedDto,
+  ) {
+    console.log('received', received);
+    const order = this.istaService.receivedOrderWithCustomerId(
+      customerId,
+      received,
+    );
     return order;
   }
 
@@ -292,6 +306,14 @@ export class IstaController {
     return customer;
   }
 
+  @Patch('/customer/:id')
+  updateCustomer(
+    @Param('id', ParseIntPipe) customerId: number,
+    @Body() dto: CustomerDTO,
+  ) {
+    return this.istaService.updateCustomer(customerId, dto);
+  }
+
   @Get('/customer/:id')
   getCustomerById(@Param('id', ParseIntPipe) customerId: number) {
     return this.istaService.getCustomerById(customerId);
@@ -300,6 +322,7 @@ export class IstaController {
   //Planned - from us
   @Post('/planned')
   orderPlanned(@Body() dto: PlannedDto) {
+    console.log('orderPlanned', dto);
     return this.istaService.orderPlanned(dto.orderId, dto.requestId, dto);
   }
   //Execution on site done
@@ -315,13 +338,11 @@ export class IstaController {
     try {
       const orderDTO = new OrderDto();
       orderDTO.rejected = [dto]; // Option 2: Erstellen Sie ein Array mit dto als einzigem Element
-
       const result = await this.istaService.orderRejected(
         dto.orderId,
         dto.requestId,
         dto,
       );
-
       return result;
     } catch (error) {
       // Fehlerbehandlung
@@ -397,10 +418,8 @@ export class IstaController {
     return this.istaService.doneOrder(dto.orderId);
   }
 
-  @Post('/sync-ista')
-  reportStatusToISTA(@Body() dto: OrderDto) {
-    //check the id of status (for example Received id:1)
-    //after that get the parameter and send it via xml
+  @Post('/sync')
+  reportStatusToISTA(@Body() dto: SyncDto) {
     console.log('reportStatus', dto);
   }
 }

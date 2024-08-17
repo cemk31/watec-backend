@@ -1,4 +1,4 @@
-import { CustomerContactDto } from "./CustomerContactDto";
+import { CustomerContactDto } from './CustomerContactDto';
 export declare class ReceivedDto {
     id: number;
     orderId: number;

@@ -69,7 +69,56 @@ let IstaService = class IstaService {
                     status: true,
                     Received: true,
                     Planned: true,
-                    CustomerContacts: true,
+                    customerContacts: true,
+                    NotPossible: true,
+                    Postponed: true,
+                    Cancelled: true,
+                    Rejected: true,
+                    ClosedContractPartner: true,
+                    Customer: true,
+                },
+            });
+            return order;
+        }
+        catch (error) {
+            console.error('Fehler beim Speichern:', error);
+            throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
+        }
+    }
+    async receivedOrderWithCustomerId(customerId, dto) {
+        var _a, _b;
+        console.log('customerId:', customerId);
+        console.log('receivedDto:', dto);
+        try {
+            const order = await this.prisma.order.create({
+                data: {
+                    actualStatus: client_1.Status.RECEIVED,
+                    Customer: {
+                        connect: {
+                            id: customerId,
+                        },
+                    },
+                    Received: {
+                        create: {
+                            orderstatusType: dto.orderstatusType || '007',
+                            setOn: dto.setOn,
+                            customerContacts: {
+                                create: (_b = (_a = dto.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
+                                    contactAttemptOn: contact.contactAttemptOn,
+                                    contactPersonCustomer: contact.contactPersonCustomer,
+                                    agentCP: contact.agentCP,
+                                    result: contact.result,
+                                    remark: contact.remark,
+                                }))) !== null && _b !== void 0 ? _b : [],
+                            },
+                        },
+                    },
+                },
+                include: {
+                    status: true,
+                    Received: true,
+                    Planned: true,
+                    customerContacts: true,
                     NotPossible: true,
                     Postponed: true,
                     Cancelled: true,
@@ -106,12 +155,6 @@ let IstaService = class IstaService {
                 Rejected: {
                     create: dto.rejected,
                 },
-                Planned: {
-                    create: dto.planned,
-                },
-                Received: {
-                    create: dto.received,
-                },
                 Customer: {
                     create: {
                         firstName: dto.customer.firstName,
@@ -129,7 +172,7 @@ let IstaService = class IstaService {
                 status: true,
                 Received: true,
                 Planned: true,
-                CustomerContacts: true,
+                customerContacts: true,
                 NotPossible: true,
                 Postponed: true,
                 Cancelled: true,
@@ -146,13 +189,13 @@ let IstaService = class IstaService {
                 status: true,
                 Received: {
                     include: {
-                        CustomerContact: true,
+                        customerContacts: true,
                         Request: true,
                     },
                 },
                 Planned: {
                     include: {
-                        CustomerContact: true,
+                        customerContacts: true,
                         Request: true,
                     },
                 },
@@ -197,6 +240,7 @@ let IstaService = class IstaService {
             throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
         }
     }
+    async orderReceivedWithCustomerId(dto) { }
     async getOrderById(orderId) {
         return this.prisma.order.findFirst({
             where: { id: orderId },
@@ -204,11 +248,11 @@ let IstaService = class IstaService {
                 status: true,
                 Received: {
                     include: {
-                        CustomerContact: true,
+                        customerContacts: true,
                         Request: true,
                     },
                 },
-                CustomerContacts: {
+                customerContacts: {
                     include: {
                         ClosedContractPartner: true,
                         planned: true,
@@ -266,12 +310,6 @@ let IstaService = class IstaService {
                 Rejected: {
                     create: dto.rejected,
                 },
-                Planned: {
-                    create: dto.planned,
-                },
-                Received: {
-                    create: dto.received,
-                },
                 Customer: {
                     create: {
                         firstName: (_a = dto.customer) === null || _a === void 0 ? void 0 : _a.firstName,
@@ -290,12 +328,12 @@ let IstaService = class IstaService {
                 status: true,
                 Received: {
                     include: {
-                        CustomerContact: true,
+                        customerContacts: true,
                         Request: true,
                     },
                 },
                 Planned: true,
-                CustomerContacts: true,
+                customerContacts: true,
                 NotPossible: true,
                 Postponed: true,
                 Cancelled: true,
@@ -307,8 +345,10 @@ let IstaService = class IstaService {
         return order;
     }
     async createCustomer(dto) {
+        console.log('company name:', dto.companyName);
         const customer = await this.prisma.customer.create({
             data: {
+                companyName: dto.companyName,
                 firstName: dto.firstName,
                 lastName: dto.lastName,
                 phoneNumber: dto.phoneNumber,
@@ -318,7 +358,25 @@ let IstaService = class IstaService {
                 email: dto.email,
                 country: dto.country,
                 fax: dto.fax,
+                propertyNumber: dto.propertyNumber,
+            },
+        });
+        return customer;
+    }
+    async updateCustomer(customerId, dto) {
+        const customer = await this.prisma.customer.update({
+            where: { id: customerId },
+            data: {
                 companyName: dto.companyName,
+                firstName: dto.firstName,
+                lastName: dto.lastName,
+                phoneNumber: dto.phoneNumber,
+                street: dto.street,
+                zipCode: dto.zipCode,
+                place: dto.place,
+                email: dto.email,
+                country: dto.country,
+                fax: dto.fax,
                 propertyNumber: dto.propertyNumber,
             },
         });
@@ -411,23 +469,39 @@ let IstaService = class IstaService {
         }
     }
     async orderPlanned(orderId, requestId, dto) {
+        var _a;
         try {
+            const detailedScheduleTimeFrom = dto.detailedScheduleTimeFrom + ':00';
+            const detailedScheduleTimeTo = dto.detailedScheduleTimeTo + ':00';
             await this.prisma.order.update({
                 where: { id: orderId },
-                data: { updatedAt: new Date(), actualStatus: client_1.Status.PLANNED },
+                data: {
+                    updatedAt: new Date(),
+                    actualStatus: client_1.Status.PLANNED,
+                    remarkExternal: dto.remarkExternal,
+                },
             });
             const plannedEntry = await this.prisma.planned.create({
                 data: {
                     orderstatusType: client_1.Status.PLANNED,
                     setOn: dto.setOn,
                     detailedScheduleDate: dto.detailedScheduleDate,
-                    detailedScheduleTimeFrom: dto.detailedScheduleTimeFrom,
-                    detailedScheduleTimeTo: dto.detailedScheduleTimeTo,
+                    detailedScheduleTimeFrom: detailedScheduleTimeFrom,
+                    detailedScheduleTimeTo: detailedScheduleTimeTo,
                     detailedScheduleDelayReason: dto.detailedScheduleDelayReason,
                     Order: {
                         connect: {
                             id: orderId,
                         },
+                    },
+                    customerContacts: {
+                        create: (_a = dto.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
+                            contactAttemptOn: contact.contactAttemptOn,
+                            contactPersonCustomer: contact.contactPersonCustomer,
+                            agentCP: contact.agentCP,
+                            result: contact.result,
+                            remark: contact.remark,
+                        })),
                     },
                     Request: requestId
                         ? {
@@ -499,7 +573,7 @@ let IstaService = class IstaService {
                     deficiencyDescription: (dto === null || dto === void 0 ? void 0 : dto.deficiencyDescription) || null,
                     registrationHealthAuthoritiesOn: (dto === null || dto === void 0 ? void 0 : dto.registrationHealthAuthoritiesOn) || new Date(),
                     extraordinaryExpenditureReason: (dto === null || dto === void 0 ? void 0 : dto.extraordinaryExpenditureReason) || null,
-                    CustomerContact: {
+                    customerContacts: {
                         create: (_b = (_a = dto.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
                             contactAttemptOn: (contact === null || contact === void 0 ? void 0 : contact.contactAttemptOn) || new Date(),
                             contactPersonCustomer: (contact === null || contact === void 0 ? void 0 : contact.contactPersonCustomer) || null,
@@ -631,7 +705,7 @@ let IstaService = class IstaService {
                 data: {
                     orderstatusType: client_1.Status.RECEIVED,
                     setOn: dto.setOn,
-                    CustomerContact: {
+                    customerContacts: {
                         create: {
                             contactAttemptOn: (dto === null || dto === void 0 ? void 0 : dto.contactAttemptOn)
                                 ? new Date(dto === null || dto === void 0 ? void 0 : dto.contactAttemptOn)
@@ -657,7 +731,7 @@ let IstaService = class IstaService {
                     where: { id: orderId },
                     include: {
                         Received: true,
-                        CustomerContacts: true,
+                        customerContacts: true,
                     },
                 });
                 return updatedOrder;
@@ -706,7 +780,7 @@ let IstaService = class IstaService {
                     status: true,
                     Received: true,
                     Planned: true,
-                    CustomerContacts: true,
+                    customerContacts: true,
                     NotPossible: true,
                     Postponed: true,
                     Cancelled: true,
