@@ -14,7 +14,7 @@ async function bootstrap() {
         const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(server));
         app.enableCors({
             origin: [
-                'https://watec-admin-angular-fe.vercel.app/',
+                'https://watec-admin-angular-fe.vercel.app',
                 'https://watec-admin-angular-fe-git-development-spootech.vercel.app',
             ],
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -42,9 +42,11 @@ async function bootstrap() {
             .setVersion('1.0.0.')
             .addTag('WATEC', 'Endpoints related to the WATEC Backend Services')
             .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
-            .setContact('WATEC Support', 'https://yourwebsite.com', 'support@yourwebsite.com')
+            .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
             .setLicense('WATEC License', 'https://yourwebsite.com/license')
             .addServer('http://localhost:3000/', 'Local Development Server')
+            .addServer('https://watec-backend.vercel.app/', 'Production Server')
+            .addServer('https://watec-backend-dev.vercel.app/', 'Development Server')
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, config);
         swagger_1.SwaggerModule.setup('api', app, document);
