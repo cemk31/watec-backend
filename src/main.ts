@@ -12,6 +12,8 @@ async function bootstrap() {
         'https://www.watec-admin-angular-fe.vercel.app',
         'https://www.watec-dashboard-dev.vercel.app',
         'http://localhost:4200',
+        'https://watec-admin-angular-fe.vercel.app',
+        'https://watec-dashboard-dev.vercel.app',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
