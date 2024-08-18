@@ -28,7 +28,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://watec-admin-angular-fe.vercel.app, https://watec-dashboard-dev.vercel.app"
+          "value": "https://www.watec-admin-angular-fe.vercel.app, https://www.watec-dashboard-dev.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",
