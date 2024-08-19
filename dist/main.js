@@ -9,9 +9,11 @@ async function bootstrap() {
     app.enableCors({
         origin: (origin, callback) => {
             const allowedOrigins = [
+                'https://www.watec-admin-angular-fe.vercel.app',
+                'https://www.watec-dashboard-dev.vercel.app',
+                'http://localhost:4200',
                 'https://watec-admin-angular-fe.vercel.app',
                 'https://watec-dashboard-dev.vercel.app',
-                'http://localhost:4200',
             ];
             if (!origin || allowedOrigins.includes(origin)) {
                 callback(null, true);
@@ -21,7 +23,6 @@ async function bootstrap() {
             }
         },
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization'],
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
