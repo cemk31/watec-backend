@@ -1,4 +1,4 @@
-import { ContactDto } from "./ContactDto";
+import { ContactDto } from './ContactDto';
 export declare class CancelledDto {
     id: number;
     requestId: number;

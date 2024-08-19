@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CancelledDto.prototype, "orderId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '020' }),
+    (0, swagger_1.ApiProperty)({ example: '300' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
