@@ -390,40 +390,48 @@ let IstaService = class IstaService {
             },
         });
     }
-    async orderRejected(orderId, requestId, dto) {
+    async orderRejected(dto) {
+        await this.prisma.order.update({
+            where: { id: dto.orderId },
+            data: {
+                updatedAt: new Date(),
+                actualStatus: client_1.Status.REJECTED,
+                remarkExternal: dto.remarkExternal,
+            },
+        });
         await this.prisma.rejected.create({
             data: {
-                reason: dto.reason,
+                rejectionReason: dto.rejectionReason,
+                rejectionReasonText: dto.rejectionReasonText,
                 setOn: dto.setOn,
                 statusType: dto.statusType,
                 Order: {
                     connect: {
-                        id: orderId,
+                        id: dto.orderId,
                     },
                 },
             },
         });
     }
-    async orderPostponed(orderId, requestId, dto) {
+    async orderPostponed(dto) {
         try {
             await this.prisma.order.update({
-                where: { id: orderId },
-                data: { updatedAt: new Date(), actualStatus: client_1.Status.POSTPONED },
+                where: { id: dto.orderId },
+                data: {
+                    updatedAt: new Date(),
+                    actualStatus: client_1.Status.POSTPONED,
+                    remarkExternal: dto.remarkExternal,
+                },
             });
             const postponedEntry = await this.prisma.postponed.create({
                 data: {
                     statusType: client_1.Status.POSTPONED || 'POSTPONED',
                     setOn: dto.setOn || new Date(),
-                    nextContactAttemptOn: dto.nextContactAttemptOn || new Date(),
+                    nextContactAttemptOn: dto.nextContactAttemptOn,
                     postponedReason: dto.postponedReason,
                     Order: {
-                        connect: { id: orderId },
+                        connect: { id: dto.orderId },
                     },
-                    Request: requestId
-                        ? {
-                            connect: { id: requestId },
-                        }
-                        : undefined,
                 },
             });
             return postponedEntry;
@@ -440,7 +448,11 @@ let IstaService = class IstaService {
             console.log('requestID: ', requestId);
             await this.prisma.order.update({
                 where: { id: orderId },
-                data: { updatedAt: new Date(), actualStatus: client_1.Status.CANCELLED },
+                data: {
+                    updatedAt: new Date(),
+                    actualStatus: client_1.Status.CANCELLED,
+                    remarkExternal: dto.remarkExternal,
+                },
             });
             const cancelledEntry = await this.prisma.cancelled.create({
                 data: {
@@ -523,7 +535,11 @@ let IstaService = class IstaService {
         try {
             await this.prisma.order.update({
                 where: { id: orderId },
-                data: { updatedAt: new Date(), actualStatus: client_1.Status.NOTPOSSIBLE },
+                data: {
+                    updatedAt: new Date(),
+                    actualStatus: client_1.Status.NOTPOSSIBLE,
+                    remarkExternal: dto.remarkExternal,
+                },
             });
             const notPossibleEntry = await this.prisma.notPossible.create({
                 data: {
@@ -548,6 +564,18 @@ let IstaService = class IstaService {
         }
         catch (error) {
             console.error('Error creating not possible entry:', error);
+            return null;
+        }
+    }
+    async orderExecutionOnSiteNotPossible(dto) {
+        try {
+            await this.prisma.order.update({
+                where: { id: dto.orderId },
+                data: { actualStatus: client_1.Status.EXECUTIONONSITENOTPOSSIBLE },
+            });
+        }
+        catch (error) {
+            console.error('Error creating execution on site not possible entry:', error);
             return null;
         }
     }

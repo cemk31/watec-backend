@@ -7,11 +7,10 @@ import {
   IsDate,
   IsOptional,
 } from 'class-validator';
-import { ContactDto } from './ContactDto';
-import { RequestDto } from './RequestDto';
 import { CustomerContact } from '@prisma/client';
+import { CustomerContactDto } from './CustomerContactDto';
 
-export class PostponedDto {
+export class ExecutionOnSiteNotPossibleDto {
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsNumber()
@@ -20,14 +19,14 @@ export class PostponedDto {
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsNumber()
-  orderId: number;
-
-  @ApiProperty({ example: 1 })
-  @IsOptional()
-  @IsNumber()
   requestId: number;
 
-  @ApiProperty({ example: '020' })
+  @ApiProperty({ example: 1 })
+  @IsNotEmpty()
+  @IsNumber()
+  orderId: number;
+
+  @ApiProperty({ example: 'statusType' })
   @IsOptional()
   @IsString()
   statusType: string;
@@ -38,24 +37,18 @@ export class PostponedDto {
   @Type(() => Date)
   setOn: Date;
 
-  @ApiProperty({ type: [ContactDto] })
+  @ApiProperty()
   @IsOptional()
-  @Type(() => ContactDto)
+  @Type(() => CustomerContactDto)
   customerContacts: CustomerContact[];
-
-  @ApiProperty({ example: '2023-06-17' })
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  nextContactAttemptOn: Date;
-
-  @ApiProperty({ example: 'Reason' })
-  @IsOptional()
-  @IsString()
-  postponedReason: string;
 
   @ApiProperty({ example: 'Remark External' })
   @IsOptional()
   @IsString()
   remarkExternal?: string;
+
+  @ApiProperty({ example: '003' })
+  @IsOptional()
+  @IsString()
+  nonExecutionReason?: string;
 }

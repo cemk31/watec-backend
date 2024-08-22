@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import {
   CreateCustomerOrderDTO,
   CustomerDTO,
+  ExecutionOnSiteNotPossibleDto,
   OrderDto,
   ReceivedDto,
 } from './dto';
@@ -435,49 +436,52 @@ export class IstaService {
     });
   }
 
-  async orderRejected(orderId: number, requestId: number, dto: RejectedDto) {
+  async orderRejected(dto: RejectedDto) {
+    await this.prisma.order.update({
+      where: { id: dto.orderId },
+      data: {
+        updatedAt: new Date(),
+        actualStatus: Status.REJECTED,
+        remarkExternal: dto.remarkExternal,
+      },
+    });
     await this.prisma.rejected.create({
       data: {
-        // Andere Felder wie reason, setOn, etc.
-        reason: dto.reason,
+        rejectionReason: dto.rejectionReason,
+        rejectionReasonText: dto.rejectionReasonText,
         setOn: dto.setOn,
         statusType: dto.statusType,
         // Verbindet den Rejected-Eintrag mit einem Order-Eintrag
         Order: {
           connect: {
-            id: orderId,
+            id: dto.orderId,
           },
         },
       },
     });
   }
 
-  async orderPostponed(
-    orderId: number,
-    requestId: number | null,
-    dto: PostponedDto,
-  ): Promise<Postponed | null> {
+  async orderPostponed(dto: PostponedDto): Promise<Postponed | null> {
     try {
       // Aktualisieren des updatedAt Feldes der Order
       await this.prisma.order.update({
-        where: { id: orderId },
-        data: { updatedAt: new Date(), actualStatus: Status.POSTPONED },
+        where: { id: dto.orderId },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.POSTPONED,
+          remarkExternal: dto.remarkExternal,
+        },
       });
 
       const postponedEntry = await this.prisma.postponed.create({
         data: {
           statusType: Status.POSTPONED || 'POSTPONED',
           setOn: dto.setOn || new Date(), // Set new date if empty
-          nextContactAttemptOn: dto.nextContactAttemptOn || new Date(),
+          nextContactAttemptOn: dto.nextContactAttemptOn,
           postponedReason: dto.postponedReason,
           Order: {
-            connect: { id: orderId },
+            connect: { id: dto.orderId },
           },
-          Request: requestId
-            ? {
-                connect: { id: requestId },
-              }
-            : undefined,
         },
       });
 
@@ -500,7 +504,11 @@ export class IstaService {
 
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(), actualStatus: Status.CANCELLED },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.CANCELLED,
+          remarkExternal: dto.remarkExternal,
+        },
       });
 
       const cancelledEntry = await this.prisma.cancelled.create({
@@ -595,13 +603,18 @@ export class IstaService {
     try {
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(), actualStatus: Status.NOTPOSSIBLE },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.NOTPOSSIBLE,
+          remarkExternal: dto.remarkExternal,
+        },
       });
 
       const notPossibleEntry = await this.prisma.notPossible.create({
         data: {
           statusType: dto.statusType, // Optional, gemäß Ihrem Schema
           setOn: dto.setOn, // Optional, gemäß Ihrem Schema
+
           Contact: {
             // Hier können Sie Logik zum Verbinden von Kontakten hinzufügen, wenn notwendig
           },
@@ -625,6 +638,21 @@ export class IstaService {
       return notPossibleEntry;
     } catch (error) {
       console.error('Error creating not possible entry:', error);
+      return null;
+    }
+  }
+
+  async orderExecutionOnSiteNotPossible(dto: ExecutionOnSiteNotPossibleDto) {
+    try {
+      await this.prisma.order.update({
+        where: { id: dto.orderId },
+        data: { actualStatus: Status.EXECUTIONONSITENOTPOSSIBLE },
+      });
+    } catch (error) {
+      console.error(
+        'Error creating execution on site not possible entry:',
+        error,
+      );
       return null;
     }
   }

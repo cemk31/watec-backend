@@ -66,9 +66,7 @@ let IstaController = class IstaController {
     }
     async orderRejected(dto) {
         try {
-            const orderDTO = new dto_1.OrderDto();
-            orderDTO.rejected = [dto];
-            const result = await this.istaService.orderRejected(dto.orderId, dto.requestId, dto);
+            const result = await this.istaService.orderRejected(dto);
             return result;
         }
         catch (error) {
@@ -80,10 +78,13 @@ let IstaController = class IstaController {
         return this.istaService.orderNotPossible(dto.orderId, dto.requestId, dto);
     }
     orderPostponed(dto) {
-        return this.istaService.orderPostponed(dto.orderId, dto.requestId, dto);
+        return this.istaService.orderPostponed(dto);
     }
     orderCancelled(dto) {
         return this.istaService.orderCancelled(dto.orderId, dto.requestId, dto);
+    }
+    orderExecutionOnSiteNotPossible(dto) {
+        return this.istaService.orderExecutionOnSiteNotPossible(dto);
     }
     getAllOrders() {
         return this.istaService.getAllOrders();
@@ -206,6 +207,13 @@ __decorate([
     __metadata("design:paramtypes", [CancelledDto_1.CancelledDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "orderCancelled", null);
+__decorate([
+    (0, common_1.Post)('/executionOnSiteNotPossible'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.ExecutionOnSiteNotPossibleDto]),
+    __metadata("design:returntype", void 0)
+], IstaController.prototype, "orderExecutionOnSiteNotPossible", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

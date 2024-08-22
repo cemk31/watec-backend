@@ -9,61 +9,61 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RejectedDto = void 0;
+exports.ExecutionOnSiteNotPossibleDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
-const ContactDto_1 = require("./ContactDto");
-class RejectedDto {
+const CustomerContactDto_1 = require("./CustomerContactDto");
+class ExecutionOnSiteNotPossibleDto {
 }
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], RejectedDto.prototype, "id", void 0);
+], ExecutionOnSiteNotPossibleDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], RejectedDto.prototype, "orderId", void 0);
+], ExecutionOnSiteNotPossibleDto.prototype, "requestId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 20 }),
-    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiProperty)({ example: 1 }),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], RejectedDto.prototype, "statusType", void 0);
+], ExecutionOnSiteNotPossibleDto.prototype, "orderId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'statusType' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ExecutionOnSiteNotPossibleDto.prototype, "statusType", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '2023-06-16' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsDate)(),
     (0, class_transformer_1.Type)(() => Date),
     __metadata("design:type", Date)
-], RejectedDto.prototype, "setOn", void 0);
+], ExecutionOnSiteNotPossibleDto.prototype, "setOn", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: [ContactDto_1.ContactDto] }),
+    (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_transformer_1.Type)(() => ContactDto_1.ContactDto),
+    (0, class_transformer_1.Type)(() => CustomerContactDto_1.CustomerContactDto),
     __metadata("design:type", Array)
-], RejectedDto.prototype, "contact", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Rejection Reason' }),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], RejectedDto.prototype, "rejectionReason", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Rejection Reason Text' }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], RejectedDto.prototype, "rejectionReasonText", void 0);
+], ExecutionOnSiteNotPossibleDto.prototype, "customerContacts", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Remark External' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], RejectedDto.prototype, "remarkExternal", void 0);
-exports.RejectedDto = RejectedDto;
-//# sourceMappingURL=RejectedDto.js.map
+], ExecutionOnSiteNotPossibleDto.prototype, "remarkExternal", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: '003' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], ExecutionOnSiteNotPossibleDto.prototype, "nonExecutionReason", void 0);
+exports.ExecutionOnSiteNotPossibleDto = ExecutionOnSiteNotPossibleDto;
+//# sourceMappingURL=ExecutionOnSiteNotPossibleDto.js.map

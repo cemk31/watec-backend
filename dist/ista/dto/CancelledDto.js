@@ -59,5 +59,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CancelledDto.prototype, "cancellationReason", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Delay Reason' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CancelledDto.prototype, "remarkExternal", void 0);
 exports.CancelledDto = CancelledDto;
 //# sourceMappingURL=CancelledDto.js.map

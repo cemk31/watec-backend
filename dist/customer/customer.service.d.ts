@@ -7,19 +7,19 @@ export declare class CustomerService {
         id: number;
         firstName: string;
         lastName: string;
-        addressId: number;
         phoneNumber: string;
         street: string;
         zipCode: string;
+        userId: number;
         email: string;
         country: string;
+        createdAt: Date;
         place: string;
+        updatedAt: Date;
         companyName: string;
         fax: string;
         propertyNumber: string;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
+        addressId: number;
     }, unknown, never> & {}>;
     getCustomers(): Promise<({
         orders: (import("@prisma/client/runtime").GetResult<{
@@ -35,36 +35,36 @@ export declare class CustomerService {
         id: number;
         firstName: string;
         lastName: string;
-        addressId: number;
         phoneNumber: string;
         street: string;
         zipCode: string;
+        userId: number;
         email: string;
         country: string;
+        createdAt: Date;
         place: string;
+        updatedAt: Date;
         companyName: string;
         fax: string;
         propertyNumber: string;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
+        addressId: number;
     }, unknown, never> & {})[]>;
     updateCustomer(userId: number, dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         firstName: string;
         lastName: string;
-        addressId: number;
         phoneNumber: string;
         street: string;
         zipCode: string;
+        userId: number;
         email: string;
         country: string;
+        createdAt: Date;
         place: string;
+        updatedAt: Date;
         companyName: string;
         fax: string;
         propertyNumber: string;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
+        addressId: number;
     }, unknown, never> & {}>;
 }

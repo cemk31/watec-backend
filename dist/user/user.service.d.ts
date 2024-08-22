@@ -11,7 +11,7 @@ export declare class UserService {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
 }

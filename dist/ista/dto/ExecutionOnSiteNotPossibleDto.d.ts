@@ -1,12 +1,11 @@
 import { CustomerContact } from '@prisma/client';
-export declare class PostponedDto {
+export declare class ExecutionOnSiteNotPossibleDto {
     id: number;
-    orderId: number;
     requestId: number;
+    orderId: number;
     statusType: string;
     setOn: Date;
     customerContacts: CustomerContact[];
-    nextContactAttemptOn: Date;
-    postponedReason: string;
     remarkExternal?: string;
+    nonExecutionReason?: string;
 }

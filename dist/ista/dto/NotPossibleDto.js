@@ -13,7 +13,7 @@ exports.NotPossibleDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
-const ContactDto_1 = require("./ContactDto");
+const CustomerContactDto_1 = require("./CustomerContactDto");
 class NotPossibleDto {
 }
 __decorate([
@@ -50,8 +50,14 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_transformer_1.Type)(() => ContactDto_1.ContactDto),
+    (0, class_transformer_1.Type)(() => CustomerContactDto_1.CustomerContactDto),
     __metadata("design:type", Array)
-], NotPossibleDto.prototype, "contact", void 0);
+], NotPossibleDto.prototype, "customerContacts", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Remark External' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], NotPossibleDto.prototype, "remarkExternal", void 0);
 exports.NotPossibleDto = NotPossibleDto;
 //# sourceMappingURL=NotPossibleDto.js.map
