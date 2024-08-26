@@ -22,11 +22,11 @@ import { JwtGuard } from 'src/auth/guard';
 export class SoapController {
   constructor(private readonly soapService: SoapService) {}
 
-  @Post('reportOrderStatus')
-  @ApiOperation({ summary: 'Report Order Status' })
-  @ApiResponse({ status: 200, description: 'Successful operation' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  reportOrderStatus(@Body() body: any): Promise<any> {
-    return this.soapService.reportOrderReceived(body);
-  }
+  // @Post('reportOrderStatus')
+  // @ApiOperation({ summary: 'Report Order Status' })
+  // @ApiResponse({ status: 200, description: 'Successful operation' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
+  // reportOrderStatus(@Body() body: any): Promise<any> {
+  //   return this.soapService.reportOrderReceived(body);
+  // }
 }

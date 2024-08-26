@@ -14,7 +14,7 @@ let SoapService = class SoapService {
     constructor() {
         this.soapUrl = 'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl';
     }
-    async reportOrderStatus(orderNo, currentDateTime) {
+    async reportOrderReceived(orderNo, currentDateTime) {
         const soapEnvelope = `
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
           <soapenv:Header/>
