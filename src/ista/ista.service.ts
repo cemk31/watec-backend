@@ -945,4 +945,47 @@ export class IstaService {
       return null;
     }
   }
+
+  async getStatusById(statusId: number, type: string) {
+    if (type === 'received') {
+      return this.prisma.received.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'planned') {
+      return this.prisma.planned.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'notPossible') {
+      return this.prisma.notPossible.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'postponed') {
+      return this.prisma.postponed.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'cancelled') {
+      return this.prisma.cancelled.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'rejected') {
+      return this.prisma.rejected.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'closedContractPartner') {
+      return this.prisma.closedContractPartner.findFirst({
+        where: { id: statusId },
+      });
+    }
+  }
+
+  async synchroniseWithIsta(status: any, type: string) {
+    if (type === 'received') {
+    }
+  }
 }

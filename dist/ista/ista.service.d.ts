@@ -1313,4 +1313,46 @@ export declare class IstaService {
     updateOrderReceived(orderId: number | null, dto: ReceivedDto): Promise<Order | null>;
     deleteOrder(orderId: number): Promise<Order | null>;
     doneOrder(orderId: number): Promise<Order | null>;
+    getStatusById(statusId: number, type: string): Promise<(import("@prisma/client/runtime").GetResult<{
+        id: number;
+        orderId: number;
+        orderstatusType: string;
+        setOn: Date;
+        requestId: number;
+        createdAt: Date;
+        updatedAt: Date;
+        syncDataId: number;
+    }, unknown, never> & {}) | (import("@prisma/client/runtime").GetResult<{
+        id: number;
+        requestId: number;
+        orderId: number;
+        statusType: number;
+        setOn: Date;
+        createdAt: Date;
+        updatedAt: Date;
+        rejectionReason: string;
+        rejectionReasonText: string;
+        syncDataId: number;
+    }, unknown, never> & {}) | (import("@prisma/client/runtime").GetResult<{
+        id: number;
+        requestId: number;
+        orderId: number;
+        statusType: string;
+        setOn: Date;
+        createdAt: Date;
+        updatedAt: Date;
+        syncDataId: number;
+    }, unknown, never> & {}) | (import("@prisma/client/runtime").GetResult<{
+        id: number;
+        orderId: number;
+        orderstatusType: number;
+        setOn: Date;
+        deficiencyDescription: string;
+        registrationHealthAuthoritiesOn: Date;
+        extraordinaryExpenditureReason: string;
+        createdAt: Date;
+        updatedAt: Date;
+        syncDataId: number;
+    }, unknown, never> & {})>;
+    synchroniseWithIsta(status: any, type: string): Promise<void>;
 }
