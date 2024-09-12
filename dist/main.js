@@ -4,8 +4,26 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const swagger_1 = require("@nestjs/swagger");
+const bodyParser = require("body-parser");
+const xml2js = require("xml2js");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.text({ type: 'text/xml' }));
+    app.use(bodyParser.text({ type: 'application/soap+xml' }));
+    app.use(bodyParser.text({ type: 'application/xml' }));
+    app.use((req, res, next) => {
+        if (req.headers['content-type'] === 'application/xml') {
+            xml2js.parseString(req.body, (err, result) => {
+                if (err) {
+                    return res.status(400).send('Invalid XML');
+                }
+                req.body = result;
+            });
+        }
+        next();
+    });
     app.enableCors({
         origin: (origin, callback) => {
             const allowedOrigins = [
@@ -30,7 +48,7 @@ async function bootstrap() {
     }));
     const port = process.env.PORT || 3000;
     const config = new swagger_1.DocumentBuilder()
-        .setTitle('WATEC Backend')
+        .setTitle('WATEC-Backend API')
         .setDescription('WATEC-Backend API Description - Documentation generated on 05-10-2023')
         .setVersion('1.0.0.')
         .addTag('WATEC', 'Endpoints related to the WATEC Backend Services')

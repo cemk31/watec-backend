@@ -45,7 +45,7 @@ Table Customer {
   updatedAt DateTime
   companyName String
   fax String
-  propertyNumber String
+  propertyNumber Int
   addressId Int
   address Address
   user users
@@ -160,6 +160,8 @@ Table auftraggeber {
 
 Table Order {
   id Int [pk, increment]
+  propertyNumber Int
+  orderNumberIsta String
   number String
   remarkExternal String
   createdAt DateTime [default: `now()`, not null]

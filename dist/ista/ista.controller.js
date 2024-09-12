@@ -32,16 +32,6 @@ let IstaController = class IstaController {
     createOrder(dto) {
         return this.istaService.createOrder(dto);
     }
-    createNewOrder(dto) {
-        console.log('createNewOrder');
-        console.log(dto);
-        return this.istaService.orderReceived(dto);
-    }
-    updateOrder(dto) {
-        console.log('updateOrder DTO', dto);
-        const orderId = Number(dto.orderId);
-        return this.istaService.updateOrderReceived(orderId, dto);
-    }
     createCustomerAndOrderById(customerId, received) {
         console.log('received', received);
         const order = this.istaService.receivedOrderWithCustomerId(customerId, received);
@@ -122,25 +112,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "createOrder", null);
 __decorate([
-    (0, common_1.Post)('/received'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.CreateCustomerOrderDTO]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "createNewOrder", null);
-__decorate([
-    (0, common_1.Post)('/create-received'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.ReceivedDto]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "updateOrder", null);
-__decorate([
     (0, common_1.Post)('/customerOrder/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, dto_1.ReceivedDto]),
+    __metadata("design:paramtypes", [Number, dto_1.received]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "createCustomerAndOrderById", null);
 __decorate([

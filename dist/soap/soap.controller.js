@@ -8,20 +8,67 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SoapController = void 0;
 const common_1 = require("@nestjs/common");
 const soap_service_1 = require("./soap.service");
 const swagger_1 = require("@nestjs/swagger");
 const guard_1 = require("../auth/guard");
+const soapReceveidDTO_1 = require("../ista/dto/soapReceveidDTO");
+const decorator_1 = require("../auth/decorator");
 let SoapController = class SoapController {
     constructor(soapService) {
         this.soapService = soapService;
     }
+    async polling(body, user) {
+        const xml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <ins:pollInstallationOrdersRequest>
+                  <com:environment>Development</com:environment>
+                  <com:language>EN</com:language>
+                  <com:consumer>soapUI</com:consumer>
+                </ins:pollInstallationOrdersRequest>
+            </soapenv:Body>
+          </soapenv:Envelope>`;
+    }
+    async planned(statusId, user) {
+        const planned = await this.soapService.reportOrderPlanned(statusId, user);
+        return planned;
+    }
 };
+__decorate([
+    (0, common_1.Post)('/planned'),
+    (0, swagger_1.ApiConsumes)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
+    (0, swagger_1.ApiProduces)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
+    (0, swagger_1.ApiOperation)({ summary: 'Report Order Status' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Successful operation' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [soapReceveidDTO_1.SoapEnvelopeDto, Object]),
+    __metadata("design:returntype", Promise)
+], SoapController.prototype, "polling", null);
+__decorate([
+    (0, common_1.Post)('/planned'),
+    (0, swagger_1.ApiConsumes)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
+    (0, swagger_1.ApiProduces)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
+    (0, swagger_1.ApiOperation)({ summary: 'Report Order Status' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Successful operation' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Bad request' }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], SoapController.prototype, "planned", null);
 SoapController = __decorate([
     (0, common_1.UseGuards)(guard_1.JwtGuard),
-    (0, swagger_1.ApiTags)('SOAP'),
+    (0, swagger_1.ApiTags)('SOAP API'),
     (0, common_1.Controller)('soap'),
     __metadata("design:paramtypes", [soap_service_1.SoapService])
 ], SoapController);

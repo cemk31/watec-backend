@@ -54,7 +54,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'info@muster-firma.de' }),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], CustomerDTO.prototype, "email", void 0);
 __decorate([
@@ -76,10 +76,10 @@ __decorate([
     __metadata("design:type", String)
 ], CustomerDTO.prototype, "companyName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Liegenschaftsnummer' }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
+    (0, swagger_1.ApiProperty)({ example: 1 }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
 ], CustomerDTO.prototype, "propertyNumber", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ type: () => [create_objekt_dto_1.CreateObjektDto] }),

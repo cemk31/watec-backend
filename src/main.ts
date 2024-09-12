@@ -2,9 +2,30 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
+import * as xml2js from 'xml2js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // JSON Body Parser
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.text({ type: 'text/xml' }));
+  app.use(bodyParser.text({ type: 'application/soap+xml' }));
+  // XML Body Parser
+  app.use(bodyParser.text({ type: 'application/xml' }));
+  app.use((req, res, next) => {
+    if (req.headers['content-type'] === 'application/xml') {
+      xml2js.parseString(req.body, (err, result) => {
+        if (err) {
+          return res.status(400).send('Invalid XML');
+        }
+        req.body = result;
+      });
+    }
+    next();
+  });
 
   app.enableCors({
     origin: (origin, callback) => {
@@ -35,7 +56,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
 
   const config = new DocumentBuilder()
-    .setTitle('WATEC Backend')
+    .setTitle('WATEC-Backend API')
     .setDescription(
       'WATEC-Backend API Description - Documentation generated on 05-10-2023',
     )

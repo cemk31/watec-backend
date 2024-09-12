@@ -18,7 +18,7 @@ export declare class CustomerController {
         updatedAt: Date;
         companyName: string;
         fax: string;
-        propertyNumber: string;
+        propertyNumber: number;
         addressId: number;
     }, unknown, never> & {}>;
     updateCustomer(customerId: number, dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
@@ -36,12 +36,14 @@ export declare class CustomerController {
         updatedAt: Date;
         companyName: string;
         fax: string;
-        propertyNumber: string;
+        propertyNumber: number;
         addressId: number;
     }, unknown, never> & {}>;
     getAllCustomersForUser(): Promise<({
         orders: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            propertyNumber: number;
+            orderNumberIsta: string;
             number: string;
             remarkExternal: string;
             createdAt: Date;
@@ -64,7 +66,7 @@ export declare class CustomerController {
         updatedAt: Date;
         companyName: string;
         fax: string;
-        propertyNumber: string;
+        propertyNumber: number;
         addressId: number;
     }, unknown, never> & {})[]>;
 }

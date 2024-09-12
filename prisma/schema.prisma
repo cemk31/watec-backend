@@ -59,7 +59,7 @@ model Customer {
   updatedAt      DateTime? @updatedAt
   companyName    String?
   fax            String?
-  propertyNumber String?
+  propertyNumber Int?
   addressId      Int?
   address        Address?
   user           User?     @relation(fields: [userId], references: [id])
@@ -188,6 +188,8 @@ model Auftraggeber {
 
 model Order {
   id                         Int                          @id @default(autoincrement())
+  propertyNumber             Int?
+  orderNumberIsta            String?
   number                     String?
   remarkExternal             String?
   createdAt                  DateTime                     @default(now())

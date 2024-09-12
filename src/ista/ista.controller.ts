@@ -19,20 +19,18 @@ import {
   CustomerDTO,
   ExecutionOnSiteNotPossibleDto,
   OrderDto,
-  ReceivedDto,
+  received,
   SyncDto,
 } from './dto';
 import { PlannedDto } from './dto/PlannedDto';
 import { IstaService } from './ista.service';
-
-import { Order, Rejected } from '@prisma/client';
-
 import { RejectedDto } from './dto/RejectedDto';
 import { PostponedDto } from './dto/PostponedDto';
 import { CancelledDto } from './dto/CancelledDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
 import { DoneDto } from 'src/auftrag/dto/create-done.dto';
+import { Received } from '@prisma/client';
 
 @UseGuards(JwtGuard)
 @ApiTags('ISTA API')
@@ -256,24 +254,24 @@ export class IstaController {
   }
 
   //RECEIVED - Create new empty order
-  @Post('/received')
-  createNewOrder(@Body() dto: CreateCustomerOrderDTO) {
-    console.log('createNewOrder');
-    console.log(dto);
-    return this.istaService.orderReceived(dto);
-  }
+  // @Post('/received')
+  // createNewOrder(@Body() dto: CreateCustomerOrderDTO) {
+  //   console.log('createNewOrder');
+  //   console.log(dto);
+  //   return this.istaService.orderReceived(dto);
+  // }
 
-  @Post('/create-received')
-  updateOrder(@Body() dto: ReceivedDto) {
-    console.log('updateOrder DTO', dto);
-    const orderId = Number(dto.orderId);
-    return this.istaService.updateOrderReceived(orderId, dto);
-  }
+  // @Post('/create-received')
+  // updateOrder(@Body() dto: ReceivedDto) {
+  //   console.log('updateOrder DTO', dto);
+  //   const orderId = Number(dto.orderId);
+  //   return this.istaService.updateOrderReceived(orderId, dto);
+  // }
 
   @Post('/customerOrder/:id')
   createCustomerAndOrderById(
     @Param('id', ParseIntPipe) customerId: number,
-    @Body() received: ReceivedDto,
+    @Body() received: received,
   ) {
     console.log('received', received);
     const order = this.istaService.receivedOrderWithCustomerId(

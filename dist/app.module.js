@@ -23,11 +23,13 @@ const adresse_module_1 = require("./adresse/adresse.module");
 const ista_module_1 = require("./ista/ista.module");
 const axios_1 = require("@nestjs/axios");
 const xml_to_json_middleware_1 = require("./middleware/xml-to-json.middleware");
+const soap_module_1 = require("./soap/soap.module");
 let AppModule = class AppModule {
     configure(consumer) {
-        consumer
-            .apply(xml_to_json_middleware_1.XmlToJsonMiddleware)
-            .forRoutes({ path: 'soap/reportOrderStatus', method: common_1.RequestMethod.POST });
+        consumer.apply(xml_to_json_middleware_1.XmlToJsonMiddleware).forRoutes({
+            path: 'soap/reportOrderStatus',
+            method: common_1.RequestMethod.POST,
+        });
     }
 };
 AppModule = __decorate([
@@ -47,7 +49,8 @@ AppModule = __decorate([
             auftraggeber_module_1.AuftraggeberModule,
             adresse_module_1.AdresseModule,
             ista_module_1.IstaModule,
-            axios_1.HttpModule
+            axios_1.HttpModule,
+            soap_module_1.SoapM,
         ],
     })
 ], AppModule);

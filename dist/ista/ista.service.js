@@ -13,86 +13,22 @@ exports.IstaService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
-const config_1 = require("@nestjs/config");
 const DrinkingWaterFacilityDto_1 = require("./dto/DrinkingWaterFacilityDto");
 const AscendingPipeDto_1 = require("./dto/AscendingPipeDto");
 const SamplingPointDto_1 = require("./dto/SamplingPointDto");
-const ista_helper_service_1 = require("./ista.helper.service");
 let IstaService = class IstaService {
-    constructor(prisma, configService, istaHelpService) {
+    constructor(prisma) {
         this.prisma = prisma;
-        this.configService = configService;
-        this.istaHelpService = istaHelpService;
-    }
-    async receivedOrder(dto) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-        try {
-            const order = await this.prisma.order.create({
-                data: {
-                    number: dto.number,
-                    remarkExternal: dto.remarkExternal,
-                    actualStatus: client_1.Status.RECEIVED,
-                    Received: {
-                        create: (_b = (_a = dto.Received) === null || _a === void 0 ? void 0 : _a.map((received) => {
-                            var _a, _b;
-                            return ({
-                                orderstatusType: 'RECEIVED',
-                                setOn: received.setOn,
-                                CustomerContact: {
-                                    create: (_b = (_a = received.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
-                                        contactAttemptOn: contact.contactAttemptOn,
-                                        contactPersonCustomer: contact.contactPersonCustomer,
-                                        agentCP: contact.agentCP,
-                                        result: contact.result,
-                                        remark: contact.remark,
-                                    }))) !== null && _b !== void 0 ? _b : [],
-                                },
-                            });
-                        })) !== null && _b !== void 0 ? _b : [],
-                    },
-                    Customer: {
-                        create: {
-                            firstName: (_c = dto.Customer) === null || _c === void 0 ? void 0 : _c.firstName,
-                            lastName: (_d = dto.Customer) === null || _d === void 0 ? void 0 : _d.lastName,
-                            companyName: (_e = dto.Customer) === null || _e === void 0 ? void 0 : _e.companyName,
-                            street: (_f = dto.Customer) === null || _f === void 0 ? void 0 : _f.street,
-                            propertyNumber: (_g = dto.Customer) === null || _g === void 0 ? void 0 : _g.propertyNumber,
-                            zipCode: (_h = dto.Customer) === null || _h === void 0 ? void 0 : _h.zipCode,
-                            place: (_j = dto.Customer) === null || _j === void 0 ? void 0 : _j.place,
-                            country: (_k = dto.Customer) === null || _k === void 0 ? void 0 : _k.country,
-                            email: (_l = dto.Customer) === null || _l === void 0 ? void 0 : _l.email,
-                            phoneNumber: (_m = dto.Customer) === null || _m === void 0 ? void 0 : _m.phoneNumber,
-                        },
-                    },
-                },
-                include: {
-                    status: true,
-                    Received: true,
-                    Planned: true,
-                    customerContacts: true,
-                    NotPossible: true,
-                    Postponed: true,
-                    Cancelled: true,
-                    Rejected: true,
-                    ClosedContractPartner: true,
-                    Customer: true,
-                },
-            });
-            return order;
-        }
-        catch (error) {
-            console.error('Fehler beim Speichern:', error);
-            throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
-        }
     }
     async receivedOrderWithCustomerId(customerId, dto) {
-        var _a, _b;
         console.log('customerId:', customerId);
         console.log('receivedDto:', dto);
         try {
             const order = await this.prisma.order.create({
                 data: {
                     actualStatus: client_1.Status.RECEIVED,
+                    propertyNumber: dto.propertyNumber,
+                    orderNumberIsta: dto.propertyNumber.toString(),
                     Customer: {
                         connect: {
                             id: customerId,
@@ -102,15 +38,6 @@ let IstaService = class IstaService {
                         create: {
                             orderstatusType: dto.orderstatusType || '007',
                             setOn: dto.setOn,
-                            customerContacts: {
-                                create: (_b = (_a = dto.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
-                                    contactAttemptOn: contact.contactAttemptOn,
-                                    contactPersonCustomer: contact.contactPersonCustomer,
-                                    agentCP: contact.agentCP,
-                                    result: contact.result,
-                                    remark: contact.remark,
-                                }))) !== null && _b !== void 0 ? _b : [],
-                            },
                         },
                     },
                 },
@@ -229,18 +156,6 @@ let IstaService = class IstaService {
         });
         return order;
     }
-    async orderReceived(dto) {
-        const { Customer, number, remarkExternal, Received } = dto;
-        try {
-            const order = await this.receivedOrder(dto);
-            return order;
-        }
-        catch (error) {
-            console.error('Fehler beim Speichern:', error);
-            throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
-        }
-    }
-    async orderReceivedWithCustomerId(dto) { }
     async getOrderById(orderId) {
         return this.prisma.order.findFirst({
             where: { id: orderId },
@@ -345,7 +260,7 @@ let IstaService = class IstaService {
         return order;
     }
     async createCustomer(dto) {
-        console.log('company name:', dto.companyName);
+        console.log('CustomerDTO:', dto);
         const customer = await this.prisma.customer.create({
             data: {
                 companyName: dto.companyName,
@@ -868,9 +783,7 @@ let IstaService = class IstaService {
 };
 IstaService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        config_1.ConfigService,
-        ista_helper_service_1.IstaHelperService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], IstaService);
 exports.IstaService = IstaService;
 //# sourceMappingURL=ista.service.js.map

@@ -5,7 +5,6 @@ import {
   CustomerDTO,
   ExecutionOnSiteNotPossibleDto,
   OrderDto,
-  ReceivedDto,
 } from './dto';
 import { RejectedDto } from './dto/RejectedDto';
 import { PostponedDto } from './dto/PostponedDto';
@@ -31,78 +30,75 @@ import { SamplingPointDto } from './dto/SamplingPointDto';
 import { DrinkingWaterHeaterDto } from './dto/DrinkingWaterHeaterDto';
 import { IstaHelperService } from './ista.helper.service';
 import * as moment from 'moment';
+import { received } from './dto/ReceivedDto';
 
 @Injectable()
 export class IstaService {
   // private client: soap.Client | null = null;
 
-  constructor(
-    private prisma: PrismaService,
-    private configService: ConfigService,
-    private istaHelpService: IstaHelperService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   //create Order with status Received
-  async receivedOrder(dto: CreateCustomerOrderDTO) {
-    try {
-      const order = await this.prisma.order.create({
-        data: {
-          number: dto.number,
-          remarkExternal: dto.remarkExternal,
-          actualStatus: Status.RECEIVED,
-          Received: {
-            create:
-              dto.Received?.map((received) => ({
-                orderstatusType: 'RECEIVED',
-                setOn: received.setOn,
-                CustomerContact: {
-                  create:
-                    received.customerContacts?.map((contact) => ({
-                      contactAttemptOn: contact.contactAttemptOn,
-                      contactPersonCustomer: contact.contactPersonCustomer,
-                      agentCP: contact.agentCP,
-                      result: contact.result,
-                      remark: contact.remark,
-                    })) ?? [],
-                },
-              })) ?? [],
-          },
-          Customer: {
-            create: {
-              firstName: dto.Customer?.firstName,
-              lastName: dto.Customer?.lastName,
-              companyName: dto.Customer?.companyName,
-              street: dto.Customer?.street,
-              propertyNumber: dto.Customer?.propertyNumber,
-              zipCode: dto.Customer?.zipCode,
-              place: dto.Customer?.place,
-              country: dto.Customer?.country,
-              email: dto.Customer?.email,
-              phoneNumber: dto.Customer?.phoneNumber,
-            },
-          },
-        },
-        include: {
-          status: true,
-          Received: true,
-          Planned: true,
-          customerContacts: true,
-          NotPossible: true,
-          Postponed: true,
-          Cancelled: true,
-          Rejected: true,
-          ClosedContractPartner: true,
-          Customer: true,
-        },
-      });
-      return order;
-    } catch (error) {
-      console.error('Fehler beim Speichern:', error);
-      throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
-    }
-  }
+  // async receivedOrder(dto: CreateCustomerOrderDTO) {
+  //   try {
+  //     const order = await this.prisma.order.create({
+  //       data: {
+  //         number: dto.number,
+  //         remarkExternal: dto.remarkExternal,
+  //         actualStatus: Status.RECEIVED,
+  //         Received: {
+  //           create:
+  //             dto.Received?.map((received) => ({
+  //               orderstatusType: 'RECEIVED',
+  //               setOn: received.setOn,
+  //               CustomerContact: {
+  //                 create:
+  //                   received.customerContacts?.map((contact) => ({
+  //                     contactAttemptOn: contact.contactAttemptOn,
+  //                     contactPersonCustomer: contact.contactPersonCustomer,
+  //                     agentCP: contact.agentCP,
+  //                     result: contact.result,
+  //                     remark: contact.remark,
+  //                   })) ?? [],
+  //               },
+  //             })) ?? [],
+  //         },
+  //         Customer: {
+  //           create: {
+  //             firstName: dto.Customer?.firstName,
+  //             lastName: dto.Customer?.lastName,
+  //             companyName: dto.Customer?.companyName,
+  //             street: dto.Customer?.street,
+  //             propertyNumber: dto.Customer?.propertyNumber,
+  //             zipCode: dto.Customer?.zipCode,
+  //             place: dto.Customer?.place,
+  //             country: dto.Customer?.country,
+  //             email: dto.Customer?.email,
+  //             phoneNumber: dto.Customer?.phoneNumber,
+  //           },
+  //         },
+  //       },
+  //       include: {
+  //         status: true,
+  //         Received: true,
+  //         Planned: true,
+  //         customerContacts: true,
+  //         NotPossible: true,
+  //         Postponed: true,
+  //         Cancelled: true,
+  //         Rejected: true,
+  //         ClosedContractPartner: true,
+  //         Customer: true,
+  //       },
+  //     });
+  //     return order;
+  //   } catch (error) {
+  //     console.error('Fehler beim Speichern:', error);
+  //     throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
+  //   }
+  // }
 
-  async receivedOrderWithCustomerId(customerId: number, dto: ReceivedDto) {
+  async receivedOrderWithCustomerId(customerId: number, dto: received) {
     console.log('customerId:', customerId);
     console.log('receivedDto:', dto);
 
@@ -110,6 +106,8 @@ export class IstaService {
       const order = await this.prisma.order.create({
         data: {
           actualStatus: Status.RECEIVED,
+          propertyNumber: dto.propertyNumber,
+          orderNumberIsta: dto.propertyNumber.toString(),
           Customer: {
             connect: {
               id: customerId,
@@ -119,16 +117,16 @@ export class IstaService {
             create: {
               orderstatusType: dto.orderstatusType || '007',
               setOn: dto.setOn,
-              customerContacts: {
-                create:
-                  dto.customerContacts?.map((contact) => ({
-                    contactAttemptOn: contact.contactAttemptOn,
-                    contactPersonCustomer: contact.contactPersonCustomer,
-                    agentCP: contact.agentCP,
-                    result: contact.result,
-                    remark: contact.remark,
-                  })) ?? [],
-              },
+              // customerContacts: {
+              //   create:
+              //     dto.customerContacts?.customerContact.map((contact) => ({
+              //       contactAttemptOn: contact.contactAttemptOn,
+              //       contactPersonCustomer: contact.contactPersonCustomer,
+              //       agentCP: contact.agentCP,
+              //       result: contact.result,
+              //       remark: contact.remark,
+              //     })) ?? [],
+              // },
             },
           },
         },
@@ -259,18 +257,18 @@ export class IstaService {
     return order;
   }
 
-  async orderReceived(dto: CreateCustomerOrderDTO) {
-    const { Customer, number, remarkExternal, Received } = dto;
-    try {
-      const order = await this.receivedOrder(dto);
-      return order;
-    } catch (error) {
-      console.error('Fehler beim Speichern:', error);
-      throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
-    }
-  }
+  // async orderReceived(dto: CreateCustomerOrderDTO) {
+  //   const { Customer, number, remarkExternal, Received } = dto;
+  //   try {
+  //     const order = await this.receivedOrder(dto);
+  //     return order;
+  //   } catch (error) {
+  //     console.error('Fehler beim Speichern:', error);
+  //     throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
+  //   }
+  // }
 
-  async orderReceivedWithCustomerId(dto: Received) {}
+  // async orderReceivedWithCustomerId(dto: Received) {}
 
   async getOrderById(orderId: number) {
     return this.prisma.order.findFirst({
@@ -388,7 +386,7 @@ export class IstaService {
   }
 
   async createCustomer(dto: CustomerDTO) {
-    console.log('company name:', dto.companyName);
+    console.log('CustomerDTO:', dto);
     const customer = await this.prisma.customer.create({
       data: {
         companyName: dto.companyName, // hinzugefügt
@@ -835,7 +833,7 @@ export class IstaService {
   //Received
   async updateOrderReceived(
     orderId: number | null,
-    dto: ReceivedDto,
+    dto: received,
   ): Promise<Order | null> {
     try {
       const receivedEntry = await this.prisma.received.create({
