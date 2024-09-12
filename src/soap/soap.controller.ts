@@ -29,6 +29,9 @@ import { Received, SoapEnvelopeDto } from 'src/ista/dto/soapReceveidDTO';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/auth/decorator';
 import axios from 'axios';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @UseGuards(JwtGuard)
 @ApiTags('SOAP API')
@@ -110,8 +113,8 @@ export class SoapController {
         'Content-Type': 'text/xml',
       },
       auth: {
-        username: 'DWS_WATEC',
-        password: 'V9RkJb0eq7dpvQcgP2IG8DF1yufxaEznrNoKM6ZO',
+        username: process.env.SOAP_USERNAME,
+        password: process.env.SOAP_PASSWORD,
       },
     };
 

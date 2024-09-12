@@ -20,6 +20,8 @@ const guard_1 = require("../auth/guard");
 const soapReceveidDTO_1 = require("../ista/dto/soapReceveidDTO");
 const decorator_1 = require("../auth/decorator");
 const axios_1 = require("axios");
+const dotenv = require("dotenv");
+dotenv.config();
 let SoapController = class SoapController {
     constructor(soapService) {
         this.soapService = soapService;
@@ -42,8 +44,8 @@ let SoapController = class SoapController {
                 'Content-Type': 'text/xml',
             },
             auth: {
-                username: 'DWS_WATEC',
-                password: 'V9RkJb0eq7dpvQcgP2IG8DF1yufxaEznrNoKM6ZO',
+                username: process.env.SOAP_USERNAME,
+                password: process.env.SOAP_PASSWORD,
             },
         };
         try {
