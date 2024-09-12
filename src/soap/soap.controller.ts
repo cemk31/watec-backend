@@ -28,6 +28,7 @@ import * as xml2js from 'xml2js';
 import { Received, SoapEnvelopeDto } from 'src/ista/dto/soapReceveidDTO';
 import { User } from '@prisma/client';
 import { GetUser } from 'src/auth/decorator';
+import axios from 'axios';
 
 @UseGuards(JwtGuard)
 @ApiTags('SOAP API')
@@ -91,39 +92,62 @@ export class SoapController {
   @ApiResponse({ status: 200, description: 'Successful operation' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   async polling(@Body() body: SoapEnvelopeDto, @GetUser() user: User) {
-    const xml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
-            <soapenv:Header/>
-            <soapenv:Body>
-                <ins:pollInstallationOrdersRequest>
-                  <com:environment>Development</com:environment>
-                  <com:language>EN</com:language>
-                  <com:consumer>soapUI</com:consumer>
-                </ins:pollInstallationOrdersRequest>
-            </soapenv:Body>
-          </soapenv:Envelope>`;
+    const soapBody = `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+      <soapenv:Header/>
+      <soapenv:Body>
+        <ins:pollInstallationOrdersRequest>
+          <com:environment>Development</com:environment>
+          <com:language>EN</com:language>
+          <com:consumer>soapUI</com:consumer>
+        </ins:pollInstallationOrdersRequest>
+      </soapenv:Body>
+    </soapenv:Envelope>
+    `;
+
+    const config = {
+      headers: {
+        'Content-Type': 'text/xml',
+      },
+      auth: {
+        username: 'DWS_WATEC',
+        password: 'V9RkJb0eq7dpvQcgP2IG8DF1yufxaEznrNoKM6ZO',
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        'https://services-test.ista.com/DrinkingWaterSystem/InstallationService',
+        soapBody,
+        config,
+      );
+      console.log(response.data); // Verarbeite die SOAP-Antwort
+    } catch (error) {
+      console.error('Fehler beim Senden des SOAP-Requests:', error);
+    }
   }
 
-  @Post('/planned')
-  @ApiConsumes(
-    'application/json',
-    'application/xml',
-    'text/xml',
-    'application/soap+xml',
-  )
-  @ApiProduces(
-    'application/json',
-    'application/xml',
-    'text/xml',
-    'application/soap+xml',
-  )
-  @ApiOperation({ summary: 'Report Order Status' })
-  @ApiResponse({ status: 200, description: 'Successful operation' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  async planned(
-    @Param('id', ParseIntPipe) statusId: number,
-    @GetUser() user: User,
-  ) {
-    const planned = await this.soapService.reportOrderPlanned(statusId, user);
-    return planned;
-  }
+  // @Post('/planned')
+  // @ApiConsumes(
+  //   'application/json',
+  //   'application/xml',
+  //   'text/xml',
+  //   'application/soap+xml',
+  // )
+  // @ApiProduces(
+  //   'application/json',
+  //   'application/xml',
+  //   'text/xml',
+  //   'application/soap+xml',
+  // )
+  // @ApiOperation({ summary: 'Report Order Status' })
+  // @ApiResponse({ status: 200, description: 'Successful operation' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
+  // async planned(
+  //   @Param('id', ParseIntPipe) statusId: number,
+  //   @GetUser() user: User,
+  // ) {
+  //   const planned = await this.soapService.reportOrderPlanned(statusId, user);
+  //   return planned;
+  // }
 }

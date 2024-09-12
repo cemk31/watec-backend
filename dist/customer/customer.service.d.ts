@@ -5,14 +5,20 @@ export declare class CustomerService {
     constructor(prisma: PrismaService);
     createCustomer(userId: number, dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -20,6 +26,7 @@ export declare class CustomerService {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     getCustomers(): Promise<({
         orders: (import("@prisma/client/runtime").GetResult<{
@@ -32,17 +39,28 @@ export declare class CustomerService {
             actualStatus: import(".prisma/client").Status;
             customerId: number;
             updatedAt: Date;
+            serviceType: string;
+            executionFlag: boolean;
+            releasedOn: Date;
+            drinkingWaterFacilityId: number;
+            propertyId: number;
         }, unknown, never> & {})[];
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -50,17 +68,24 @@ export declare class CustomerService {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {})[]>;
     updateCustomer(userId: number, dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -68,5 +93,6 @@ export declare class CustomerService {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
 }

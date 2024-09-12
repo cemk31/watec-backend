@@ -117,14 +117,20 @@ export declare class IstaService {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -132,6 +138,7 @@ export declare class IstaService {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -143,6 +150,11 @@ export declare class IstaService {
         actualStatus: Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     createOrder(dto: OrderDto): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -250,14 +262,20 @@ export declare class IstaService {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -265,6 +283,7 @@ export declare class IstaService {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -276,6 +295,11 @@ export declare class IstaService {
         actualStatus: Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     getAllOrders(): Promise<({
         status: (import("@prisma/client/runtime").GetResult<{
@@ -538,14 +562,20 @@ export declare class IstaService {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -553,6 +583,7 @@ export declare class IstaService {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -564,6 +595,11 @@ export declare class IstaService {
         actualStatus: Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {})[]>;
     getOrderById(orderId: number): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -724,6 +760,10 @@ export declare class IstaService {
             recordedSystem: ({
                 property: import("@prisma/client/runtime").GetResult<{
                     id: number;
+                    number: number;
+                    id_HealthAuthorities: number;
+                    contactPersonId: number;
+                    addressId: number;
                     hotwatersupplyType_central: boolean;
                     hotwatersupplyType_decentral: boolean;
                     recordedSystemId: number;
@@ -797,14 +837,20 @@ export declare class IstaService {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -812,6 +858,7 @@ export declare class IstaService {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -823,6 +870,11 @@ export declare class IstaService {
         actualStatus: Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     updateOrder(orderId: number, dto: OrderDto): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -956,14 +1008,20 @@ export declare class IstaService {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -971,6 +1029,7 @@ export declare class IstaService {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -982,17 +1041,28 @@ export declare class IstaService {
         actualStatus: Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     createCustomer(dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -1000,17 +1070,24 @@ export declare class IstaService {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     updateCustomer(customerId: number, dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -1018,6 +1095,7 @@ export declare class IstaService {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     getCustomerById(customerId: number): Promise<{
         orders: (import("@prisma/client/runtime").GetResult<{
@@ -1030,17 +1108,28 @@ export declare class IstaService {
             actualStatus: Status;
             customerId: number;
             updatedAt: Date;
+            serviceType: string;
+            executionFlag: boolean;
+            releasedOn: Date;
+            drinkingWaterFacilityId: number;
+            propertyId: number;
         }, unknown, never> & {})[];
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -1048,6 +1137,7 @@ export declare class IstaService {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     orderRejected(dto: RejectedDto): Promise<void>;
     orderPostponed(dto: PostponedDto): Promise<Postponed | null>;

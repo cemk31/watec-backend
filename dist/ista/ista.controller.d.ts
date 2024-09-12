@@ -116,14 +116,20 @@ export declare class IstaController {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -131,6 +137,7 @@ export declare class IstaController {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -142,6 +149,11 @@ export declare class IstaController {
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     createCustomerAndOrderById(customerId: number, received: received): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -249,14 +261,20 @@ export declare class IstaController {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -264,6 +282,7 @@ export declare class IstaController {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -275,17 +294,28 @@ export declare class IstaController {
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     createCustomer(dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -293,17 +323,24 @@ export declare class IstaController {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     updateCustomer(customerId: number, dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -311,6 +348,7 @@ export declare class IstaController {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     getCustomerById(customerId: number): Promise<{
         orders: (import("@prisma/client/runtime").GetResult<{
@@ -323,17 +361,28 @@ export declare class IstaController {
             actualStatus: import(".prisma/client").Status;
             customerId: number;
             updatedAt: Date;
+            serviceType: string;
+            executionFlag: boolean;
+            releasedOn: Date;
+            drinkingWaterFacilityId: number;
+            propertyId: number;
         }, unknown, never> & {})[];
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
         userId: number;
         email: string;
-        country: string;
         createdAt: Date;
         place: string;
         updatedAt: Date;
@@ -341,6 +390,7 @@ export declare class IstaController {
         fax: string;
         propertyNumber: number;
         addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     orderPlanned(dto: PlannedDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -664,14 +714,20 @@ export declare class IstaController {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -679,6 +735,7 @@ export declare class IstaController {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -690,6 +747,11 @@ export declare class IstaController {
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {})[]>;
     getOrderById(orderId: number): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -850,6 +912,10 @@ export declare class IstaController {
             recordedSystem: ({
                 property: import("@prisma/client/runtime").GetResult<{
                     id: number;
+                    number: number;
+                    id_HealthAuthorities: number;
+                    contactPersonId: number;
+                    addressId: number;
                     hotwatersupplyType_central: boolean;
                     hotwatersupplyType_decentral: boolean;
                     recordedSystemId: number;
@@ -923,14 +989,20 @@ export declare class IstaController {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -938,6 +1010,7 @@ export declare class IstaController {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -949,6 +1022,11 @@ export declare class IstaController {
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     updateStatus(orderDTO: OrderDto): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -1082,14 +1160,20 @@ export declare class IstaController {
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
             userId: number;
             email: string;
-            country: string;
             createdAt: Date;
             place: string;
             updatedAt: Date;
@@ -1097,6 +1181,7 @@ export declare class IstaController {
             fax: string;
             propertyNumber: number;
             addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -1108,6 +1193,11 @@ export declare class IstaController {
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     deleteOrder(orderId: number): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -1119,6 +1209,11 @@ export declare class IstaController {
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     closedContractPartner(dto: ClosedContractPartnerDto): (dto: ClosedContractPartnerDto) => any;
     done(dto: DoneDto): Promise<import("@prisma/client/runtime").GetResult<{
@@ -1131,6 +1226,11 @@ export declare class IstaController {
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     reportStatusToISTA(dto: SyncDto): void;
 }

@@ -5,5 +5,4 @@ export declare class SoapController {
     private readonly soapService;
     constructor(soapService: SoapService);
     polling(body: SoapEnvelopeDto, user: User): Promise<void>;
-    planned(statusId: number, user: User): Promise<any>;
 }

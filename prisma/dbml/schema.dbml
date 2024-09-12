@@ -14,7 +14,7 @@ Table users {
   isConfirmed Boolean [not null, default: false]
   customer Customer [not null]
   sync Sync [not null]
-  auftraege auftraege [not null]
+  auftraege auftrag [not null]
   auftraggeber auftraggeber [not null]
   bookmarks bookmarks [not null]
 }
@@ -32,14 +32,20 @@ Table bookmarks {
 
 Table Customer {
   id Int [pk, increment]
+  istaId Int
   firstName String
   lastName String
+  name1 String
+  name2 String
+  city String
+  postcode String
+  country String
+  telephone String
   phoneNumber String
   street String
   zipCode String
   userId Int
   email String
-  country String
   createdAt DateTime [default: `now()`]
   place String
   updatedAt DateTime
@@ -51,9 +57,24 @@ Table Customer {
   user users
   orders Order [not null]
   objekt objekt [not null]
+  contactPerson contactPerson
+  contactPersonId Int [unique]
 }
 
-Table auftraege {
+Table contactPerson {
+  id Int [pk, increment]
+  salutation String
+  name String
+  forename String
+  telephone String
+  telephoneMobile String
+  role String
+  Property Property [not null]
+  customerId Int [unique]
+  Customer Customer
+}
+
+Table auftrag {
   id Int [pk, increment]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -89,7 +110,7 @@ Table email {
   angebotErstellt Boolean
   angebotsnummer String
   angebot String
-  auftrag auftraege
+  auftrag auftrag
 }
 
 Table objekt {
@@ -99,7 +120,7 @@ Table objekt {
   plzLi String
   ortLi String
   customerId Int
-  auftrag auftraege
+  auftrag auftrag
   customer Customer
 }
 
@@ -109,8 +130,8 @@ Table vw {
   vwMa String
   mailadresseVw String
   telVw String
-  auftraegeDynamisch auftraege [not null]
-  auftraegeStatisch auftraege [not null]
+  auftraegeDynamisch auftrag [not null]
+  auftraegeStatisch auftrag [not null]
 }
 
 Table auftragsbestaetigung {
@@ -139,7 +160,7 @@ Table auftragsbestaetigung {
   mahnung1 Boolean
   mahnungErhaten Boolean
   auftragId Int [unique]
-  auftrag auftraege
+  auftrag auftrag
 }
 
 Table auftraggeber {
@@ -154,7 +175,7 @@ Table auftraggeber {
   strasse String
   tel String
   auftraggebername String
-  auftraege auftraege [not null]
+  auftraege auftrag [not null]
   user users
 }
 
@@ -179,6 +200,13 @@ Table Order {
   Postponed Postponed [not null]
   Received Received [not null]
   Rejected Rejected [not null]
+  serviceType String
+  executionFlag Boolean
+  releasedOn DateTime
+  drinkingWaterFacility DrinkingWaterFacility
+  drinkingWaterFacilityId Int
+  property Property
+  propertyId Int
 }
 
 Table OrderStatus {
@@ -267,10 +295,32 @@ Table RecordedSystem {
 
 Table Property {
   id Int [pk, increment]
+  number Int
+  id_HealthAuthorities Int
+  contactPersonId Int
+  contactPerson contactPerson
+  addressId Int
+  address Address
+  userAddresses UserAddress [not null]
+  building Building [not null]
   hotwatersupplyType_central Boolean
   hotwatersupplyType_decentral Boolean
   recordedSystemId Int [unique]
   recordedSystem RecordedSystem
+  Order Order [not null]
+}
+
+Table UserAddress {
+  id Int [pk, increment]
+  salutation String
+  name String
+  street String
+  streetnumber Int
+  postcode Int
+  city String
+  country String
+  Property Property
+  propertyId Int
 }
 
 Table Service {
@@ -318,6 +368,7 @@ Table DrinkingWaterFacility {
   RecordedSystem RecordedSystem
   drinkingWaterHeaters DrinkingWaterHeater [not null]
   samplingPoints SamplingPoint [not null]
+  Order Order [not null]
 }
 
 Table DrinkingWaterHeater {
@@ -333,7 +384,6 @@ Table DrinkingWaterHeater {
   roomType String
   roomPosition Int
   positionDetail String
-  unitId Int [unique]
   drinkingWaterFacilityId Int
   DrinkingWaterFacility DrinkingWaterFacility
   unit Unit
@@ -346,9 +396,10 @@ Table Unit {
   position Int
   userName String
   generalUnit Boolean
-  buildingId Int [not null]
-  drinkingWaterHeater DrinkingWaterHeater
+  drinkingWaterHeaterId Int [unique]
+  DrinkingWaterHeater DrinkingWaterHeater
   SamplingPoint SamplingPoint [not null]
+  buildingId Int [not null]
   building Building [not null]
 }
 
@@ -393,6 +444,13 @@ Table Building {
   addressId Int [not null]
   address Address [not null]
   Unit Unit [not null]
+  street String
+  streetnumber String
+  postcode String
+  city String
+  country String
+  Property Property
+  propertyId Int
 }
 
 Table Address {
@@ -409,6 +467,7 @@ Table Address {
   customer Customer
   building Building [not null]
   Service Service [not null]
+  Property Property [not null]
 }
 
 Table Envelope {
@@ -653,25 +712,31 @@ Ref: bookmarks.userId > users.id
 
 Ref: Customer.userId > users.id
 
-Ref: auftraege.auftraggeberId > auftraggeber.id
+Ref: Customer.contactPersonId - contactPerson.id
 
-Ref: auftraege.emailId - email.id
+Ref: auftrag.auftraggeberId > auftraggeber.id
 
-Ref: auftraege.objektId - objekt.id
+Ref: auftrag.emailId - email.id
 
-Ref: auftraege.userId > users.id
+Ref: auftrag.objektId - objekt.id
 
-Ref: auftraege.vwDynamischId > vw.id
+Ref: auftrag.userId > users.id
 
-Ref: auftraege.vwStatischId > vw.id
+Ref: auftrag.vwDynamischId > vw.id
+
+Ref: auftrag.vwStatischId > vw.id
 
 Ref: objekt.customerId > Customer.id
 
-Ref: auftragsbestaetigung.auftragId - auftraege.id
+Ref: auftragsbestaetigung.auftragId - auftrag.id
 
 Ref: auftraggeber.userId > users.id
 
 Ref: Order.customerId > Customer.id
+
+Ref: Order.drinkingWaterFacilityId > DrinkingWaterFacility.id
+
+Ref: Order.propertyId > Property.id
 
 Ref: OrderStatus.orderId > Order.id
 
@@ -695,7 +760,13 @@ Ref: SuppliedDocuments.documentId > Document.id
 
 Ref: RecordedSystem.closedContractPartnerId > ClosedContractPartner.id
 
+Ref: Property.contactPersonId > contactPerson.id
+
+Ref: Property.addressId > Address.id
+
 Ref: Property.recordedSystemId - RecordedSystem.id
+
+Ref: UserAddress.propertyId > Property.id
 
 Ref: Service.addressId > Address.id
 
@@ -705,7 +776,7 @@ Ref: DrinkingWaterFacility.recordedSystemId - RecordedSystem.id
 
 Ref: DrinkingWaterHeater.drinkingWaterFacilityId > DrinkingWaterFacility.id
 
-Ref: DrinkingWaterHeater.unitId - Unit.id
+Ref: Unit.drinkingWaterHeaterId - DrinkingWaterHeater.id
 
 Ref: Unit.buildingId > Building.id
 
@@ -718,6 +789,8 @@ Ref: SamplingPoint.samplingPointsId > SamplingPoints.id
 Ref: SamplingPoint.unitId > Unit.id
 
 Ref: Building.addressId > Address.id
+
+Ref: Building.propertyId > Property.id
 
 Ref: Address.customerId - Customer.id
 
