@@ -23,7 +23,7 @@ export class SoapService {
   private soapUrl =
     'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl';
 
-  async processSoapResponse(soapResponse: string) {
+  async polling(soapResponse: string) {
     try {
       const parsedData = await parseStringPromise(soapResponse, {
         explicitArray: false,
@@ -32,20 +32,28 @@ export class SoapService {
       const orders =
         parsedData['soap:Envelope']['soap:Body'][
           'ns3:pollInstallationOrdersResponse'
-        ].orders.order;
+        ].orders;
 
-      for (const order of orders) {
+      if (!orders) {
+        throw new Error('No orders found in the response');
+      }
+
+      const ordersArray = Array.isArray(orders.order)
+        ? orders.order
+        : [orders.order];
+      console.log('ordersArray:', ordersArray);
+      for (const order of ordersArray) {
         try {
+          console.log('order:', order);
           const customer = order.customer;
           const contactPerson = customer.contactPerson;
 
-          // Speichern der Bestellung
           await this.prisma.order.create({
             data: {
-              orderNumberIsta: order.istaId,
+              orderNumberIsta: parseInt(customer.number),
               Customer: {
                 create: {
-                  istaId: customer.number,
+                  istaId: parseInt(customer.number, 10),
                   name1: customer.name1,
                   name2: customer.name2,
                   street: customer.street,
@@ -66,12 +74,15 @@ export class SoapService {
                 },
               },
               serviceType: order.serviceType,
-              executionFlag: order.executionFlag,
-              releasedOn: order.releasedOn,
+              executionFlag: order.executionFlag === 'true',
+              releasedOn: new Date(order.releasedOn),
               property: {
                 create: {
-                  number: order.property.number,
-                  id_HealthAuthorities: order.property.id_HealthAuthorities,
+                  number: parseInt(order.property.number, 10),
+                  id_HealthAuthorities: parseInt(
+                    order.property.id_HealthAuthorities,
+                    10,
+                  ),
                   contactPerson: {
                     create: {
                       salutation: order.property.contactPerson.salutation,
@@ -104,8 +115,77 @@ export class SoapService {
           );
         }
       }
+      // const order = await this.prisma.order.findMany({
+      //   include: {
+      //     status: true,
+      //     Received: {
+      //       include: {
+      //         customerContacts: true, // include CustomerContact related to Received
+      //         Request: true, // include Request related to Received
+      //       },
+      //     },
+      //     Planned: {
+      //       include: {
+      //         customerContacts: true, // include CustomerContact related to Planned
+      //         Request: true, // include Request related to Planned
+      //       },
+      //     },
+      //     // customerContacts: true,
+      //     NotPossible: {
+      //       include: {
+      //         Contact: true, // include CustomerContact related to NotPossible
+      //         Request: true, // include Request related to NotPossible
+      //       },
+      //     },
+      //     Postponed: {
+      //       include: {
+      //         Contact: true, // include CustomerContact related to Postponed
+      //         Request: true, // include Request related to Postponed
+      //       },
+      //     },
+      //     Cancelled: {
+      //       include: {
+      //         Contact: true, // include CustomerContact related to Cancelled
+      //         Request: true, // include Request related to Cancelled
+      //       },
+      //     },
+      //     Rejected: {
+      //       include: {
+      //         Contact: true, // include CustomerContact related to Rejected
+      //         Request: true, // include Request related to Rejected
+      //       },
+      //     },
+      //     ClosedContractPartner: true,
+      //     Customer: true,
+      //   },
+      // });
+      // return order;
 
       console.log('Alle Bestellungen erfolgreich verarbeitet.');
+    } catch (error) {
+      console.error('Fehler beim Verarbeiten der SOAP-Antwort:', error);
+      throw new Error('Fehler beim Verarbeiten der Bestellung');
+    }
+  }
+
+  async pollingWithMockData() {
+    const mockSoapResponse = `
+  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+    <soapenv:Body>
+      <pollInstallationOrdersResponse>
+        <order>
+          <number>40138201</number>
+          <customer>
+            <number>7059185</number>
+            <name1>Lochnerstraße 4</name1>
+          </customer>
+        </order>
+      </pollInstallationOrdersResponse>
+    </soapenv:Body>
+  </soapenv:Envelope>
+`;
+
+    try {
     } catch (error) {
       console.error('Fehler beim Verarbeiten der SOAP-Antwort:', error);
       throw new Error('Fehler beim Verarbeiten der Bestellung');

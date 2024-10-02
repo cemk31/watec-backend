@@ -214,9 +214,9 @@ model Auftraggeber {
 
 model Order {
   id                         Int                          @id @default(autoincrement())
-  propertyNumber             Int?
-  orderNumberIsta            String?
-  number                     String?
+  propertyNumber             BigInt?
+  orderNumberIsta            BigInt?
+  number                     BigInt?
   remarkExternal             String?
   createdAt                  DateTime                     @default(now())
   actualStatus               Status                       @default(RECEIVED)
@@ -330,9 +330,9 @@ model RecordedSystem {
 }
 
 model Property {
-  id                   Int  @id @default(autoincrement())
-  number               Int?
-  id_HealthAuthorities Int?
+  id                   Int     @id @default(autoincrement())
+  number               BigInt?
+  id_HealthAuthorities BigInt?
 
   contactPersonId Int?
   contactPerson   ContactPerson? @relation(fields: [contactPersonId], references: [id])

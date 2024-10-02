@@ -142,9 +142,9 @@ export declare class IstaService {
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        propertyNumber: number;
-        orderNumberIsta: string;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: Status;
@@ -287,9 +287,9 @@ export declare class IstaService {
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        propertyNumber: number;
-        orderNumberIsta: string;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: Status;
@@ -587,9 +587,9 @@ export declare class IstaService {
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        propertyNumber: number;
-        orderNumberIsta: string;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: Status;
@@ -760,8 +760,8 @@ export declare class IstaService {
             recordedSystem: ({
                 property: import("@prisma/client/runtime").GetResult<{
                     id: number;
-                    number: number;
-                    id_HealthAuthorities: number;
+                    number: bigint;
+                    id_HealthAuthorities: bigint;
                     contactPersonId: number;
                     addressId: number;
                     hotwatersupplyType_central: boolean;
@@ -862,9 +862,9 @@ export declare class IstaService {
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        propertyNumber: number;
-        orderNumberIsta: string;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: Status;
@@ -1033,9 +1033,9 @@ export declare class IstaService {
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        propertyNumber: number;
-        orderNumberIsta: string;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: Status;
@@ -1100,9 +1100,9 @@ export declare class IstaService {
     getCustomerById(customerId: number): Promise<{
         orders: (import("@prisma/client/runtime").GetResult<{
             id: number;
-            propertyNumber: number;
-            orderNumberIsta: string;
-            number: string;
+            propertyNumber: bigint;
+            orderNumberIsta: bigint;
+            number: bigint;
             remarkExternal: string;
             createdAt: Date;
             actualStatus: Status;
@@ -1114,6 +1114,16 @@ export declare class IstaService {
             drinkingWaterFacilityId: number;
             propertyId: number;
         }, unknown, never> & {})[];
+        contactPerson: import("@prisma/client/runtime").GetResult<{
+            id: number;
+            salutation: string;
+            name: string;
+            forename: string;
+            telephone: string;
+            telephoneMobile: string;
+            role: string;
+            customerId: number;
+        }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
         istaId: number;

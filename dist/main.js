@@ -46,7 +46,6 @@ async function bootstrap() {
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
     }));
-    const port = process.env.PORT || 3000;
     const config = new swagger_1.DocumentBuilder()
         .setTitle('WATEC-Backend API')
         .setDescription('WATEC-Backend API Description - Documentation generated on 05-10-2023')
@@ -61,7 +60,11 @@ async function bootstrap() {
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
+    const port = process.env.PORT || 3000;
     await app.listen(port);
+    BigInt.prototype.toJSON = function () {
+        return this.toString();
+    };
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

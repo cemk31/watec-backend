@@ -31,9 +31,9 @@ export declare class CustomerService {
     getCustomers(): Promise<({
         orders: (import("@prisma/client/runtime").GetResult<{
             id: number;
-            propertyNumber: number;
-            orderNumberIsta: string;
-            number: string;
+            propertyNumber: bigint;
+            orderNumberIsta: bigint;
+            number: bigint;
             remarkExternal: string;
             createdAt: Date;
             actualStatus: import(".prisma/client").Status;

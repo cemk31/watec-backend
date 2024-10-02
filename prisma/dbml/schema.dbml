@@ -181,9 +181,9 @@ Table auftraggeber {
 
 Table Order {
   id Int [pk, increment]
-  propertyNumber Int
-  orderNumberIsta String
-  number String
+  propertyNumber BigInt
+  orderNumberIsta BigInt
+  number BigInt
   remarkExternal String
   createdAt DateTime [default: `now()`, not null]
   actualStatus Status [not null, default: 'RECEIVED']
@@ -295,8 +295,8 @@ Table RecordedSystem {
 
 Table Property {
   id Int [pk, increment]
-  number Int
-  id_HealthAuthorities Int
+  number BigInt
+  id_HealthAuthorities BigInt
   contactPersonId Int
   contactPerson contactPerson
   addressId Int

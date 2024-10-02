@@ -53,8 +53,6 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT || 3000;
-
   const config = new DocumentBuilder()
     .setTitle('WATEC-Backend API')
     .setDescription(
@@ -76,7 +74,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  const port = process.env.PORT || 3000;
   await app.listen(port);
+
+  (BigInt.prototype as any).toJSON = function () {
+    return this.toString();
+  };
 }
 
 bootstrap();

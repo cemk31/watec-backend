@@ -28,7 +28,6 @@ let IstaService = class IstaService {
                 data: {
                     actualStatus: client_1.Status.RECEIVED,
                     propertyNumber: dto.propertyNumber,
-                    orderNumberIsta: dto.propertyNumber.toString(),
                     Customer: {
                         connect: {
                             id: customerId,
@@ -64,7 +63,6 @@ let IstaService = class IstaService {
     async createOrder(dto) {
         const order = await this.prisma.order.create({
             data: {
-                number: dto.number,
                 remarkExternal: dto.remarkExternal,
                 createdAt: dto.createdAt,
                 status: {
@@ -207,7 +205,6 @@ let IstaService = class IstaService {
         const order = await this.prisma.order.update({
             where: { id: orderId },
             data: {
-                number: dto.number,
                 remarkExternal: dto.remarkExternal,
                 createdAt: dto.createdAt,
                 status: {
@@ -302,6 +299,7 @@ let IstaService = class IstaService {
             where: { id: customerId },
             include: {
                 orders: true,
+                contactPerson: true,
             },
         });
     }

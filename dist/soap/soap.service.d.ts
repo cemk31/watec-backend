@@ -9,7 +9,8 @@ export declare class SoapService {
     user: User;
     constructor(client: Client, prisma: PrismaService, userService: UserService);
     private soapUrl;
-    processSoapResponse(soapResponse: string): Promise<void>;
+    polling(soapResponse: string): Promise<void>;
+    pollingWithMockData(): Promise<void>;
     reportOrderPlanned(statusId: number, user: User): Promise<any>;
     getPlanned(id: number): Promise<{
         customerContacts: (import("@prisma/client/runtime").GetResult<{

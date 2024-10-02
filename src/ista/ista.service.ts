@@ -107,7 +107,7 @@ export class IstaService {
         data: {
           actualStatus: Status.RECEIVED,
           propertyNumber: dto.propertyNumber,
-          orderNumberIsta: dto.propertyNumber.toString(),
+          // orderNumberIsta: dto.propertyNumber.toString(),
           Customer: {
             connect: {
               id: customerId,
@@ -154,7 +154,7 @@ export class IstaService {
   async createOrder(dto: OrderDto) {
     const order = await this.prisma.order.create({
       data: {
-        number: dto.number,
+        // number: dto.number,
         remarkExternal: dto.remarkExternal,
         createdAt: dto.createdAt,
         status: {
@@ -215,39 +215,39 @@ export class IstaService {
         status: true,
         Received: {
           include: {
-            customerContacts: true, // include CustomerContact related to Received
-            Request: true, // include Request related to Received
+            customerContacts: true,
+            Request: true,
           },
         },
         Planned: {
           include: {
-            customerContacts: true, // include CustomerContact related to Planned
-            Request: true, // include Request related to Planned
+            customerContacts: true,
+            Request: true,
           },
         },
         // customerContacts: true,
         NotPossible: {
           include: {
-            Contact: true, // include CustomerContact related to NotPossible
-            Request: true, // include Request related to NotPossible
+            Contact: true,
+            Request: true,
           },
         },
         Postponed: {
           include: {
-            Contact: true, // include CustomerContact related to Postponed
-            Request: true, // include Request related to Postponed
+            Contact: true,
+            Request: true,
           },
         },
         Cancelled: {
           include: {
-            Contact: true, // include CustomerContact related to Cancelled
-            Request: true, // include Request related to Cancelled
+            Contact: true,
+            Request: true,
           },
         },
         Rejected: {
           include: {
-            Contact: true, // include CustomerContact related to Rejected
-            Request: true, // include Request related to Rejected
+            Contact: true,
+            Request: true,
           },
         },
         ClosedContractPartner: true,
@@ -323,7 +323,7 @@ export class IstaService {
     const order = await this.prisma.order.update({
       where: { id: orderId },
       data: {
-        number: dto.number,
+        // number: dto.number,
         remarkExternal: dto.remarkExternal,
         createdAt: dto.createdAt,
         status: {
@@ -430,6 +430,7 @@ export class IstaService {
       where: { id: customerId },
       include: {
         orders: true,
+        contactPerson: true,
       },
     });
   }

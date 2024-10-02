@@ -13,13 +13,13 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api"
+      "dest": "/*"
     }
   ],
   "functions": {
     "api/index.js": {
       "memory": 1024,
-      "maxDuration": 10
+      "maxDuration": 20
     }
   },
   "headers": [
