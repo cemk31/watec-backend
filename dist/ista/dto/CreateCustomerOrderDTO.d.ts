@@ -1,8 +1,8 @@
-import { CustomerDTO } from "./CustomerDTO";
-import { ReceivedDto } from "./ReceivedDto";
+import { CustomerDTO } from './CustomerDTO';
+import { received } from './ReceivedDto';
 export declare class CreateCustomerOrderDTO {
     number: string;
     remarkExternal?: string;
-    Received: ReceivedDto[];
+    Received: received[];
     Customer: CustomerDTO;
 }

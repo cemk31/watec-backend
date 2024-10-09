@@ -32,16 +32,6 @@ let IstaController = class IstaController {
     createOrder(dto) {
         return this.istaService.createOrder(dto);
     }
-    createNewOrder(dto) {
-        console.log('createNewOrder');
-        console.log(dto);
-        return this.istaService.orderReceived(dto);
-    }
-    updateOrder(dto) {
-        console.log('updateOrder DTO', dto);
-        const orderId = Number(dto.orderId);
-        return this.istaService.updateOrderReceived(orderId, dto);
-    }
     createCustomerAndOrderById(customerId, received) {
         console.log('received', received);
         const order = this.istaService.receivedOrderWithCustomerId(customerId, received);
@@ -66,9 +56,7 @@ let IstaController = class IstaController {
     }
     async orderRejected(dto) {
         try {
-            const orderDTO = new dto_1.OrderDto();
-            orderDTO.rejected = [dto];
-            const result = await this.istaService.orderRejected(dto.orderId, dto.requestId, dto);
+            const result = await this.istaService.orderRejected(dto);
             return result;
         }
         catch (error) {
@@ -80,10 +68,13 @@ let IstaController = class IstaController {
         return this.istaService.orderNotPossible(dto.orderId, dto.requestId, dto);
     }
     orderPostponed(dto) {
-        return this.istaService.orderPostponed(dto.orderId, dto.requestId, dto);
+        return this.istaService.orderPostponed(dto);
     }
     orderCancelled(dto) {
         return this.istaService.orderCancelled(dto.orderId, dto.requestId, dto);
+    }
+    orderExecutionOnSiteNotPossible(dto) {
+        return this.istaService.orderExecutionOnSiteNotPossible(dto);
     }
     getAllOrders() {
         return this.istaService.getAllOrders();
@@ -121,25 +112,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "createOrder", null);
 __decorate([
-    (0, common_1.Post)('/received'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.CreateCustomerOrderDTO]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "createNewOrder", null);
-__decorate([
-    (0, common_1.Post)('/create-received'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.ReceivedDto]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "updateOrder", null);
-__decorate([
     (0, common_1.Post)('/customerOrder/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, dto_1.ReceivedDto]),
+    __metadata("design:paramtypes", [Number, dto_1.received]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "createCustomerAndOrderById", null);
 __decorate([
@@ -206,6 +183,13 @@ __decorate([
     __metadata("design:paramtypes", [CancelledDto_1.CancelledDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "orderCancelled", null);
+__decorate([
+    (0, common_1.Post)('/executionOnSiteNotPossible'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.ExecutionOnSiteNotPossibleDto]),
+    __metadata("design:returntype", void 0)
+], IstaController.prototype, "orderExecutionOnSiteNotPossible", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

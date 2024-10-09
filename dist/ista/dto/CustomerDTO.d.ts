@@ -1,4 +1,4 @@
-import { CreateObjektDto } from "src/auftrag/dto/create-objekt.dto";
+import { CreateObjektDto } from 'src/auftrag/dto/create-objekt.dto';
 export declare class CustomerDTO {
     firstName?: string;
     lastName?: string;
@@ -10,6 +10,6 @@ export declare class CustomerDTO {
     country?: string;
     fax?: string;
     companyName?: string;
-    propertyNumber?: string;
+    propertyNumber?: number;
     objekt?: CreateObjektDto[];
 }

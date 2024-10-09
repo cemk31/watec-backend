@@ -3,8 +3,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import {
   CreateCustomerOrderDTO,
   CustomerDTO,
+  ExecutionOnSiteNotPossibleDto,
   OrderDto,
-  ReceivedDto,
 } from './dto';
 import { RejectedDto } from './dto/RejectedDto';
 import { PostponedDto } from './dto/PostponedDto';
@@ -30,78 +30,75 @@ import { SamplingPointDto } from './dto/SamplingPointDto';
 import { DrinkingWaterHeaterDto } from './dto/DrinkingWaterHeaterDto';
 import { IstaHelperService } from './ista.helper.service';
 import * as moment from 'moment';
+import { received } from './dto/ReceivedDto';
 
 @Injectable()
 export class IstaService {
   // private client: soap.Client | null = null;
 
-  constructor(
-    private prisma: PrismaService,
-    private configService: ConfigService,
-    private istaHelpService: IstaHelperService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   //create Order with status Received
-  async receivedOrder(dto: CreateCustomerOrderDTO) {
-    try {
-      const order = await this.prisma.order.create({
-        data: {
-          number: dto.number,
-          remarkExternal: dto.remarkExternal,
-          actualStatus: Status.RECEIVED,
-          Received: {
-            create:
-              dto.Received?.map((received) => ({
-                orderstatusType: 'RECEIVED',
-                setOn: received.setOn,
-                CustomerContact: {
-                  create:
-                    received.customerContacts?.map((contact) => ({
-                      contactAttemptOn: contact.contactAttemptOn,
-                      contactPersonCustomer: contact.contactPersonCustomer,
-                      agentCP: contact.agentCP,
-                      result: contact.result,
-                      remark: contact.remark,
-                    })) ?? [],
-                },
-              })) ?? [],
-          },
-          Customer: {
-            create: {
-              firstName: dto.Customer?.firstName,
-              lastName: dto.Customer?.lastName,
-              companyName: dto.Customer?.companyName,
-              street: dto.Customer?.street,
-              propertyNumber: dto.Customer?.propertyNumber,
-              zipCode: dto.Customer?.zipCode,
-              place: dto.Customer?.place,
-              country: dto.Customer?.country,
-              email: dto.Customer?.email,
-              phoneNumber: dto.Customer?.phoneNumber,
-            },
-          },
-        },
-        include: {
-          status: true,
-          Received: true,
-          Planned: true,
-          customerContacts: true,
-          NotPossible: true,
-          Postponed: true,
-          Cancelled: true,
-          Rejected: true,
-          ClosedContractPartner: true,
-          Customer: true,
-        },
-      });
-      return order;
-    } catch (error) {
-      console.error('Fehler beim Speichern:', error);
-      throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
-    }
-  }
+  // async receivedOrder(dto: CreateCustomerOrderDTO) {
+  //   try {
+  //     const order = await this.prisma.order.create({
+  //       data: {
+  //         number: dto.number,
+  //         remarkExternal: dto.remarkExternal,
+  //         actualStatus: Status.RECEIVED,
+  //         Received: {
+  //           create:
+  //             dto.Received?.map((received) => ({
+  //               orderstatusType: 'RECEIVED',
+  //               setOn: received.setOn,
+  //               CustomerContact: {
+  //                 create:
+  //                   received.customerContacts?.map((contact) => ({
+  //                     contactAttemptOn: contact.contactAttemptOn,
+  //                     contactPersonCustomer: contact.contactPersonCustomer,
+  //                     agentCP: contact.agentCP,
+  //                     result: contact.result,
+  //                     remark: contact.remark,
+  //                   })) ?? [],
+  //               },
+  //             })) ?? [],
+  //         },
+  //         Customer: {
+  //           create: {
+  //             firstName: dto.Customer?.firstName,
+  //             lastName: dto.Customer?.lastName,
+  //             companyName: dto.Customer?.companyName,
+  //             street: dto.Customer?.street,
+  //             propertyNumber: dto.Customer?.propertyNumber,
+  //             zipCode: dto.Customer?.zipCode,
+  //             place: dto.Customer?.place,
+  //             country: dto.Customer?.country,
+  //             email: dto.Customer?.email,
+  //             phoneNumber: dto.Customer?.phoneNumber,
+  //           },
+  //         },
+  //       },
+  //       include: {
+  //         status: true,
+  //         Received: true,
+  //         Planned: true,
+  //         customerContacts: true,
+  //         NotPossible: true,
+  //         Postponed: true,
+  //         Cancelled: true,
+  //         Rejected: true,
+  //         ClosedContractPartner: true,
+  //         Customer: true,
+  //       },
+  //     });
+  //     return order;
+  //   } catch (error) {
+  //     console.error('Fehler beim Speichern:', error);
+  //     throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
+  //   }
+  // }
 
-  async receivedOrderWithCustomerId(customerId: number, dto: ReceivedDto) {
+  async receivedOrderWithCustomerId(customerId: number, dto: received) {
     console.log('customerId:', customerId);
     console.log('receivedDto:', dto);
 
@@ -109,6 +106,8 @@ export class IstaService {
       const order = await this.prisma.order.create({
         data: {
           actualStatus: Status.RECEIVED,
+          propertyNumber: dto.propertyNumber,
+          // orderNumberIsta: dto.propertyNumber.toString(),
           Customer: {
             connect: {
               id: customerId,
@@ -118,16 +117,16 @@ export class IstaService {
             create: {
               orderstatusType: dto.orderstatusType || '007',
               setOn: dto.setOn,
-              customerContacts: {
-                create:
-                  dto.customerContacts?.map((contact) => ({
-                    contactAttemptOn: contact.contactAttemptOn,
-                    contactPersonCustomer: contact.contactPersonCustomer,
-                    agentCP: contact.agentCP,
-                    result: contact.result,
-                    remark: contact.remark,
-                  })) ?? [],
-              },
+              // customerContacts: {
+              //   create:
+              //     dto.customerContacts?.customerContact.map((contact) => ({
+              //       contactAttemptOn: contact.contactAttemptOn,
+              //       contactPersonCustomer: contact.contactPersonCustomer,
+              //       agentCP: contact.agentCP,
+              //       result: contact.result,
+              //       remark: contact.remark,
+              //     })) ?? [],
+              // },
             },
           },
         },
@@ -155,7 +154,7 @@ export class IstaService {
   async createOrder(dto: OrderDto) {
     const order = await this.prisma.order.create({
       data: {
-        number: dto.number,
+        // number: dto.number,
         remarkExternal: dto.remarkExternal,
         createdAt: dto.createdAt,
         status: {
@@ -216,39 +215,39 @@ export class IstaService {
         status: true,
         Received: {
           include: {
-            customerContacts: true, // include CustomerContact related to Received
-            Request: true, // include Request related to Received
+            customerContacts: true,
+            Request: true,
           },
         },
         Planned: {
           include: {
-            customerContacts: true, // include CustomerContact related to Planned
-            Request: true, // include Request related to Planned
+            customerContacts: true,
+            Request: true,
           },
         },
         // customerContacts: true,
         NotPossible: {
           include: {
-            Contact: true, // include CustomerContact related to NotPossible
-            Request: true, // include Request related to NotPossible
+            Contact: true,
+            Request: true,
           },
         },
         Postponed: {
           include: {
-            Contact: true, // include CustomerContact related to Postponed
-            Request: true, // include Request related to Postponed
+            Contact: true,
+            Request: true,
           },
         },
         Cancelled: {
           include: {
-            Contact: true, // include CustomerContact related to Cancelled
-            Request: true, // include Request related to Cancelled
+            Contact: true,
+            Request: true,
           },
         },
         Rejected: {
           include: {
-            Contact: true, // include CustomerContact related to Rejected
-            Request: true, // include Request related to Rejected
+            Contact: true,
+            Request: true,
           },
         },
         ClosedContractPartner: true,
@@ -258,18 +257,18 @@ export class IstaService {
     return order;
   }
 
-  async orderReceived(dto: CreateCustomerOrderDTO) {
-    const { Customer, number, remarkExternal, Received } = dto;
-    try {
-      const order = await this.receivedOrder(dto);
-      return order;
-    } catch (error) {
-      console.error('Fehler beim Speichern:', error);
-      throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
-    }
-  }
+  // async orderReceived(dto: CreateCustomerOrderDTO) {
+  //   const { Customer, number, remarkExternal, Received } = dto;
+  //   try {
+  //     const order = await this.receivedOrder(dto);
+  //     return order;
+  //   } catch (error) {
+  //     console.error('Fehler beim Speichern:', error);
+  //     throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
+  //   }
+  // }
 
-  async orderReceivedWithCustomerId(dto: Received) {}
+  // async orderReceivedWithCustomerId(dto: Received) {}
 
   async getOrderById(orderId: number) {
     return this.prisma.order.findFirst({
@@ -324,7 +323,7 @@ export class IstaService {
     const order = await this.prisma.order.update({
       where: { id: orderId },
       data: {
-        number: dto.number,
+        // number: dto.number,
         remarkExternal: dto.remarkExternal,
         createdAt: dto.createdAt,
         status: {
@@ -387,7 +386,7 @@ export class IstaService {
   }
 
   async createCustomer(dto: CustomerDTO) {
-    console.log('company name:', dto.companyName);
+    console.log('CustomerDTO:', dto);
     const customer = await this.prisma.customer.create({
       data: {
         companyName: dto.companyName, // hinzugefügt
@@ -431,53 +430,57 @@ export class IstaService {
       where: { id: customerId },
       include: {
         orders: true,
+        contactPerson: true,
       },
     });
   }
 
-  async orderRejected(orderId: number, requestId: number, dto: RejectedDto) {
+  async orderRejected(dto: RejectedDto) {
+    await this.prisma.order.update({
+      where: { id: dto.orderId },
+      data: {
+        updatedAt: new Date(),
+        actualStatus: Status.REJECTED,
+        remarkExternal: dto.remarkExternal,
+      },
+    });
     await this.prisma.rejected.create({
       data: {
-        // Andere Felder wie reason, setOn, etc.
-        reason: dto.reason,
+        rejectionReason: dto.rejectionReason,
+        rejectionReasonText: dto.rejectionReasonText,
         setOn: dto.setOn,
         statusType: dto.statusType,
         // Verbindet den Rejected-Eintrag mit einem Order-Eintrag
         Order: {
           connect: {
-            id: orderId,
+            id: dto.orderId,
           },
         },
       },
     });
   }
 
-  async orderPostponed(
-    orderId: number,
-    requestId: number | null,
-    dto: PostponedDto,
-  ): Promise<Postponed | null> {
+  async orderPostponed(dto: PostponedDto): Promise<Postponed | null> {
     try {
       // Aktualisieren des updatedAt Feldes der Order
       await this.prisma.order.update({
-        where: { id: orderId },
-        data: { updatedAt: new Date(), actualStatus: Status.POSTPONED },
+        where: { id: dto.orderId },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.POSTPONED,
+          remarkExternal: dto.remarkExternal,
+        },
       });
 
       const postponedEntry = await this.prisma.postponed.create({
         data: {
           statusType: Status.POSTPONED || 'POSTPONED',
           setOn: dto.setOn || new Date(), // Set new date if empty
-          nextContactAttemptOn: dto.nextContactAttemptOn || new Date(),
+          nextContactAttemptOn: dto.nextContactAttemptOn,
           postponedReason: dto.postponedReason,
           Order: {
-            connect: { id: orderId },
+            connect: { id: dto.orderId },
           },
-          Request: requestId
-            ? {
-                connect: { id: requestId },
-              }
-            : undefined,
         },
       });
 
@@ -500,7 +503,11 @@ export class IstaService {
 
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(), actualStatus: Status.CANCELLED },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.CANCELLED,
+          remarkExternal: dto.remarkExternal,
+        },
       });
 
       const cancelledEntry = await this.prisma.cancelled.create({
@@ -595,13 +602,18 @@ export class IstaService {
     try {
       await this.prisma.order.update({
         where: { id: orderId },
-        data: { updatedAt: new Date(), actualStatus: Status.NOTPOSSIBLE },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.NOTPOSSIBLE,
+          remarkExternal: dto.remarkExternal,
+        },
       });
 
       const notPossibleEntry = await this.prisma.notPossible.create({
         data: {
           statusType: dto.statusType, // Optional, gemäß Ihrem Schema
           setOn: dto.setOn, // Optional, gemäß Ihrem Schema
+
           Contact: {
             // Hier können Sie Logik zum Verbinden von Kontakten hinzufügen, wenn notwendig
           },
@@ -625,6 +637,21 @@ export class IstaService {
       return notPossibleEntry;
     } catch (error) {
       console.error('Error creating not possible entry:', error);
+      return null;
+    }
+  }
+
+  async orderExecutionOnSiteNotPossible(dto: ExecutionOnSiteNotPossibleDto) {
+    try {
+      await this.prisma.order.update({
+        where: { id: dto.orderId },
+        data: { actualStatus: Status.EXECUTIONONSITENOTPOSSIBLE },
+      });
+    } catch (error) {
+      console.error(
+        'Error creating execution on site not possible entry:',
+        error,
+      );
       return null;
     }
   }
@@ -807,7 +834,7 @@ export class IstaService {
   //Received
   async updateOrderReceived(
     orderId: number | null,
-    dto: ReceivedDto,
+    dto: received,
   ): Promise<Order | null> {
     try {
       const receivedEntry = await this.prisma.received.create({
@@ -915,6 +942,49 @@ export class IstaService {
     } catch (error) {
       console.error('Error updating order:', error);
       return null;
+    }
+  }
+
+  async getStatusById(statusId: number, type: string) {
+    if (type === 'received') {
+      return this.prisma.received.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'planned') {
+      return this.prisma.planned.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'notPossible') {
+      return this.prisma.notPossible.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'postponed') {
+      return this.prisma.postponed.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'cancelled') {
+      return this.prisma.cancelled.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'rejected') {
+      return this.prisma.rejected.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'closedContractPartner') {
+      return this.prisma.closedContractPartner.findFirst({
+        where: { id: statusId },
+      });
+    }
+  }
+
+  async synchroniseWithIsta(status: any, type: string) {
+    if (type === 'received') {
     }
   }
 }

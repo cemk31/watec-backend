@@ -1,6 +1,9 @@
-import { SoapService } from "./soap.service";
+import { SoapService } from './soap.service';
+import { SoapEnvelopeDto } from 'src/ista/dto/soapReceveidDTO';
+import { User } from '@prisma/client';
 export declare class SoapController {
     private readonly soapService;
     constructor(soapService: SoapService);
-    reportOrderStatus(body: any): Promise<any>;
+    polling(body: SoapEnvelopeDto, user: User): Promise<void>;
+    pollingWithMockData(res: Response): Promise<void>;
 }

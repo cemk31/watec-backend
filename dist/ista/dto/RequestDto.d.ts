@@ -1,10 +1,10 @@
-import { BodyDto } from "./BodyDto";
-import { CancelledDto } from "./CancelledDto";
-import { NotPossibleDto } from "./NotPossibleDto";
-import { PlannedDto } from "./PlannedDto";
-import { PostponedDto } from "./PostponedDto";
-import { ReceivedDto } from "./ReceivedDto";
-import { RejectedDto } from "./RejectedDto";
+import { BodyDto } from './BodyDto';
+import { CancelledDto } from './CancelledDto';
+import { NotPossibleDto } from './NotPossibleDto';
+import { PlannedDto } from './PlannedDto';
+import { PostponedDto } from './PostponedDto';
+import { received } from './ReceivedDto';
+import { RejectedDto } from './RejectedDto';
 export declare class RequestDto {
     id: number;
     body?: BodyDto;
@@ -16,5 +16,5 @@ export declare class RequestDto {
     postponed?: PostponedDto;
     cancelled?: CancelledDto;
     planned?: PlannedDto;
-    received?: ReceivedDto;
+    received?: received;
 }

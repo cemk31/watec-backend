@@ -29,7 +29,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateCustomerOrderDTO.prototype, "remarkExternal", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: () => [ReceivedDto_1.ReceivedDto] }),
+    (0, swagger_1.ApiProperty)({ type: () => [ReceivedDto_1.received] }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)

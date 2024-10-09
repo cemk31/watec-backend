@@ -76,9 +76,9 @@ __decorate([
     __metadata("design:type", PlannedDto_1.PlannedDto)
 ], RequestDto.prototype, "planned", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: () => ReceivedDto_1.ReceivedDto }),
+    (0, swagger_1.ApiProperty)({ type: () => ReceivedDto_1.received }),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", ReceivedDto_1.ReceivedDto)
+    __metadata("design:type", ReceivedDto_1.received)
 ], RequestDto.prototype, "received", void 0);
 exports.RequestDto = RequestDto;
 //# sourceMappingURL=RequestDto.js.map

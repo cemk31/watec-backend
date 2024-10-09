@@ -20,9 +20,9 @@ const NotPossibleDto_1 = require("./NotPossibleDto");
 const OrderStatusDto_1 = require("./OrderStatusDto");
 const PlannedDto_1 = require("./PlannedDto");
 const PostponedDto_1 = require("./PostponedDto");
-const ReceivedDto_1 = require("./ReceivedDto");
 const RejectedDto_1 = require("./RejectedDto");
 const dto_1 = require("../../customer/dto");
+const ReceivedDto_1 = require("./ReceivedDto");
 class OrderDto {
 }
 __decorate([
@@ -98,7 +98,7 @@ __decorate([
     __metadata("design:type", Array)
 ], OrderDto.prototype, "planned", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: () => [ReceivedDto_1.ReceivedDto] }),
+    (0, swagger_1.ApiProperty)({ type: () => [ReceivedDto_1.received] }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)

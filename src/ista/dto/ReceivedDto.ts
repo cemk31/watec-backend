@@ -1,17 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsInt,
-  IsString,
-  IsDate,
-  IsNumber,
-  IsOptional,
-} from 'class-validator';
-import { CustomerContactDto } from './CustomerContactDto';
-import { OrderDto } from './ista.order.dto';
+import { IsInt, IsString, IsDate, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
+import { CustomerContactsDTO } from './CustomerContactsDTO';
 
-export class ReceivedDto {
+export class received {
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsInt()
@@ -64,7 +56,13 @@ export class ReceivedDto {
   @IsOptional()
   requestId: number;
 
-  @ApiProperty({ type: () => [CustomerContactDto] })
+  @ApiProperty({ example: 1 })
   @IsOptional()
-  customerContacts: CustomerContactDto[];
+  @IsNumber()
+  @IsOptional()
+  propertyNumber: number;
+
+  @ApiProperty({ type: () => [CustomerContactsDTO] })
+  @IsOptional()
+  customerContacts: CustomerContactsDTO;
 }

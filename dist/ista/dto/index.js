@@ -20,4 +20,7 @@ __exportStar(require("./ReceivedDto"), exports);
 __exportStar(require("./CustomerContactDto"), exports);
 __exportStar(require("./CreateCustomerOrderDTO"), exports);
 __exportStar(require("./SyncDto"), exports);
+__exportStar(require("./ExecutionOnSiteNotPossibleDto"), exports);
+__exportStar(require("./ReportOrderStatusRequestDto"), exports);
+__exportStar(require("./CustomerContactsDTO"), exports);
 //# sourceMappingURL=index.js.map

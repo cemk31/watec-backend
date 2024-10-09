@@ -45,4 +45,9 @@ export class CancelledDto {
   @IsNotEmpty()
   @IsString()
   cancellationReason: string;
+
+  @ApiProperty({ example: 'Delay Reason' })
+  @IsOptional()
+  @IsString()
+  remarkExternal?: string;
 }

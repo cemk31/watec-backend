@@ -7,4 +7,5 @@ export declare class CancelledDto {
     setOn: Date;
     contact: ContactDto[];
     cancellationReason: string;
+    remarkExternal?: string;
 }
