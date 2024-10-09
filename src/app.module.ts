@@ -22,6 +22,7 @@ import { IstaModule } from './ista/ista.module';
 import { HttpModule } from '@nestjs/axios';
 import { XmlToJsonMiddleware } from './middleware/xml-to-json.middleware';
 import { SoapM } from './soap/soap.module';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SoapM } from './soap/soap.module';
       isGlobal: true, // makes the ConfigService available across the whole project
       envFilePath: getEnvFilePath(), // we'll define this function below
     }),
+    SupportModule,
     AuthModule,
     UserModule,
     BookmarkModule,

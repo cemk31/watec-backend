@@ -24,6 +24,7 @@ const ista_module_1 = require("./ista/ista.module");
 const axios_1 = require("@nestjs/axios");
 const xml_to_json_middleware_1 = require("./middleware/xml-to-json.middleware");
 const soap_module_1 = require("./soap/soap.module");
+const support_module_1 = require("./support/support.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(xml_to_json_middleware_1.XmlToJsonMiddleware).forRoutes({
@@ -39,6 +40,7 @@ AppModule = __decorate([
                 isGlobal: true,
                 envFilePath: getEnvFilePath(),
             }),
+            support_module_1.SupportModule,
             auth_module_1.AuthModule,
             user_module_1.UserModule,
             bookmark_module_1.BookmarkModule,
