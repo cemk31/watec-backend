@@ -6,17 +6,17 @@ export class SupportDTO {
   @IsNotEmpty()
   @IsString()
   name: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
+
   @ApiProperty()
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   subject: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()

@@ -9,24 +9,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SupportService = void 0;
 const common_1 = require("@nestjs/common");
 const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config();
 let SupportService = class SupportService {
     async sendSupportEmail(dto) {
         console.log('Support Email:', dto);
         try {
             const transporter = nodemailer.createTransport({
-                host: 'send.one.com',
-                port: 465,
-                secure: true,
+                host: process.env.SMTP_HOST,
+                port: Number(process.env.SMTP_PORT),
+                secure: process.env.SMTP_SECURE === 'true',
                 auth: {
-                    user: 'info@spootech.com',
-                    pass: 'Welcome123.',
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASS,
                 },
                 tls: {
                     rejectUnauthorized: false,
                 },
             });
             const mailOptions = {
-                from: '"WATEC Support" <info@spootech.com>',
+                from: `"WATEC Support" <${process.env.SMTP_USER}>`,
                 to: 'info@spootech.com',
                 subject: `Support Anfrage: ${dto.subject}`,
                 html: `
@@ -47,7 +49,7 @@ let SupportService = class SupportService {
         `,
             };
             const userConfirmationMail = {
-                from: '"WATEC Support" <info@spootech.com>',
+                from: `"WATEC Support" <${process.env.SMTP_USER}>`,
                 to: dto.email,
                 subject: `Bestätigung: Ihre Support Anfrage ist eingegangen`,
                 html: `

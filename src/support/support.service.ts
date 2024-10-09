@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { SupportDTO } from './dto/supportDTO';
+import * as dotenv from 'dotenv';
+
+dotenv.config(); // Lädt die .env Datei
 
 @Injectable()
 export class SupportService {
@@ -8,12 +11,12 @@ export class SupportService {
     console.log('Support Email:', dto);
     try {
       const transporter = nodemailer.createTransport({
-        host: 'send.one.com',
-        port: 465,
-        secure: true,
+        host: process.env.SMTP_HOST, // Aus der .env Datei
+        port: Number(process.env.SMTP_PORT), // Aus der .env Datei
+        secure: process.env.SMTP_SECURE === 'true', // Aus der .env Datei (convert string to boolean)
         auth: {
-          user: 'info@spootech.com',
-          pass: 'Welcome123.',
+          user: process.env.SMTP_USER, // Aus der .env Datei
+          pass: process.env.SMTP_PASS, // Aus der .env Datei
         },
         tls: {
           rejectUnauthorized: false,
@@ -22,7 +25,7 @@ export class SupportService {
 
       // E-Mail an das Support-Team
       const mailOptions = {
-        from: '"WATEC Support" <info@spootech.com>',
+        from: `"WATEC Support" <${process.env.SMTP_USER}>`, // Dynamisch aus .env
         to: 'info@spootech.com', // Support Email
         subject: `Support Anfrage: ${dto.subject}`,
         html: `
@@ -45,7 +48,7 @@ export class SupportService {
 
       // Bestätigungs-E-Mail an den Benutzer
       const userConfirmationMail = {
-        from: '"WATEC Support" <info@spootech.com>',
+        from: `"WATEC Support" <${process.env.SMTP_USER}>`, // Dynamisch aus .env
         to: dto.email, // E-Mail des Benutzers
         subject: `Bestätigung: Ihre Support Anfrage ist eingegangen`,
         html: `
