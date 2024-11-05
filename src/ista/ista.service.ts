@@ -15,6 +15,7 @@ import {
   Order,
   Planned,
   Postponed,
+  ExecutionOnSiteNotPossible,
   Received,
   Status,
 } from '@prisma/client';
@@ -139,6 +140,7 @@ export class IstaService {
           Postponed: true,
           Cancelled: true,
           Rejected: true,
+          ExecutionOnSiteNotPossible: true,
           ClosedContractPartner: true,
           Customer: true,
         },
@@ -293,6 +295,7 @@ export class IstaService {
         Postponed: true,
         Cancelled: true,
         Rejected: true,
+        ExecutionOnSiteNotPossible: true,
         ClosedContractPartner: {
           include: {
             recordedSystem: {
@@ -377,6 +380,7 @@ export class IstaService {
         Postponed: true,
         Cancelled: true,
         Rejected: true,
+        ExecutionOnSiteNotPossible: true,
         ClosedContractPartner: true,
         Customer: true,
       },
@@ -640,13 +644,44 @@ export class IstaService {
       return null;
     }
   }
-
-  async orderExecutionOnSiteNotPossible(dto: ExecutionOnSiteNotPossibleDto) {
+  async orderExecutionOnSiteNotPossible(
+    orderId: number,
+    dto: ExecutionOnSiteNotPossibleDto,
+  ): Promise<ExecutionOnSiteNotPossible | null> {
     try {
       await this.prisma.order.update({
-        where: { id: dto.orderId },
-        data: { actualStatus: Status.EXECUTIONONSITENOTPOSSIBLE },
+        where: { id: orderId },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.EXECUTIONONSITENOTPOSSIBLE,
+          remarkExternal: dto.remarkExternal,
+        },
       });
+
+      const executionEntry =
+        await this.prisma.executionOnSiteNotPossible.create({
+          data: {
+            orderstatusType: Status.EXECUTIONONSITENOTPOSSIBLE,
+            setOn: dto.setOn,
+            nonExecutionReason: dto.nonExecutionReason,
+            Order: {
+              connect: {
+                id: orderId,
+              },
+            },
+            customerContacts: {
+              create: dto.customerContacts?.map((contact) => ({
+                contactAttemptOn: contact.contactAttemptOn,
+                contactPersonCustomer: contact.contactPersonCustomer,
+                agentCP: contact.agentCP,
+                result: contact.result,
+                remark: contact.remark,
+              })),
+            },
+          },
+        });
+
+      return executionEntry;
     } catch (error) {
       console.error(
         'Error creating execution on site not possible entry:',

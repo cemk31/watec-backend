@@ -74,7 +74,7 @@ let IstaController = class IstaController {
         return this.istaService.orderCancelled(dto.orderId, dto.requestId, dto);
     }
     orderExecutionOnSiteNotPossible(dto) {
-        return this.istaService.orderExecutionOnSiteNotPossible(dto);
+        return this.istaService.orderExecutionOnSiteNotPossible(dto.orderId, dto);
     }
     getAllOrders() {
         return this.istaService.getAllOrders();

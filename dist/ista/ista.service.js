@@ -49,6 +49,7 @@ let IstaService = class IstaService {
                     Postponed: true,
                     Cancelled: true,
                     Rejected: true,
+                    ExecutionOnSiteNotPossible: true,
                     ClosedContractPartner: true,
                     Customer: true,
                 },
@@ -177,6 +178,7 @@ let IstaService = class IstaService {
                 Postponed: true,
                 Cancelled: true,
                 Rejected: true,
+                ExecutionOnSiteNotPossible: true,
                 ClosedContractPartner: {
                     include: {
                         recordedSystem: {
@@ -250,6 +252,7 @@ let IstaService = class IstaService {
                 Postponed: true,
                 Cancelled: true,
                 Rejected: true,
+                ExecutionOnSiteNotPossible: true,
                 ClosedContractPartner: true,
                 Customer: true,
             },
@@ -480,12 +483,39 @@ let IstaService = class IstaService {
             return null;
         }
     }
-    async orderExecutionOnSiteNotPossible(dto) {
+    async orderExecutionOnSiteNotPossible(orderId, dto) {
+        var _a;
         try {
             await this.prisma.order.update({
-                where: { id: dto.orderId },
-                data: { actualStatus: client_1.Status.EXECUTIONONSITENOTPOSSIBLE },
+                where: { id: orderId },
+                data: {
+                    updatedAt: new Date(),
+                    actualStatus: client_1.Status.EXECUTIONONSITENOTPOSSIBLE,
+                    remarkExternal: dto.remarkExternal,
+                },
             });
+            const executionEntry = await this.prisma.executionOnSiteNotPossible.create({
+                data: {
+                    orderstatusType: client_1.Status.EXECUTIONONSITENOTPOSSIBLE,
+                    setOn: dto.setOn,
+                    nonExecutionReason: dto.nonExecutionReason,
+                    Order: {
+                        connect: {
+                            id: orderId,
+                        },
+                    },
+                    customerContacts: {
+                        create: (_a = dto.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
+                            contactAttemptOn: contact.contactAttemptOn,
+                            contactPersonCustomer: contact.contactPersonCustomer,
+                            agentCP: contact.agentCP,
+                            result: contact.result,
+                            remark: contact.remark,
+                        })),
+                    },
+                },
+            });
+            return executionEntry;
         }
         catch (error) {
             console.error('Error creating execution on site not possible entry:', error);

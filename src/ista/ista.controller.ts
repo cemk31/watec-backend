@@ -348,7 +348,8 @@ export class IstaController {
 
   @Post('/executionOnSiteNotPossible')
   orderExecutionOnSiteNotPossible(@Body() dto: ExecutionOnSiteNotPossibleDto) {
-    return this.istaService.orderExecutionOnSiteNotPossible(dto);
+    // In ista.controller.ts, make sure to pass both arguments
+    return this.istaService.orderExecutionOnSiteNotPossible(dto.orderId, dto);
   }
 
   //EXECUTION ON SITE NOT POSSIBLE

@@ -536,23 +536,25 @@ model Body {
 }
 
 model Request {
-  id            Int          @id @default(autoincrement())
-  environment   String
-  language      String
-  consumer      String
-  rejectedId    Int?
-  notPossibleId Int?
-  postponedId   Int?
-  cancelledId   Int?
-  plannedId     Int?
-  receivedId    Int?
-  Body          Body?
-  Cancelled     Cancelled?
-  NotPossible   NotPossible?
-  Planned       Planned?
-  Postponed     Postponed?
-  Received      Received?
-  Rejected      Rejected?
+  id                           Int          @id @default(autoincrement())
+  environment                  String
+  language                     String
+  consumer                     String
+  rejectedId                   Int?
+  notPossibleId                Int?
+  postponedId                  Int?
+  cancelledId                  Int?
+  plannedId                    Int?
+  ExecutionOnSiteNotPossibleId Int?
+  receivedId                   Int?
+  Body                         Body?
+  Cancelled                    Cancelled?
+  NotPossible                  NotPossible?
+  Planned                      Planned?
+  ExecutionOnSiteNotPossible   ExecutionOnSiteNotPossible?
+  Postponed                    Postponed?
+  Received                     Received?
+  Rejected                     Rejected?
 }
 
 model Postponed {
@@ -689,6 +691,7 @@ model ExecutionOnSiteNotPossible {
   nonExecutionReason String?
   customerContacts   CustomerContact[]
   Order              Order             @relation(fields: [orderId], references: [id])
+  request            Request?          @relation(fields: [requestId], references: [id])
   syncData           Sync?
 }
 
