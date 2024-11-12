@@ -396,6 +396,22 @@ let IstaService = class IstaService {
             return null;
         }
     }
+    async orderReceived(orderId, requestId, dto) {
+        try {
+            await this.prisma.order.update({
+                where: { id: orderId },
+                data: {
+                    updatedAt: new Date(),
+                    actualStatus: client_1.Status.RECEIVED,
+                    remarkExternal: dto.remark,
+                },
+            });
+        }
+        catch (error) {
+            console.error('Error creating received entry:', error);
+            return null;
+        }
+    }
     async orderPlanned(orderId, requestId, dto) {
         var _a;
         try {
@@ -670,47 +686,57 @@ let IstaService = class IstaService {
             return null;
         }
     }
-    async updateOrderReceived(orderId, dto) {
+    async updateOrderToReceived(orderId, dto) {
+        var _a, _b, _c, _d;
         try {
-            const receivedEntry = await this.prisma.received.create({
+            const order = await this.prisma.order.findUnique({
+                where: { id: orderId },
+            });
+            if (!order) {
+                throw new Error('Order not found');
+            }
+            await this.prisma.order.update({
+                where: { id: orderId },
                 data: {
-                    orderstatusType: client_1.Status.RECEIVED,
-                    setOn: dto.setOn,
-                    customerContacts: {
-                        create: {
-                            contactAttemptOn: (dto === null || dto === void 0 ? void 0 : dto.contactAttemptOn)
-                                ? new Date(dto === null || dto === void 0 ? void 0 : dto.contactAttemptOn)
-                                : new Date(),
-                            contactPersonCustomer: dto === null || dto === void 0 ? void 0 : dto.contactPersonCustomer,
-                            agentCP: dto === null || dto === void 0 ? void 0 : dto.agentCP,
-                            result: dto === null || dto === void 0 ? void 0 : dto.result,
-                            remark: dto === null || dto === void 0 ? void 0 : dto.remark,
-                        },
-                    },
-                    Order: orderId
-                        ? {
-                            connect: {
-                                id: orderId,
-                            },
-                        }
-                        : undefined,
+                    actualStatus: client_1.Status.RECEIVED,
+                    updatedAt: new Date(),
+                    remarkExternal: dto.remark,
                 },
             });
-            console.log('receivedEntry: ', receivedEntry);
-            if (orderId) {
-                const updatedOrder = await this.prisma.order.findUnique({
-                    where: { id: orderId },
-                    include: {
-                        Received: true,
-                        customerContacts: true,
+            await this.prisma.received.upsert({
+                where: { id: dto.id || 0 },
+                update: {
+                    orderstatusType: client_1.Status.RECEIVED,
+                    setOn: (_a = dto.setOn) !== null && _a !== void 0 ? _a : new Date(),
+                    customerContacts: {
+                        create: (_b = dto.customerContacts) === null || _b === void 0 ? void 0 : _b.map((contact) => ({
+                            contactAttemptOn: contact.contactAttemptOn,
+                            contactPersonCustomer: contact.contactPersonCustomer,
+                            agentCP: contact.agentCP,
+                            result: contact.result,
+                            remark: contact.remark,
+                        })),
                     },
-                });
-                return updatedOrder;
-            }
+                },
+                create: {
+                    orderId: orderId,
+                    orderstatusType: client_1.Status.RECEIVED,
+                    setOn: (_c = dto.setOn) !== null && _c !== void 0 ? _c : new Date(),
+                    customerContacts: {
+                        create: (_d = dto.customerContacts) === null || _d === void 0 ? void 0 : _d.map((contact) => ({
+                            contactAttemptOn: contact.contactAttemptOn,
+                            contactPersonCustomer: contact.contactPersonCustomer,
+                            agentCP: contact.agentCP,
+                            result: contact.result,
+                            remark: contact.remark,
+                        })),
+                    },
+                },
+            });
         }
         catch (error) {
-            console.error('Error creating received entry:', error);
-            return null;
+            console.error('Error updating order to RECEIVED:', error);
+            throw new Error('Failed to update order status');
         }
     }
     async deleteOrder(orderId) {

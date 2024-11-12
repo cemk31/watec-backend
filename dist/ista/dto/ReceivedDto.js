@@ -13,7 +13,7 @@ exports.received = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
-const CustomerContactsDTO_1 = require("./CustomerContactsDTO");
+const CustomerContactDto_1 = require("./CustomerContactDto");
 class received {
 }
 __decorate([
@@ -44,6 +44,8 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '2023-01-01T00:00:00Z' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
     __metadata("design:type", Date)
 ], received.prototype, "contactAttemptOn", void 0);
 __decorate([
@@ -74,20 +76,21 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], received.prototype, "requestId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], received.prototype, "propertyNumber", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: () => [CustomerContactsDTO_1.CustomerContactsDTO] }),
+    (0, swagger_1.ApiProperty)({ type: [CustomerContactDto_1.CustomerContactDto] }),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", CustomerContactsDTO_1.CustomerContactsDTO)
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => CustomerContactDto_1.CustomerContactDto),
+    __metadata("design:type", Array)
 ], received.prototype, "customerContacts", void 0);
 exports.received = received;
 //# sourceMappingURL=ReceivedDto.js.map

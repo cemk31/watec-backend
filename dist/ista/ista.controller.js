@@ -73,6 +73,14 @@ let IstaController = class IstaController {
     orderCancelled(dto) {
         return this.istaService.orderCancelled(dto.orderId, dto.requestId, dto);
     }
+    async updateOrderToReceived(orderId, dto) {
+        console.log(`Received PUT request for orderId: ${orderId}`);
+        console.log('Received DTO:', dto);
+        if (!orderId || !dto) {
+            throw new common_1.HttpException('Invalid data', common_1.HttpStatus.BAD_REQUEST);
+        }
+        return await this.istaService.updateOrderToReceived(orderId, dto);
+    }
     orderExecutionOnSiteNotPossible(dto) {
         return this.istaService.orderExecutionOnSiteNotPossible(dto.orderId, dto);
     }
@@ -183,6 +191,14 @@ __decorate([
     __metadata("design:paramtypes", [CancelledDto_1.CancelledDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "orderCancelled", null);
+__decorate([
+    (0, common_1.Put)('/received/:orderId'),
+    __param(0, (0, common_1.Param)('orderId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, dto_1.received]),
+    __metadata("design:returntype", Promise)
+], IstaController.prototype, "updateOrderToReceived", null);
 __decorate([
     (0, common_1.Post)('/executionOnSiteNotPossible'),
     __param(0, (0, common_1.Body)()),

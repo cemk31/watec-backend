@@ -1,4 +1,4 @@
-import { CustomerContactsDTO } from './CustomerContactsDTO';
+import { CustomerContactDto } from './CustomerContactDto';
 export declare class received {
     id: number;
     orderId: number;
@@ -11,5 +11,5 @@ export declare class received {
     remark?: string;
     requestId: number;
     propertyNumber: number;
-    customerContacts: CustomerContactsDTO;
+    customerContacts: CustomerContactDto[];
 }

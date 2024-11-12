@@ -472,6 +472,7 @@ export declare class IstaController {
         updatedAt: Date;
         syncDataId: number;
     }, unknown, never> & {}>;
+    updateOrderToReceived(orderId: number, dto: received): Promise<void>;
     orderExecutionOnSiteNotPossible(dto: ExecutionOnSiteNotPossibleDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         orderstatusType: string;

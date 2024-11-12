@@ -540,6 +540,26 @@ export class IstaService {
       return null;
     }
   }
+  async orderReceived(
+    orderId: number,
+    requestId: number | null,
+    dto: received,
+  ): Promise<Received | null> {
+    try {
+      // Update der Bestellung mit dem Status "RECEIVED"
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: {
+          updatedAt: new Date(),
+          actualStatus: Status.RECEIVED,
+          remarkExternal: dto.remark,
+        },
+      });
+    } catch (error) {
+      console.error('Error creating received entry:', error);
+      return null;
+    }
+  }
 
   async orderPlanned(
     orderId: number,
@@ -866,55 +886,60 @@ export class IstaService {
     }
   }
 
-  //Received
-  async updateOrderReceived(
-    orderId: number | null,
-    dto: received,
-  ): Promise<Order | null> {
+  async updateOrderToReceived(orderId: number, dto: received): Promise<void> {
     try {
-      const receivedEntry = await this.prisma.received.create({
+      const order = await this.prisma.order.findUnique({
+        where: { id: orderId },
+      });
+
+      if (!order) {
+        throw new Error('Order not found');
+      }
+
+      // Update the main order status to RECEIVED
+      await this.prisma.order.update({
+        where: { id: orderId },
         data: {
-          orderstatusType: Status.RECEIVED,
-          setOn: dto.setOn,
-          customerContacts: {
-            create: {
-              contactAttemptOn: dto?.contactAttemptOn
-                ? new Date(dto?.contactAttemptOn)
-                : new Date(),
-              contactPersonCustomer: dto?.contactPersonCustomer,
-              agentCP: dto?.agentCP,
-              result: dto?.result,
-              remark: dto?.remark,
-            },
-          },
-          Order: orderId
-            ? {
-                // Verbindung zur Order-Entität durch die orderId
-                connect: {
-                  id: orderId,
-                },
-              }
-            : undefined,
-          // Falls notwendig, fügen Sie hier die Logik hinzu, um CustomerContacts zu verbinden
+          actualStatus: Status.RECEIVED,
+          updatedAt: new Date(),
+          remarkExternal: dto.remark,
         },
       });
 
-      console.log('receivedEntry: ', receivedEntry);
-
-      // Find and return the updated Order entity
-      if (orderId) {
-        const updatedOrder = await this.prisma.order.findUnique({
-          where: { id: orderId },
-          include: {
-            Received: true, // Include the Received entities related to the Order
-            customerContacts: true, // Include the CustomerContact entities related to the Order
+      // Upsert the Received entry with nested writes for CustomerContacts
+      await this.prisma.received.upsert({
+        where: { id: dto.id || 0 },
+        update: {
+          orderstatusType: Status.RECEIVED,
+          setOn: dto.setOn ?? new Date(),
+          customerContacts: {
+            create: dto.customerContacts?.map((contact) => ({
+              contactAttemptOn: contact.contactAttemptOn,
+              contactPersonCustomer: contact.contactPersonCustomer,
+              agentCP: contact.agentCP,
+              result: contact.result,
+              remark: contact.remark,
+            })),
           },
-        });
-        return updatedOrder;
-      }
+        },
+        create: {
+          orderId: orderId,
+          orderstatusType: Status.RECEIVED,
+          setOn: dto.setOn ?? new Date(),
+          customerContacts: {
+            create: dto.customerContacts?.map((contact) => ({
+              contactAttemptOn: contact.contactAttemptOn,
+              contactPersonCustomer: contact.contactPersonCustomer,
+              agentCP: contact.agentCP,
+              result: contact.result,
+              remark: contact.remark,
+            })),
+          },
+        },
+      });
     } catch (error) {
-      console.error('Error creating received entry:', error);
-      return null;
+      console.error('Error updating order to RECEIVED:', error);
+      throw new Error('Failed to update order status');
     }
   }
 
