@@ -24,11 +24,12 @@ __decorate([
 ], DoneDto.prototype, "orderstatusType", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], DoneDto.prototype, "executionOnSiteDoneReason", void 0);
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], DoneDto.prototype, "isChecked", void 0);
 __decorate([
     (0, class_validator_1.IsBoolean)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], DoneDto.prototype, "done", void 0);
 exports.DoneDto = DoneDto;

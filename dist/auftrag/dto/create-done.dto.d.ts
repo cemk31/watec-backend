@@ -1,6 +1,6 @@
 export declare class DoneDto {
     orderId: number;
     orderstatusType?: string;
-    executionOnSiteDoneReason?: string;
+    isChecked: boolean;
     done: boolean;
 }
