@@ -423,6 +423,7 @@ export class SoapService {
       telephoneMobile: data.telephoneMobile,
       role: data.role,
     };
+    console.log('test');
   }
 
   // Hilfsfunktion für DrinkingWaterHeater

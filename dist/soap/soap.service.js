@@ -298,6 +298,7 @@ let SoapService = class SoapService {
             telephoneMobile: data.telephoneMobile,
             role: data.role,
         };
+        console.log('test');
     }
     async pollingWithMockData() {
         const mockSoapResponse = `
