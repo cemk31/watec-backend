@@ -1,17 +1,18 @@
 import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class DoneDto {
-    @IsInt()
-    orderId: number;
-  
-    @IsOptional()
-    @IsString()
-    orderstatusType?: string;
-  
-    @IsOptional()
-    @IsString()
-    executionOnSiteDoneReason?: string;
-  
-    @IsBoolean()
-    done: boolean;
+  @IsInt()
+  orderId: number;
+
+  @IsOptional()
+  @IsString()
+  orderstatusType?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isChecked: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  done: boolean;
 }

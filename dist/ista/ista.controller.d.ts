@@ -247,6 +247,16 @@ export declare class IstaController {
             rejectionReasonText: string;
             syncDataId: number;
         }, unknown, never> & {})[];
+        ExecutionOnSiteNotPossible: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            updatedAt: Date;
+            orderId: number;
+            syncDataId: number;
+            nonExecutionReason: string;
+        }, unknown, never> & {})[];
         ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
             id: number;
             orderId: number;
@@ -462,7 +472,17 @@ export declare class IstaController {
         updatedAt: Date;
         syncDataId: number;
     }, unknown, never> & {}>;
-    orderExecutionOnSiteNotPossible(dto: ExecutionOnSiteNotPossibleDto): Promise<any>;
+    updateOrderToReceived(orderId: number, dto: received): Promise<void>;
+    orderExecutionOnSiteNotPossible(dto: ExecutionOnSiteNotPossibleDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        orderstatusType: string;
+        setOn: Date;
+        requestId: number;
+        updatedAt: Date;
+        orderId: number;
+        syncDataId: number;
+        nonExecutionReason: string;
+    }, unknown, never> & {}>;
     getAllOrders(): Promise<({
         status: (import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -918,6 +938,16 @@ export declare class IstaController {
             rejectionReasonText: string;
             syncDataId: number;
         }, unknown, never> & {})[];
+        ExecutionOnSiteNotPossible: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            updatedAt: Date;
+            orderId: number;
+            syncDataId: number;
+            nonExecutionReason: string;
+        }, unknown, never> & {})[];
         ClosedContractPartner: ({
             recordedSystem: ({
                 property: import("@prisma/client/runtime").GetResult<{
@@ -1155,6 +1185,16 @@ export declare class IstaController {
             rejectionReason: string;
             rejectionReasonText: string;
             syncDataId: number;
+        }, unknown, never> & {})[];
+        ExecutionOnSiteNotPossible: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            updatedAt: Date;
+            orderId: number;
+            syncDataId: number;
+            nonExecutionReason: string;
         }, unknown, never> & {})[];
         ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
             id: number;

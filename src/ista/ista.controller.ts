@@ -345,10 +345,23 @@ export class IstaController {
   orderCancelled(@Body() dto: CancelledDto) {
     return this.istaService.orderCancelled(dto.orderId, dto.requestId, dto);
   }
+  @Put('/received/:orderId')
+  async updateOrderToReceived(
+    @Param('orderId', ParseIntPipe) orderId: number,
+    @Body() dto: received,
+  ) {
+    console.log(`Received PUT request for orderId: ${orderId}`);
+    console.log('Received DTO:', dto);
+    if (!orderId || !dto) {
+      throw new HttpException('Invalid data', HttpStatus.BAD_REQUEST);
+    }
+    return await this.istaService.updateOrderToReceived(orderId, dto);
+  }
 
   @Post('/executionOnSiteNotPossible')
   orderExecutionOnSiteNotPossible(@Body() dto: ExecutionOnSiteNotPossibleDto) {
-    return this.istaService.orderExecutionOnSiteNotPossible(dto);
+    // In ista.controller.ts, make sure to pass both arguments
+    return this.istaService.orderExecutionOnSiteNotPossible(dto.orderId, dto);
   }
 
   //EXECUTION ON SITE NOT POSSIBLE

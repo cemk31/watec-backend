@@ -1,7 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString, IsDate, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsInt,
+  IsString,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  ValidateNested,
+  IsArray,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { CustomerContactsDTO } from './CustomerContactsDTO';
+import { CustomerContactDto } from './CustomerContactDto';
 
 export class received {
   @ApiProperty({ example: 1 })
@@ -27,7 +35,8 @@ export class received {
 
   @ApiProperty({ example: '2023-01-01T00:00:00Z' })
   @IsOptional()
-  // @IsDate()
+  @IsDate()
+  @Type(() => Date)
   contactAttemptOn: Date;
 
   @ApiProperty({ required: false })
@@ -53,16 +62,17 @@ export class received {
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsNumber()
-  @IsOptional()
   requestId: number;
 
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsNumber()
-  @IsOptional()
   propertyNumber: number;
 
-  @ApiProperty({ type: () => [CustomerContactsDTO] })
+  @ApiProperty({ type: [CustomerContactDto] })
   @IsOptional()
-  customerContacts: CustomerContactsDTO;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CustomerContactDto)
+  customerContacts: CustomerContactDto[];
 }
