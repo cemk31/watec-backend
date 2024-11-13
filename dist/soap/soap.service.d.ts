@@ -10,6 +10,9 @@ export declare class SoapService {
     constructor(client: Client, prisma: PrismaService, userService: UserService);
     private soapUrl;
     polling(soapResponse: string): Promise<void>;
+    private createAddress;
+    private createBuilding;
+    private createContactPerson;
     pollingWithMockData(): Promise<void>;
     reportOrderPlanned(statusId: number, user: User): Promise<any>;
     getPlanned(id: number): Promise<{
