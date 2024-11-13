@@ -14,13 +14,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SoapService = void 0;
 const common_1 = require("@nestjs/common");
-const xml2js = require("xml2js");
+const client_1 = require("@prisma/client");
 const axios_1 = require("axios");
 const nestjs_soap_1 = require("nestjs-soap");
-const prisma_service_1 = require("../prisma/prisma.service");
-const client_1 = require("@prisma/client");
 const decorator_1 = require("../auth/decorator");
+const prisma_service_1 = require("../prisma/prisma.service");
 const user_service_1 = require("../user/user.service");
+const xml2js = require("xml2js");
 const xml2js_1 = require("xml2js");
 let SoapService = class SoapService {
     constructor(client, prisma, userService) {

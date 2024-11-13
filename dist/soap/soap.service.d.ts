@@ -1,6 +1,6 @@
+import { Order, User } from '@prisma/client';
 import { Client } from 'nestjs-soap';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Order, User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 export declare class SoapService {
     private readonly client;

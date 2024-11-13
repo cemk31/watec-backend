@@ -1,29 +1,16 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import * as xml2js from 'xml2js';
+import { Inject, Injectable } from '@nestjs/common';
+import { CustomerContact, Order, Prisma, Status, User } from '@prisma/client';
 import axios from 'axios';
 import { Client } from 'nestjs-soap';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Received } from 'src/ista/dto/soapReceveidDTO';
-import {
-  CustomerContact,
-  Order,
-  Planned,
-  Prisma,
-  Status,
-  User,
-} from '@prisma/client';
-import { userInfo } from 'os';
 import { GetUser } from 'src/auth/decorator';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
+import * as xml2js from 'xml2js';
 import { parseStringPromise } from 'xml2js';
 import {
   AddressInput,
   BuildingInput,
-  UnitInput,
   ContactPersonInput,
-  DrinkingWaterHeaterInput,
-  SamplingPointInput,
-  DrinkingWaterFacilityInput,
 } from './interfaces/interface';
 
 @Injectable()
