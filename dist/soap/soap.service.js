@@ -30,7 +30,7 @@ let SoapService = class SoapService {
         this.soapUrl = 'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl';
     }
     async polling(soapResponse) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         try {
             const parsedData = await (0, xml2js_1.parseStringPromise)(soapResponse, {
                 explicitArray: false,
@@ -171,8 +171,8 @@ let SoapService = class SoapService {
                                 heatExchangerSystem_continuousflowprinciple: drinkingWaterFacility.heatExchangerSystem_continuousflowprinciple ===
                                     'true',
                                 drinkingWaterHeaters: {
-                                    create: Array.isArray(drinkingWaterFacility.drinkingWaterHeaters)
-                                        ? drinkingWaterFacility.drinkingWaterHeaters.map((heater) => {
+                                    create: Array.isArray((_e = drinkingWaterFacility.drinkingWaterHeaters) === null || _e === void 0 ? void 0 : _e.drinkingWaterHeater)
+                                        ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater.map((heater) => {
                                             var _a, _b, _c, _d, _e;
                                             return ({
                                                 consecutiveNumber: parseInt(heater.consecutiveNumber, 10) || null,
@@ -216,8 +216,8 @@ let SoapService = class SoapService {
                                         : [],
                                 },
                                 samplingPoints: {
-                                    create: Array.isArray(drinkingWaterFacility.samplingPoints)
-                                        ? drinkingWaterFacility.samplingPoints.map((sp) => {
+                                    create: Array.isArray((_f = drinkingWaterFacility.samplingPoints) === null || _f === void 0 ? void 0 : _f.samplingPoint)
+                                        ? drinkingWaterFacility.samplingPoints.samplingPoint.map((sp) => {
                                             var _a, _b, _c, _d, _e;
                                             return ({
                                                 consecutiveNumber: parseInt(sp.consecutiveNumber, 10) || null,
@@ -241,8 +241,7 @@ let SoapService = class SoapService {
                                                                             create: {
                                                                                 street: ((_a = sp.unit.building.address) === null || _a === void 0 ? void 0 : _a.street) || null,
                                                                                 streetnumber: ((_b = sp.unit.building.address) === null || _b === void 0 ? void 0 : _b.streetnumber) || null,
-                                                                                city: ((_c = sp.unit.building.address) === null || _c === void 0 ? void 0 : _c.city) ||
-                                                                                    null,
+                                                                                city: ((_c = sp.unit.building.address) === null || _c === void 0 ? void 0 : _c.city) || null,
                                                                                 postcode: ((_d = sp.unit.building.address) === null || _d === void 0 ? void 0 : _d.postcode) || null,
                                                                                 country: ((_e = sp.unit.building.address) === null || _e === void 0 ? void 0 : _e.country) || null,
                                                                             },

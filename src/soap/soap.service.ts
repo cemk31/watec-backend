@@ -244,9 +244,10 @@ export class SoapService {
 
                 drinkingWaterHeaters: {
                   create: Array.isArray(
-                    drinkingWaterFacility.drinkingWaterHeaters,
+                    drinkingWaterFacility.drinkingWaterHeaters
+                      ?.drinkingWaterHeater,
                   )
-                    ? drinkingWaterFacility.drinkingWaterHeaters.map(
+                    ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater.map(
                         (heater) => ({
                           consecutiveNumber:
                             parseInt(heater.consecutiveNumber, 10) || null,
@@ -307,53 +308,58 @@ export class SoapService {
                 },
 
                 samplingPoints: {
-                  create: Array.isArray(drinkingWaterFacility.samplingPoints)
-                    ? drinkingWaterFacility.samplingPoints.map((sp) => ({
-                        consecutiveNumber:
-                          parseInt(sp.consecutiveNumber, 10) || null,
-                        id_healthAuthorities:
-                          parseInt(sp.id_healthAuthorities, 10) || null,
-                        pipingSystemType: sp.pipingSystemType || null,
-                        remoteSamplingPoint: sp.remoteSamplingPoint === 'true',
-                        roomType: sp.roomType || null,
-                        roomPosition: sp.roomPosition || null,
-                        unit: sp.unit
-                          ? {
-                              create: {
-                                floor: sp.unit.floor || null,
-                                storey: sp.unit.storey || null,
-                                position: sp.unit.position || null,
-                                generalUnit: sp.unit.generalUnit === 'true',
-                                userName: sp.unit.userName || null,
-                                building: sp.unit.building
-                                  ? {
-                                      create: {
-                                        address: {
-                                          create: {
-                                            street:
-                                              sp.unit.building.address
-                                                ?.street || null,
-                                            streetnumber:
-                                              sp.unit.building.address
-                                                ?.streetnumber || null,
-                                            city:
-                                              sp.unit.building.address?.city ||
-                                              null,
-                                            postcode:
-                                              sp.unit.building.address
-                                                ?.postcode || null,
-                                            country:
-                                              sp.unit.building.address
-                                                ?.country || null,
+                  create: Array.isArray(
+                    drinkingWaterFacility.samplingPoints?.samplingPoint,
+                  )
+                    ? drinkingWaterFacility.samplingPoints.samplingPoint.map(
+                        (sp) => ({
+                          consecutiveNumber:
+                            parseInt(sp.consecutiveNumber, 10) || null,
+                          id_healthAuthorities:
+                            parseInt(sp.id_healthAuthorities, 10) || null,
+                          pipingSystemType: sp.pipingSystemType || null,
+                          remoteSamplingPoint:
+                            sp.remoteSamplingPoint === 'true',
+                          roomType: sp.roomType || null,
+                          roomPosition: sp.roomPosition || null,
+                          unit: sp.unit
+                            ? {
+                                create: {
+                                  floor: sp.unit.floor || null,
+                                  storey: sp.unit.storey || null,
+                                  position: sp.unit.position || null,
+                                  generalUnit: sp.unit.generalUnit === 'true',
+                                  userName: sp.unit.userName || null,
+                                  building: sp.unit.building
+                                    ? {
+                                        create: {
+                                          address: {
+                                            create: {
+                                              street:
+                                                sp.unit.building.address
+                                                  ?.street || null,
+                                              streetnumber:
+                                                sp.unit.building.address
+                                                  ?.streetnumber || null,
+                                              city:
+                                                sp.unit.building.address
+                                                  ?.city || null,
+                                              postcode:
+                                                sp.unit.building.address
+                                                  ?.postcode || null,
+                                              country:
+                                                sp.unit.building.address
+                                                  ?.country || null,
+                                            },
                                           },
                                         },
-                                      },
-                                    }
-                                  : null,
-                              },
-                            }
-                          : null,
-                      }))
+                                      }
+                                    : null,
+                                },
+                              }
+                            : null,
+                        }),
+                      )
                     : [],
                 },
               },
