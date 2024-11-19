@@ -78,7 +78,7 @@ export class SoapController {
   //   }
   // }
 
-  @Post('/polling')
+  @Get('/polling')
   @ApiConsumes(
     'application/json',
     'application/xml',

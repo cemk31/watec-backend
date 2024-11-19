@@ -653,7 +653,7 @@ let SoapController = class SoapController {
     }
 };
 __decorate([
-    (0, common_1.Post)('/polling'),
+    (0, common_1.Get)('/polling'),
     (0, swagger_1.ApiConsumes)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
     (0, swagger_1.ApiProduces)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
     (0, swagger_1.ApiOperation)({ summary: 'Report Order Status' }),
