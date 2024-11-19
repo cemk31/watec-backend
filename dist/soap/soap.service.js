@@ -199,80 +199,75 @@ let SoapService = class SoapService {
                             },
                         });
                         drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
-                        if (createdDrinkingWaterFacility) {
-                            drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
-                            console.log('Created DrinkingWaterFacility ID:', drinkingWaterFacilityId);
-                        }
-                        else {
-                            console.error('Failed to create DrinkingWaterFacility');
-                            return;
-                        }
-                    }
-                    if ((_e = drinkingWaterFacility.drinkingWaterHeaters) === null || _e === void 0 ? void 0 : _e.drinkingWaterHeater) {
-                        const heatersArray = Array.isArray(drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater)
-                            ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater
-                            : [
-                                drinkingWaterFacility.drinkingWaterHeaters
-                                    .drinkingWaterHeater,
-                            ];
-                        for (const heater of heatersArray) {
-                            const createdHeater = await this.prisma.drinkingWaterHeater.create({
-                                data: {
-                                    consecutiveNumber: parseInt(heater.consecutiveNumber, 10) || null,
-                                    inletTemperatureDisplayPresent: heater.inletTemperatureDisplayPresent === 'true',
-                                    inletTemperature: heater.inletTemperature
-                                        ? parseFloat(heater.inletTemperature)
-                                        : null,
-                                    outletTemperatureDisplayPresent: heater.outletTemperatureDisplayPresent === 'true',
-                                    outletTemperature: heater.outletTemperature
-                                        ? parseFloat(heater.outletTemperature)
-                                        : null,
-                                    pipeDiameterOutlet: heater.pipeDiameterOutlet || null,
-                                    pipeMaterialtypeOutlet: heater.pipeMaterialtypeOutlet || null,
-                                    volumeLitre: heater.volumeLitre
-                                        ? parseInt(heater.volumeLitre, 10)
-                                        : null,
-                                    roomType: heater.roomType || null,
-                                    roomPosition: heater.roomPosition
-                                        ? parseInt(heater.roomPosition, 10)
-                                        : null,
-                                    positionDetail: heater.positionDetail || null,
-                                    drinkingWaterFacilityId: drinkingWaterFacilityId,
-                                    unit: heater.unit
-                                        ? {
-                                            create: {
-                                                floor: heater.unit.floor
-                                                    ? parseInt(heater.unit.floor, 10)
-                                                    : null,
-                                                storey: heater.unit.storey || null,
-                                                position: heater.unit.position
-                                                    ? parseInt(heater.unit.position, 10)
-                                                    : null,
-                                                userName: heater.unit.userName || null,
-                                                generalUnit: heater.unit.generalUnit === 'true',
-                                                building: heater.unit.building
-                                                    ? {
-                                                        create: {
-                                                            address: {
-                                                                create: {
-                                                                    street: ((_f = heater.unit.building.address) === null || _f === void 0 ? void 0 : _f.street) || null,
-                                                                    streetnumber: ((_g = heater.unit.building.address) === null || _g === void 0 ? void 0 : _g.streetnumber) || null,
-                                                                    city: ((_h = heater.unit.building.address) === null || _h === void 0 ? void 0 : _h.city) ||
-                                                                        null,
-                                                                    postcode: ((_j = heater.unit.building.address) === null || _j === void 0 ? void 0 : _j.postcode) || null,
-                                                                    country: ((_k = heater.unit.building.address) === null || _k === void 0 ? void 0 : _k.country) || null,
+                        console.log('Created DrinkingWaterFacility ID:', drinkingWaterFacilityId);
+                        if ((_e = drinkingWaterFacility.drinkingWaterHeaters) === null || _e === void 0 ? void 0 : _e.drinkingWaterHeater) {
+                            const heatersArray = Array.isArray(drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater)
+                                ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater
+                                : [
+                                    drinkingWaterFacility.drinkingWaterHeaters
+                                        .drinkingWaterHeater,
+                                ];
+                            for (const heater of heatersArray) {
+                                await this.prisma.drinkingWaterHeater.create({
+                                    data: {
+                                        consecutiveNumber: parseInt(heater.consecutiveNumber, 10) || null,
+                                        inletTemperatureDisplayPresent: heater.inletTemperatureDisplayPresent === 'true',
+                                        inletTemperature: heater.inletTemperature
+                                            ? parseFloat(heater.inletTemperature)
+                                            : null,
+                                        outletTemperatureDisplayPresent: heater.outletTemperatureDisplayPresent === 'true',
+                                        outletTemperature: heater.outletTemperature
+                                            ? parseFloat(heater.outletTemperature)
+                                            : null,
+                                        pipeDiameterOutlet: heater.pipeDiameterOutlet || null,
+                                        pipeMaterialtypeOutlet: heater.pipeMaterialtypeOutlet || null,
+                                        volumeLitre: heater.volumeLitre
+                                            ? parseInt(heater.volumeLitre, 10)
+                                            : null,
+                                        roomType: heater.roomType || null,
+                                        roomPosition: heater.roomPosition
+                                            ? parseInt(heater.roomPosition, 10)
+                                            : null,
+                                        positionDetail: heater.positionDetail || null,
+                                        drinkingWaterFacilityId: drinkingWaterFacilityId,
+                                        unit: heater.unit
+                                            ? {
+                                                create: {
+                                                    floor: heater.unit.floor
+                                                        ? parseInt(heater.unit.floor, 10)
+                                                        : null,
+                                                    storey: heater.unit.storey || null,
+                                                    position: heater.unit.position
+                                                        ? parseInt(heater.unit.position, 10)
+                                                        : null,
+                                                    userName: heater.unit.userName || null,
+                                                    generalUnit: heater.unit.generalUnit === 'true',
+                                                    building: heater.unit.building
+                                                        ? {
+                                                            create: {
+                                                                address: {
+                                                                    create: {
+                                                                        street: ((_f = heater.unit.building.address) === null || _f === void 0 ? void 0 : _f.street) || null,
+                                                                        streetnumber: ((_g = heater.unit.building.address) === null || _g === void 0 ? void 0 : _g.streetnumber) || null,
+                                                                        city: ((_h = heater.unit.building.address) === null || _h === void 0 ? void 0 : _h.city) ||
+                                                                            null,
+                                                                        postcode: ((_j = heater.unit.building.address) === null || _j === void 0 ? void 0 : _j.postcode) || null,
+                                                                        country: ((_k = heater.unit.building.address) === null || _k === void 0 ? void 0 : _k.country) || null,
+                                                                    },
                                                                 },
                                                             },
-                                                        },
-                                                    }
-                                                    : undefined,
-                                            },
-                                        }
-                                        : undefined,
-                                },
-                            });
-                            console.log('Created DrinkingWaterHeater with Unit:', createdHeater);
+                                                        }
+                                                        : undefined,
+                                                },
+                                            }
+                                            : undefined,
+                                    },
+                                });
+                            }
                         }
+                    }
+                    else {
+                        console.log('No DrinkingWaterFacility provided for this order.');
                     }
                     await this.prisma.order.create({
                         data: {

@@ -169,9 +169,10 @@ export class SoapService {
             });
             propertyId = createdProperty.id;
           }
-
           // DrinkingWaterFacility-Daten hinzufügen, wenn vorhanden
           let drinkingWaterFacilityId = null;
+
+          // Check if DrinkingWaterFacility exists
           if (drinkingWaterFacility) {
             const createdDrinkingWaterFacility =
               await this.prisma.drinkingWaterFacility.create({
@@ -239,37 +240,29 @@ export class SoapService {
                   heatExchangerSystem_continuousflowprinciple:
                     drinkingWaterFacility.heatExchangerSystem_continuousflowprinciple ===
                     'true',
-                  // Add any other required fields here...
                 },
               });
             drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
 
-            // Check if the facility was created and set its ID
-            if (createdDrinkingWaterFacility) {
-              drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
-              console.log(
-                'Created DrinkingWaterFacility ID:',
-                drinkingWaterFacilityId,
-              );
-            } else {
-              console.error('Failed to create DrinkingWaterFacility');
-              return; // Exit if the facility creation fails
-            }
-          }
-          // Step 2: Create DrinkingWaterHeaters if they exist
-          if (drinkingWaterFacility.drinkingWaterHeaters?.drinkingWaterHeater) {
-            const heatersArray = Array.isArray(
-              drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater,
-            )
-              ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater
-              : [
-                  drinkingWaterFacility.drinkingWaterHeaters
-                    .drinkingWaterHeater,
-                ];
+            console.log(
+              'Created DrinkingWaterFacility ID:',
+              drinkingWaterFacilityId,
+            );
 
-            for (const heater of heatersArray) {
-              // Ensure each heater has the required data
-              const createdHeater =
+            // Step 2: Create DrinkingWaterHeaters if they exist
+            if (
+              drinkingWaterFacility.drinkingWaterHeaters?.drinkingWaterHeater
+            ) {
+              const heatersArray = Array.isArray(
+                drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater,
+              )
+                ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater
+                : [
+                    drinkingWaterFacility.drinkingWaterHeaters
+                      .drinkingWaterHeater,
+                  ];
+
+              for (const heater of heatersArray) {
                 await this.prisma.drinkingWaterHeater.create({
                   data: {
                     consecutiveNumber:
@@ -296,17 +289,15 @@ export class SoapService {
                       : null,
                     positionDetail: heater.positionDetail || null,
                     drinkingWaterFacilityId: drinkingWaterFacilityId,
-
-                    // Step 3: Include Unit creation within DrinkingWaterHeater if provided
                     unit: heater.unit
                       ? {
                           create: {
                             floor: heater.unit.floor
-                              ? parseInt(heater.unit.floor, 10) // Convert floor to integer
+                              ? parseInt(heater.unit.floor, 10)
                               : null,
                             storey: heater.unit.storey || null,
                             position: heater.unit.position
-                              ? parseInt(heater.unit.position, 10) // Convert position to integer
+                              ? parseInt(heater.unit.position, 10)
                               : null,
                             userName: heater.unit.userName || null,
                             generalUnit: heater.unit.generalUnit === 'true',
@@ -340,22 +331,19 @@ export class SoapService {
                       : undefined,
                   },
                 });
-
-              // Log the created heater for debugging
-              console.log(
-                'Created DrinkingWaterHeater with Unit:',
-                createdHeater,
-              );
+              }
             }
+          } else {
+            console.log('No DrinkingWaterFacility provided for this order.');
           }
 
-          // Create Order
+          // Create Order regardless of DrinkingWaterFacility
           await this.prisma.order.create({
             data: {
               orderNumberIsta: parseInt(order.number, 10),
               customerId: customerId,
               propertyId: propertyId,
-              drinkingWaterFacilityId: drinkingWaterFacilityId,
+              drinkingWaterFacilityId: drinkingWaterFacilityId, // Can be null
             },
           });
 
