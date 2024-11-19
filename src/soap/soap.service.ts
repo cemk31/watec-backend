@@ -374,6 +374,91 @@ export class SoapService {
             );
           }
 
+          // Create SamplingPoints if they exist
+          if (drinkingWaterFacility?.samplingPoints?.samplingPoint) {
+            const samplingPointsArray = Array.isArray(
+              drinkingWaterFacility.samplingPoints.samplingPoint,
+            )
+              ? drinkingWaterFacility.samplingPoints.samplingPoint
+              : [drinkingWaterFacility.samplingPoints.samplingPoint];
+
+            for (const sp of samplingPointsArray) {
+              const createdSamplingPoint =
+                await this.prisma.samplingPoint.create({
+                  data: {
+                    consecutiveNumber: sp.consecutiveNumber
+                      ? parseInt(sp.consecutiveNumber, 10)
+                      : null,
+                    installationNumber: sp.installationNumber
+                      ? parseInt(sp.installationNumber, 10)
+                      : null,
+                    numberObjectInstallationLocation:
+                      sp.numberObjectInstallationLocation
+                        ? parseInt(sp.numberObjectInstallationLocation, 10)
+                        : null,
+                    pipingSystemType: sp.pipingSystemType || null,
+                    remoteSamplingPoint: sp.remoteSamplingPoint === 'true',
+                    roomType: sp.roomType || null,
+                    roomPosition: sp.roomPosition
+                      ? parseInt(sp.roomPosition, 10)
+                      : null,
+                    positionDetail: sp.positionDetail || null,
+                    // Use connect for DrinkingWaterFacility relation
+                    DrinkingWaterFacility: {
+                      connect: { id: drinkingWaterFacilityId },
+                    },
+                    // Include Unit relation
+                    unit: sp.unit
+                      ? {
+                          create: {
+                            floor: sp.unit.floor
+                              ? parseInt(sp.unit.floor, 10)
+                              : null,
+                            storey: sp.unit.storey || null,
+                            position: sp.unit.position
+                              ? parseInt(sp.unit.position, 10)
+                              : null,
+                            userName: sp.unit.userName || null,
+                            generalUnit: sp.unit.generalUnit === 'true',
+                            building: sp.unit.building
+                              ? {
+                                  create: {
+                                    address: {
+                                      create: {
+                                        street:
+                                          sp.unit.building.address?.street ||
+                                          null,
+                                        streetnumber:
+                                          sp.unit.building.address
+                                            ?.streetnumber || null,
+                                        city:
+                                          sp.unit.building.address?.city ||
+                                          null,
+                                        postcode:
+                                          sp.unit.building.address?.postcode ||
+                                          null,
+                                        country:
+                                          sp.unit.building.address?.country ||
+                                          null,
+                                      },
+                                    },
+                                  },
+                                }
+                              : undefined,
+                          },
+                        }
+                      : undefined, // Handle cases where `unit` is not provided
+                  },
+                });
+
+              console.log('Created SamplingPoint:', createdSamplingPoint);
+            }
+          } else {
+            console.log(
+              'No SamplingPoints provided for this DrinkingWaterFacility.',
+            );
+          }
+
           // Create Order regardless of DrinkingWaterFacility
           await this.prisma.order.create({
             data: {

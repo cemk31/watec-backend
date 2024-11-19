@@ -30,7 +30,7 @@ let SoapService = class SoapService {
         this.soapUrl = 'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl';
     }
     async polling(soapResponse) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         try {
             const parsedData = await (0, xml2js_1.parseStringPromise)(soapResponse, {
                 explicitArray: false,
@@ -297,6 +297,74 @@ let SoapService = class SoapService {
                     }
                     else {
                         console.log('No AscendingPipes provided for this DrinkingWaterFacility.');
+                    }
+                    if ((_l = drinkingWaterFacility === null || drinkingWaterFacility === void 0 ? void 0 : drinkingWaterFacility.samplingPoints) === null || _l === void 0 ? void 0 : _l.samplingPoint) {
+                        const samplingPointsArray = Array.isArray(drinkingWaterFacility.samplingPoints.samplingPoint)
+                            ? drinkingWaterFacility.samplingPoints.samplingPoint
+                            : [drinkingWaterFacility.samplingPoints.samplingPoint];
+                        for (const sp of samplingPointsArray) {
+                            const createdSamplingPoint = await this.prisma.samplingPoint.create({
+                                data: {
+                                    consecutiveNumber: sp.consecutiveNumber
+                                        ? parseInt(sp.consecutiveNumber, 10)
+                                        : null,
+                                    installationNumber: sp.installationNumber
+                                        ? parseInt(sp.installationNumber, 10)
+                                        : null,
+                                    numberObjectInstallationLocation: sp.numberObjectInstallationLocation
+                                        ? parseInt(sp.numberObjectInstallationLocation, 10)
+                                        : null,
+                                    pipingSystemType: sp.pipingSystemType || null,
+                                    remoteSamplingPoint: sp.remoteSamplingPoint === 'true',
+                                    roomType: sp.roomType || null,
+                                    roomPosition: sp.roomPosition
+                                        ? parseInt(sp.roomPosition, 10)
+                                        : null,
+                                    positionDetail: sp.positionDetail || null,
+                                    DrinkingWaterFacility: {
+                                        connect: { id: drinkingWaterFacilityId },
+                                    },
+                                    unit: sp.unit
+                                        ? {
+                                            create: {
+                                                floor: sp.unit.floor
+                                                    ? parseInt(sp.unit.floor, 10)
+                                                    : null,
+                                                storey: sp.unit.storey || null,
+                                                position: sp.unit.position
+                                                    ? parseInt(sp.unit.position, 10)
+                                                    : null,
+                                                userName: sp.unit.userName || null,
+                                                generalUnit: sp.unit.generalUnit === 'true',
+                                                building: sp.unit.building
+                                                    ? {
+                                                        create: {
+                                                            address: {
+                                                                create: {
+                                                                    street: ((_m = sp.unit.building.address) === null || _m === void 0 ? void 0 : _m.street) ||
+                                                                        null,
+                                                                    streetnumber: ((_o = sp.unit.building.address) === null || _o === void 0 ? void 0 : _o.streetnumber) || null,
+                                                                    city: ((_p = sp.unit.building.address) === null || _p === void 0 ? void 0 : _p.city) ||
+                                                                        null,
+                                                                    postcode: ((_q = sp.unit.building.address) === null || _q === void 0 ? void 0 : _q.postcode) ||
+                                                                        null,
+                                                                    country: ((_r = sp.unit.building.address) === null || _r === void 0 ? void 0 : _r.country) ||
+                                                                        null,
+                                                                },
+                                                            },
+                                                        },
+                                                    }
+                                                    : undefined,
+                                            },
+                                        }
+                                        : undefined,
+                                },
+                            });
+                            console.log('Created SamplingPoint:', createdSamplingPoint);
+                        }
+                    }
+                    else {
+                        console.log('No SamplingPoints provided for this DrinkingWaterFacility.');
                     }
                     await this.prisma.order.create({
                         data: {
