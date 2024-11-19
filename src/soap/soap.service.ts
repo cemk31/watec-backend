@@ -169,7 +169,8 @@ export class SoapService {
             });
             propertyId = createdProperty.id;
           }
-          // Step 1: Create DrinkingWaterFacility and get its ID
+
+          // DrinkingWaterFacility-Daten hinzufügen, wenn vorhanden
           let drinkingWaterFacilityId = null;
           if (drinkingWaterFacility) {
             const createdDrinkingWaterFacility =
@@ -184,12 +185,64 @@ export class SoapService {
                   numberSuppliedUnits:
                     parseInt(drinkingWaterFacility.numberSuppliedUnits, 10) ||
                     null,
+                  numberDrinkingWaterHeater:
+                    parseInt(
+                      drinkingWaterFacility.numberDrinkingWaterHeater,
+                      10,
+                    ) || null,
                   totalVolumeLitres:
                     parseFloat(drinkingWaterFacility.totalVolumeLitres) || null,
+                  pipingSystemType_Circulation:
+                    drinkingWaterFacility.pipingSystemType_Circulation ===
+                    'true',
+                  pipingSystemType_Waterbranchline:
+                    drinkingWaterFacility.pipingSystemType_Waterbranchline ===
+                    'true',
+                  pipingSystemType_Pipetraceheater:
+                    drinkingWaterFacility.pipingSystemType_Pipetraceheater ===
+                    'true',
+                  pipingVolumeGr3Litres:
+                    drinkingWaterFacility.pipingVolumeGr3Litres === 'true',
+                  deadPipeKnown: drinkingWaterFacility.deadPipeKnown === 'true',
+                  numberAscendingPipes:
+                    parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
+                    null,
                   aerosolformation:
                     drinkingWaterFacility.aerosolformation === 'true',
+                  explanation: drinkingWaterFacility.explanation || null,
+                  numberSuppliedPersons:
+                    parseInt(drinkingWaterFacility.numberSuppliedPersons, 10) ||
+                    null,
+                  pipeworkSchematicsAvailable:
+                    drinkingWaterFacility.pipeworkSchematicsAvailable ===
+                    'true',
+                  numberColdWaterLegs:
+                    parseInt(drinkingWaterFacility.numberColdWaterLegs, 10) ||
+                    null,
+                  numberHotWaterLegs:
+                    parseInt(drinkingWaterFacility.numberHotWaterLegs, 10) ||
+                    null,
+                  temperatureCirculationDWH_A:
+                    parseFloat(
+                      drinkingWaterFacility.temperatureCirculationDWH_A,
+                    ) || null,
+                  temperatureCirculationDWH_B:
+                    parseFloat(
+                      drinkingWaterFacility.temperatureCirculationDWH_B,
+                    ) || null,
+                  heatExchangerSystem_central:
+                    drinkingWaterFacility.heatExchangerSystem_central ===
+                    'true',
+                  heatExchangerSystem_districtheating:
+                    drinkingWaterFacility.heatExchangerSystem_districtheating ===
+                    'true',
+                  heatExchangerSystem_continuousflowprinciple:
+                    drinkingWaterFacility.heatExchangerSystem_continuousflowprinciple ===
+                    'true',
+                  // Add any other required fields here...
                 },
               });
+            drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
 
             // Check if the facility was created and set its ID
             if (createdDrinkingWaterFacility) {
@@ -203,7 +256,6 @@ export class SoapService {
               return; // Exit if the facility creation fails
             }
           }
-
           // Step 2: Create DrinkingWaterHeaters if they exist
           if (drinkingWaterFacility.drinkingWaterHeaters?.drinkingWaterHeater) {
             const heatersArray = Array.isArray(
@@ -249,9 +301,13 @@ export class SoapService {
                     unit: heater.unit
                       ? {
                           create: {
-                            floor: heater.unit.floor || null,
+                            floor: heater.unit.floor
+                              ? parseInt(heater.unit.floor, 10) // Convert floor to integer
+                              : null,
                             storey: heater.unit.storey || null,
-                            position: heater.unit.position || null,
+                            position: heater.unit.position
+                              ? parseInt(heater.unit.position, 10) // Convert position to integer
+                              : null,
                             userName: heater.unit.userName || null,
                             generalUnit: heater.unit.generalUnit === 'true',
                             building: heater.unit.building

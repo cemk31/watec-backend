@@ -166,10 +166,39 @@ let SoapService = class SoapService {
                                 usageTypeOthers: drinkingWaterFacility.usageTypeOthers || null,
                                 numberSuppliedUnits: parseInt(drinkingWaterFacility.numberSuppliedUnits, 10) ||
                                     null,
+                                numberDrinkingWaterHeater: parseInt(drinkingWaterFacility.numberDrinkingWaterHeater, 10) || null,
                                 totalVolumeLitres: parseFloat(drinkingWaterFacility.totalVolumeLitres) || null,
+                                pipingSystemType_Circulation: drinkingWaterFacility.pipingSystemType_Circulation ===
+                                    'true',
+                                pipingSystemType_Waterbranchline: drinkingWaterFacility.pipingSystemType_Waterbranchline ===
+                                    'true',
+                                pipingSystemType_Pipetraceheater: drinkingWaterFacility.pipingSystemType_Pipetraceheater ===
+                                    'true',
+                                pipingVolumeGr3Litres: drinkingWaterFacility.pipingVolumeGr3Litres === 'true',
+                                deadPipeKnown: drinkingWaterFacility.deadPipeKnown === 'true',
+                                numberAscendingPipes: parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
+                                    null,
                                 aerosolformation: drinkingWaterFacility.aerosolformation === 'true',
+                                explanation: drinkingWaterFacility.explanation || null,
+                                numberSuppliedPersons: parseInt(drinkingWaterFacility.numberSuppliedPersons, 10) ||
+                                    null,
+                                pipeworkSchematicsAvailable: drinkingWaterFacility.pipeworkSchematicsAvailable ===
+                                    'true',
+                                numberColdWaterLegs: parseInt(drinkingWaterFacility.numberColdWaterLegs, 10) ||
+                                    null,
+                                numberHotWaterLegs: parseInt(drinkingWaterFacility.numberHotWaterLegs, 10) ||
+                                    null,
+                                temperatureCirculationDWH_A: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_A) || null,
+                                temperatureCirculationDWH_B: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_B) || null,
+                                heatExchangerSystem_central: drinkingWaterFacility.heatExchangerSystem_central ===
+                                    'true',
+                                heatExchangerSystem_districtheating: drinkingWaterFacility.heatExchangerSystem_districtheating ===
+                                    'true',
+                                heatExchangerSystem_continuousflowprinciple: drinkingWaterFacility.heatExchangerSystem_continuousflowprinciple ===
+                                    'true',
                             },
                         });
+                        drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
                         if (createdDrinkingWaterFacility) {
                             drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
                             console.log('Created DrinkingWaterFacility ID:', drinkingWaterFacilityId);
@@ -212,9 +241,13 @@ let SoapService = class SoapService {
                                     unit: heater.unit
                                         ? {
                                             create: {
-                                                floor: heater.unit.floor || null,
+                                                floor: heater.unit.floor
+                                                    ? parseInt(heater.unit.floor, 10)
+                                                    : null,
                                                 storey: heater.unit.storey || null,
-                                                position: heater.unit.position || null,
+                                                position: heater.unit.position
+                                                    ? parseInt(heater.unit.position, 10)
+                                                    : null,
                                                 userName: heater.unit.userName || null,
                                                 generalUnit: heater.unit.generalUnit === 'true',
                                                 building: heater.unit.building
