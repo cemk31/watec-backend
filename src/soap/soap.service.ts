@@ -204,9 +204,6 @@ export class SoapService {
                   pipingVolumeGr3Litres:
                     drinkingWaterFacility.pipingVolumeGr3Litres === 'true',
                   deadPipeKnown: drinkingWaterFacility.deadPipeKnown === 'true',
-                  numberAscendingPipes:
-                    parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
-                    null,
                   aerosolformation:
                     drinkingWaterFacility.aerosolformation === 'true',
                   explanation: drinkingWaterFacility.explanation || null,
@@ -222,14 +219,17 @@ export class SoapService {
                   numberHotWaterLegs:
                     parseInt(drinkingWaterFacility.numberHotWaterLegs, 10) ||
                     null,
+                  numberAscendingPipes:
+                    parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
+                    0,
                   temperatureCirculationDWH_A:
                     parseFloat(
                       drinkingWaterFacility.temperatureCirculationDWH_A,
-                    ) || null,
+                    ) || 0,
                   temperatureCirculationDWH_B:
                     parseFloat(
                       drinkingWaterFacility.temperatureCirculationDWH_B,
-                    ) || null,
+                    ) || 0,
                   heatExchangerSystem_central:
                     drinkingWaterFacility.heatExchangerSystem_central ===
                     'true',
@@ -285,7 +285,6 @@ export class SoapService {
                     roomPosition: heater.roomPosition
                       ? parseInt(heater.roomPosition, 10)
                       : null,
-                    positionDetail: heater.positionDetail || null,
                     drinkingWaterFacilityId: drinkingWaterFacilityId,
                     unit: heater.unit
                       ? {
@@ -297,7 +296,6 @@ export class SoapService {
                             position: heater.unit.position
                               ? parseInt(heater.unit.position, 10)
                               : null,
-                            userName: heater.unit.userName || null,
                             generalUnit: heater.unit.generalUnit === 'true',
                             building: heater.unit.building
                               ? {
@@ -389,21 +387,15 @@ export class SoapService {
                     consecutiveNumber: sp.consecutiveNumber
                       ? parseInt(sp.consecutiveNumber, 10)
                       : null,
-                    installationNumber: sp.installationNumber
-                      ? parseInt(sp.installationNumber, 10)
-                      : null,
-                    numberObjectInstallationLocation:
-                      sp.numberObjectInstallationLocation
-                        ? parseInt(sp.numberObjectInstallationLocation, 10)
-                        : null,
                     pipingSystemType: sp.pipingSystemType || null,
                     remoteSamplingPoint: sp.remoteSamplingPoint === 'true',
                     roomType: sp.roomType || null,
                     roomPosition: sp.roomPosition
                       ? parseInt(sp.roomPosition, 10)
                       : null,
-                    positionDetail: sp.positionDetail || null,
-                    // Use connect for DrinkingWaterFacility relation
+                    id_healthAuthorities: sp.id_healthAuthorities
+                      ? parseInt(sp.id_healthAuthorities, 10)
+                      : null,
                     DrinkingWaterFacility: {
                       connect: { id: drinkingWaterFacilityId },
                     },
@@ -418,7 +410,6 @@ export class SoapService {
                             position: sp.unit.position
                               ? parseInt(sp.unit.position, 10)
                               : null,
-                            userName: sp.unit.userName || null,
                             generalUnit: sp.unit.generalUnit === 'true',
                             building: sp.unit.building
                               ? {

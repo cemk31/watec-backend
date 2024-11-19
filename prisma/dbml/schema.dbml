@@ -434,6 +434,7 @@ Table SamplingPoint {
   unitId Int [not null]
   drinkingWaterFacilityId Int [not null]
   samplingPointsId Int
+  id_healthAuthorities Int
   DrinkingWaterFacility DrinkingWaterFacility [not null]
   SamplingPoints SamplingPoints
   unit Unit [not null]
@@ -500,11 +501,13 @@ Table Request {
   postponedId Int
   cancelledId Int
   plannedId Int
+  ExecutionOnSiteNotPossibleId Int
   receivedId Int
   Body Body
   Cancelled Cancelled
   NotPossible NotPossible
   Planned Planned
+  ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
   Postponed Postponed
   Received Received
   Rejected Rejected
@@ -644,6 +647,7 @@ Table ExecutionOnSiteNotPossible {
   nonExecutionReason String
   customerContacts CustomerContact [not null]
   Order Order [not null]
+  request Request
   syncData Sync
 }
 
@@ -837,6 +841,8 @@ Ref: Received.orderId > Order.id
 Ref: Received.requestId - Request.id
 
 Ref: ExecutionOnSiteNotPossible.orderId > Order.id
+
+Ref: ExecutionOnSiteNotPossible.requestId - Request.id
 
 Ref: Sync.cancelledId - Cancelled.id
 

@@ -176,8 +176,6 @@ let SoapService = class SoapService {
                                     'true',
                                 pipingVolumeGr3Litres: drinkingWaterFacility.pipingVolumeGr3Litres === 'true',
                                 deadPipeKnown: drinkingWaterFacility.deadPipeKnown === 'true',
-                                numberAscendingPipes: parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
-                                    null,
                                 aerosolformation: drinkingWaterFacility.aerosolformation === 'true',
                                 explanation: drinkingWaterFacility.explanation || null,
                                 numberSuppliedPersons: parseInt(drinkingWaterFacility.numberSuppliedPersons, 10) ||
@@ -188,8 +186,10 @@ let SoapService = class SoapService {
                                     null,
                                 numberHotWaterLegs: parseInt(drinkingWaterFacility.numberHotWaterLegs, 10) ||
                                     null,
-                                temperatureCirculationDWH_A: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_A) || null,
-                                temperatureCirculationDWH_B: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_B) || null,
+                                numberAscendingPipes: parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
+                                    0,
+                                temperatureCirculationDWH_A: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_A) || 0,
+                                temperatureCirculationDWH_B: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_B) || 0,
                                 heatExchangerSystem_central: drinkingWaterFacility.heatExchangerSystem_central ===
                                     'true',
                                 heatExchangerSystem_districtheating: drinkingWaterFacility.heatExchangerSystem_districtheating ===
@@ -228,7 +228,6 @@ let SoapService = class SoapService {
                                         roomPosition: heater.roomPosition
                                             ? parseInt(heater.roomPosition, 10)
                                             : null,
-                                        positionDetail: heater.positionDetail || null,
                                         drinkingWaterFacilityId: drinkingWaterFacilityId,
                                         unit: heater.unit
                                             ? {
@@ -240,7 +239,6 @@ let SoapService = class SoapService {
                                                     position: heater.unit.position
                                                         ? parseInt(heater.unit.position, 10)
                                                         : null,
-                                                    userName: heater.unit.userName || null,
                                                     generalUnit: heater.unit.generalUnit === 'true',
                                                     building: heater.unit.building
                                                         ? {
@@ -308,19 +306,15 @@ let SoapService = class SoapService {
                                     consecutiveNumber: sp.consecutiveNumber
                                         ? parseInt(sp.consecutiveNumber, 10)
                                         : null,
-                                    installationNumber: sp.installationNumber
-                                        ? parseInt(sp.installationNumber, 10)
-                                        : null,
-                                    numberObjectInstallationLocation: sp.numberObjectInstallationLocation
-                                        ? parseInt(sp.numberObjectInstallationLocation, 10)
-                                        : null,
                                     pipingSystemType: sp.pipingSystemType || null,
                                     remoteSamplingPoint: sp.remoteSamplingPoint === 'true',
                                     roomType: sp.roomType || null,
                                     roomPosition: sp.roomPosition
                                         ? parseInt(sp.roomPosition, 10)
                                         : null,
-                                    positionDetail: sp.positionDetail || null,
+                                    id_healthAuthorities: sp.id_healthAuthorities
+                                        ? parseInt(sp.id_healthAuthorities, 10)
+                                        : null,
                                     DrinkingWaterFacility: {
                                         connect: { id: drinkingWaterFacilityId },
                                     },
@@ -334,7 +328,6 @@ let SoapService = class SoapService {
                                                 position: sp.unit.position
                                                     ? parseInt(sp.unit.position, 10)
                                                     : null,
-                                                userName: sp.unit.userName || null,
                                                 generalUnit: sp.unit.generalUnit === 'true',
                                                 building: sp.unit.building
                                                     ? {

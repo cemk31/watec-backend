@@ -478,6 +478,7 @@ model SamplingPoint {
   unitId                           Int
   drinkingWaterFacilityId          Int
   samplingPointsId                 Int?
+  id_healthAuthorities             Int?   
   DrinkingWaterFacility            DrinkingWaterFacility @relation(fields: [drinkingWaterFacilityId], references: [id])
   SamplingPoints                   SamplingPoints?       @relation(fields: [samplingPointsId], references: [id])
   unit                             Unit                  @relation(fields: [unitId], references: [id])
