@@ -30,7 +30,7 @@ let SoapService = class SoapService {
         this.soapUrl = 'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl';
     }
     async polling(soapResponse) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         try {
             const parsedData = await (0, xml2js_1.parseStringPromise)(soapResponse, {
                 explicitArray: false,
@@ -166,46 +166,84 @@ let SoapService = class SoapService {
                                 usageTypeOthers: drinkingWaterFacility.usageTypeOthers || null,
                                 numberSuppliedUnits: parseInt(drinkingWaterFacility.numberSuppliedUnits, 10) ||
                                     null,
-                                numberDrinkingWaterHeater: parseInt(drinkingWaterFacility.numberDrinkingWaterHeater, 10) || null,
                                 totalVolumeLitres: parseFloat(drinkingWaterFacility.totalVolumeLitres) || null,
-                                pipingSystemType_Circulation: drinkingWaterFacility.pipingSystemType_Circulation ===
-                                    'true',
-                                pipingSystemType_Waterbranchline: drinkingWaterFacility.pipingSystemType_Waterbranchline ===
-                                    'true',
-                                pipingSystemType_Pipetraceheater: drinkingWaterFacility.pipingSystemType_Pipetraceheater ===
-                                    'true',
-                                pipingVolumeGr3Litres: drinkingWaterFacility.pipingVolumeGr3Litres === 'true',
-                                deadPipeKnown: drinkingWaterFacility.deadPipeKnown === 'true',
-                                numberAscendingPipes: parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
-                                    null,
                                 aerosolformation: drinkingWaterFacility.aerosolformation === 'true',
-                                explanation: drinkingWaterFacility.explanation || null,
-                                numberSuppliedPersons: parseInt(drinkingWaterFacility.numberSuppliedPersons, 10) ||
-                                    null,
-                                pipeworkSchematicsAvailable: drinkingWaterFacility.pipeworkSchematicsAvailable ===
-                                    'true',
-                                numberColdWaterLegs: parseInt(drinkingWaterFacility.numberColdWaterLegs, 10) ||
-                                    null,
-                                numberHotWaterLegs: parseInt(drinkingWaterFacility.numberHotWaterLegs, 10) ||
-                                    null,
-                                temperatureCirculationDWH_A: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_A) || null,
-                                temperatureCirculationDWH_B: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_B) || null,
-                                heatExchangerSystem_central: drinkingWaterFacility.heatExchangerSystem_central ===
-                                    'true',
-                                heatExchangerSystem_districtheating: drinkingWaterFacility.heatExchangerSystem_districtheating ===
-                                    'true',
-                                heatExchangerSystem_continuousflowprinciple: drinkingWaterFacility.heatExchangerSystem_continuousflowprinciple ===
-                                    'true',
                             },
                         });
-                        drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
+                        if (createdDrinkingWaterFacility) {
+                            drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
+                            console.log('Created DrinkingWaterFacility ID:', drinkingWaterFacilityId);
+                        }
+                        else {
+                            console.error('Failed to create DrinkingWaterFacility');
+                            return;
+                        }
+                    }
+                    if ((_e = drinkingWaterFacility.drinkingWaterHeaters) === null || _e === void 0 ? void 0 : _e.drinkingWaterHeater) {
+                        const heatersArray = Array.isArray(drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater)
+                            ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater
+                            : [
+                                drinkingWaterFacility.drinkingWaterHeaters
+                                    .drinkingWaterHeater,
+                            ];
+                        for (const heater of heatersArray) {
+                            const createdHeater = await this.prisma.drinkingWaterHeater.create({
+                                data: {
+                                    consecutiveNumber: parseInt(heater.consecutiveNumber, 10) || null,
+                                    inletTemperatureDisplayPresent: heater.inletTemperatureDisplayPresent === 'true',
+                                    inletTemperature: heater.inletTemperature
+                                        ? parseFloat(heater.inletTemperature)
+                                        : null,
+                                    outletTemperatureDisplayPresent: heater.outletTemperatureDisplayPresent === 'true',
+                                    outletTemperature: heater.outletTemperature
+                                        ? parseFloat(heater.outletTemperature)
+                                        : null,
+                                    pipeDiameterOutlet: heater.pipeDiameterOutlet || null,
+                                    pipeMaterialtypeOutlet: heater.pipeMaterialtypeOutlet || null,
+                                    volumeLitre: heater.volumeLitre
+                                        ? parseInt(heater.volumeLitre, 10)
+                                        : null,
+                                    roomType: heater.roomType || null,
+                                    roomPosition: heater.roomPosition
+                                        ? parseInt(heater.roomPosition, 10)
+                                        : null,
+                                    positionDetail: heater.positionDetail || null,
+                                    drinkingWaterFacilityId: drinkingWaterFacilityId,
+                                    unit: heater.unit
+                                        ? {
+                                            create: {
+                                                floor: heater.unit.floor || null,
+                                                storey: heater.unit.storey || null,
+                                                position: heater.unit.position || null,
+                                                userName: heater.unit.userName || null,
+                                                generalUnit: heater.unit.generalUnit === 'true',
+                                                building: heater.unit.building
+                                                    ? {
+                                                        create: {
+                                                            address: {
+                                                                create: {
+                                                                    street: ((_f = heater.unit.building.address) === null || _f === void 0 ? void 0 : _f.street) || null,
+                                                                    streetnumber: ((_g = heater.unit.building.address) === null || _g === void 0 ? void 0 : _g.streetnumber) || null,
+                                                                    city: ((_h = heater.unit.building.address) === null || _h === void 0 ? void 0 : _h.city) ||
+                                                                        null,
+                                                                    postcode: ((_j = heater.unit.building.address) === null || _j === void 0 ? void 0 : _j.postcode) || null,
+                                                                    country: ((_k = heater.unit.building.address) === null || _k === void 0 ? void 0 : _k.country) || null,
+                                                                },
+                                                            },
+                                                        },
+                                                    }
+                                                    : undefined,
+                                            },
+                                        }
+                                        : undefined,
+                                },
+                            });
+                            console.log('Created DrinkingWaterHeater with Unit:', createdHeater);
+                        }
                     }
                     await this.prisma.order.create({
                         data: {
                             orderNumberIsta: parseInt(order.number, 10),
-                            serviceType: order.serviceType || null,
-                            executionFlag: order.executionFlag === 'true',
-                            releasedOn: order.releasedOn ? new Date(order.releasedOn) : null,
                             customerId: customerId,
                             propertyId: propertyId,
                             drinkingWaterFacilityId: drinkingWaterFacilityId,

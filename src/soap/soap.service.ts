@@ -169,8 +169,7 @@ export class SoapService {
             });
             propertyId = createdProperty.id;
           }
-
-          // DrinkingWaterFacility-Daten hinzufügen, wenn vorhanden
+          // Step 1: Create DrinkingWaterFacility and get its ID
           let drinkingWaterFacilityId = null;
           if (drinkingWaterFacility) {
             const createdDrinkingWaterFacility =
@@ -185,73 +184,119 @@ export class SoapService {
                   numberSuppliedUnits:
                     parseInt(drinkingWaterFacility.numberSuppliedUnits, 10) ||
                     null,
-                  numberDrinkingWaterHeater:
-                    parseInt(
-                      drinkingWaterFacility.numberDrinkingWaterHeater,
-                      10,
-                    ) || null,
                   totalVolumeLitres:
                     parseFloat(drinkingWaterFacility.totalVolumeLitres) || null,
-                  pipingSystemType_Circulation:
-                    drinkingWaterFacility.pipingSystemType_Circulation ===
-                    'true',
-                  pipingSystemType_Waterbranchline:
-                    drinkingWaterFacility.pipingSystemType_Waterbranchline ===
-                    'true',
-                  pipingSystemType_Pipetraceheater:
-                    drinkingWaterFacility.pipingSystemType_Pipetraceheater ===
-                    'true',
-                  pipingVolumeGr3Litres:
-                    drinkingWaterFacility.pipingVolumeGr3Litres === 'true',
-                  deadPipeKnown: drinkingWaterFacility.deadPipeKnown === 'true',
-                  numberAscendingPipes:
-                    parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
-                    null,
                   aerosolformation:
                     drinkingWaterFacility.aerosolformation === 'true',
-                  explanation: drinkingWaterFacility.explanation || null,
-                  numberSuppliedPersons:
-                    parseInt(drinkingWaterFacility.numberSuppliedPersons, 10) ||
-                    null,
-                  pipeworkSchematicsAvailable:
-                    drinkingWaterFacility.pipeworkSchematicsAvailable ===
-                    'true',
-                  numberColdWaterLegs:
-                    parseInt(drinkingWaterFacility.numberColdWaterLegs, 10) ||
-                    null,
-                  numberHotWaterLegs:
-                    parseInt(drinkingWaterFacility.numberHotWaterLegs, 10) ||
-                    null,
-                  temperatureCirculationDWH_A:
-                    parseFloat(
-                      drinkingWaterFacility.temperatureCirculationDWH_A,
-                    ) || null,
-                  temperatureCirculationDWH_B:
-                    parseFloat(
-                      drinkingWaterFacility.temperatureCirculationDWH_B,
-                    ) || null,
-                  heatExchangerSystem_central:
-                    drinkingWaterFacility.heatExchangerSystem_central ===
-                    'true',
-                  heatExchangerSystem_districtheating:
-                    drinkingWaterFacility.heatExchangerSystem_districtheating ===
-                    'true',
-                  heatExchangerSystem_continuousflowprinciple:
-                    drinkingWaterFacility.heatExchangerSystem_continuousflowprinciple ===
-                    'true',
-                  // Weitere verschachtelte Daten hier hinzufügen (z.B. drinkingWaterHeaters)
                 },
               });
-            drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
+
+            // Check if the facility was created and set its ID
+            if (createdDrinkingWaterFacility) {
+              drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
+              console.log(
+                'Created DrinkingWaterFacility ID:',
+                drinkingWaterFacilityId,
+              );
+            } else {
+              console.error('Failed to create DrinkingWaterFacility');
+              return; // Exit if the facility creation fails
+            }
           }
 
-          // Daten zu Prisma senden
+          // Step 2: Create DrinkingWaterHeaters if they exist
+          if (drinkingWaterFacility.drinkingWaterHeaters?.drinkingWaterHeater) {
+            const heatersArray = Array.isArray(
+              drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater,
+            )
+              ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater
+              : [
+                  drinkingWaterFacility.drinkingWaterHeaters
+                    .drinkingWaterHeater,
+                ];
+
+            for (const heater of heatersArray) {
+              // Ensure each heater has the required data
+              const createdHeater =
+                await this.prisma.drinkingWaterHeater.create({
+                  data: {
+                    consecutiveNumber:
+                      parseInt(heater.consecutiveNumber, 10) || null,
+                    inletTemperatureDisplayPresent:
+                      heater.inletTemperatureDisplayPresent === 'true',
+                    inletTemperature: heater.inletTemperature
+                      ? parseFloat(heater.inletTemperature)
+                      : null,
+                    outletTemperatureDisplayPresent:
+                      heater.outletTemperatureDisplayPresent === 'true',
+                    outletTemperature: heater.outletTemperature
+                      ? parseFloat(heater.outletTemperature)
+                      : null,
+                    pipeDiameterOutlet: heater.pipeDiameterOutlet || null,
+                    pipeMaterialtypeOutlet:
+                      heater.pipeMaterialtypeOutlet || null,
+                    volumeLitre: heater.volumeLitre
+                      ? parseInt(heater.volumeLitre, 10)
+                      : null,
+                    roomType: heater.roomType || null,
+                    roomPosition: heater.roomPosition
+                      ? parseInt(heater.roomPosition, 10)
+                      : null,
+                    positionDetail: heater.positionDetail || null,
+                    drinkingWaterFacilityId: drinkingWaterFacilityId,
+
+                    // Step 3: Include Unit creation within DrinkingWaterHeater if provided
+                    unit: heater.unit
+                      ? {
+                          create: {
+                            floor: heater.unit.floor || null,
+                            storey: heater.unit.storey || null,
+                            position: heater.unit.position || null,
+                            userName: heater.unit.userName || null,
+                            generalUnit: heater.unit.generalUnit === 'true',
+                            building: heater.unit.building
+                              ? {
+                                  create: {
+                                    address: {
+                                      create: {
+                                        street:
+                                          heater.unit.building.address
+                                            ?.street || null,
+                                        streetnumber:
+                                          heater.unit.building.address
+                                            ?.streetnumber || null,
+                                        city:
+                                          heater.unit.building.address?.city ||
+                                          null,
+                                        postcode:
+                                          heater.unit.building.address
+                                            ?.postcode || null,
+                                        country:
+                                          heater.unit.building.address
+                                            ?.country || null,
+                                      },
+                                    },
+                                  },
+                                }
+                              : undefined,
+                          },
+                        }
+                      : undefined,
+                  },
+                });
+
+              // Log the created heater for debugging
+              console.log(
+                'Created DrinkingWaterHeater with Unit:',
+                createdHeater,
+              );
+            }
+          }
+
+          // Create Order
           await this.prisma.order.create({
             data: {
               orderNumberIsta: parseInt(order.number, 10),
-              serviceType: order.serviceType || null,
-              executionFlag: order.executionFlag === 'true',
-              releasedOn: order.releasedOn ? new Date(order.releasedOn) : null,
               customerId: customerId,
               propertyId: propertyId,
               drinkingWaterFacilityId: drinkingWaterFacilityId,
@@ -286,7 +331,6 @@ export class SoapService {
       country: data.country,
     };
   }
-
   // Hilfsfunktion für Building
   private createBuilding(
     data: BuildingInput,
