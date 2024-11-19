@@ -169,10 +169,9 @@ export class SoapService {
             });
             propertyId = createdProperty.id;
           }
-          // DrinkingWaterFacility-Daten hinzufügen, wenn vorhanden
+
           let drinkingWaterFacilityId = null;
 
-          // Check if DrinkingWaterFacility exists
           if (drinkingWaterFacility) {
             const createdDrinkingWaterFacility =
               await this.prisma.drinkingWaterFacility.create({
@@ -249,7 +248,6 @@ export class SoapService {
               drinkingWaterFacilityId,
             );
 
-            // Step 2: Create DrinkingWaterHeaters if they exist
             if (
               drinkingWaterFacility.drinkingWaterHeaters?.drinkingWaterHeater
             ) {
@@ -335,6 +333,45 @@ export class SoapService {
             }
           } else {
             console.log('No DrinkingWaterFacility provided for this order.');
+          }
+
+          // Create AscendingPipes if they exist
+          if (drinkingWaterFacility?.ascendingPipes) {
+            const ascendingPipesArray = Array.isArray(
+              drinkingWaterFacility.ascendingPipes,
+            )
+              ? drinkingWaterFacility.ascendingPipes
+              : [drinkingWaterFacility.ascendingPipes];
+
+            for (const pipe of ascendingPipesArray) {
+              // Ensure the pipe has required data
+              const createdPipe = await this.prisma.ascendingPipe.create({
+                data: {
+                  consecutiveNumber: pipe.consecutiveNumber
+                    ? parseInt(pipe.consecutiveNumber, 10)
+                    : null,
+                  ascendingPipeTemperatureDisplayPresent:
+                    pipe.ascendingPipeTemperatureDisplayPresent === 'true',
+                  flowTemperature: pipe.flowTemperature
+                    ? parseFloat(pipe.flowTemperature)
+                    : null,
+                  circulationTemperatureDisplayPresent:
+                    pipe.circulationTemperatureDisplayPresent === 'true',
+                  circulationTemperature: pipe.circulationTemperature
+                    ? parseFloat(pipe.circulationTemperature)
+                    : null,
+                  pipeDiameter: pipe.pipeDiameter || null,
+                  pipeMaterialtype: pipe.pipeMaterialtype || null,
+                  drinkingWaterFacilityId: drinkingWaterFacilityId, // Associate with created facility
+                },
+              });
+
+              console.log('Created AscendingPipe:', createdPipe);
+            }
+          } else {
+            console.log(
+              'No AscendingPipes provided for this DrinkingWaterFacility.',
+            );
           }
 
           // Create Order regardless of DrinkingWaterFacility

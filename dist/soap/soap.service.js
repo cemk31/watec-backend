@@ -269,6 +269,35 @@ let SoapService = class SoapService {
                     else {
                         console.log('No DrinkingWaterFacility provided for this order.');
                     }
+                    if (drinkingWaterFacility === null || drinkingWaterFacility === void 0 ? void 0 : drinkingWaterFacility.ascendingPipes) {
+                        const ascendingPipesArray = Array.isArray(drinkingWaterFacility.ascendingPipes)
+                            ? drinkingWaterFacility.ascendingPipes
+                            : [drinkingWaterFacility.ascendingPipes];
+                        for (const pipe of ascendingPipesArray) {
+                            const createdPipe = await this.prisma.ascendingPipe.create({
+                                data: {
+                                    consecutiveNumber: pipe.consecutiveNumber
+                                        ? parseInt(pipe.consecutiveNumber, 10)
+                                        : null,
+                                    ascendingPipeTemperatureDisplayPresent: pipe.ascendingPipeTemperatureDisplayPresent === 'true',
+                                    flowTemperature: pipe.flowTemperature
+                                        ? parseFloat(pipe.flowTemperature)
+                                        : null,
+                                    circulationTemperatureDisplayPresent: pipe.circulationTemperatureDisplayPresent === 'true',
+                                    circulationTemperature: pipe.circulationTemperature
+                                        ? parseFloat(pipe.circulationTemperature)
+                                        : null,
+                                    pipeDiameter: pipe.pipeDiameter || null,
+                                    pipeMaterialtype: pipe.pipeMaterialtype || null,
+                                    drinkingWaterFacilityId: drinkingWaterFacilityId,
+                                },
+                            });
+                            console.log('Created AscendingPipe:', createdPipe);
+                        }
+                    }
+                    else {
+                        console.log('No AscendingPipes provided for this DrinkingWaterFacility.');
+                    }
                     await this.prisma.order.create({
                         data: {
                             orderNumberIsta: parseInt(order.number, 10),
