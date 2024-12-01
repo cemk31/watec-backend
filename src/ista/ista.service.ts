@@ -295,6 +295,7 @@ export class IstaService {
         Postponed: true,
         Cancelled: true,
         Rejected: true,
+        property: true,
         ExecutionOnSiteNotPossible: true,
         ClosedContractPartner: {
           include: {
@@ -309,8 +310,23 @@ export class IstaService {
             services: true, // include Service related to recordedSystem
           },
         },
-        Customer: true,
-        drinkingWaterFacility: true,
+        drinkingWaterFacility: {
+          include: {
+            samplingPoints: true,
+            ascendingPipes: true,
+            drinkingWaterHeaters: true,
+          },
+        },
+        Customer: {
+          include: {
+            orders: true,
+            contactPerson: {
+              include: {
+                Property: true,
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -435,7 +451,11 @@ export class IstaService {
       where: { id: customerId },
       include: {
         orders: true,
-        contactPerson: true,
+        contactPerson: {
+          include: {
+            Property: true,
+          },
+        },
       },
     });
   }

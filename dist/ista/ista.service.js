@@ -178,6 +178,7 @@ let IstaService = class IstaService {
                 Postponed: true,
                 Cancelled: true,
                 Rejected: true,
+                property: true,
                 ExecutionOnSiteNotPossible: true,
                 ClosedContractPartner: {
                     include: {
@@ -192,8 +193,23 @@ let IstaService = class IstaService {
                         services: true,
                     },
                 },
-                Customer: true,
-                drinkingWaterFacility: true,
+                drinkingWaterFacility: {
+                    include: {
+                        samplingPoints: true,
+                        ascendingPipes: true,
+                        drinkingWaterHeaters: true,
+                    },
+                },
+                Customer: {
+                    include: {
+                        orders: true,
+                        contactPerson: {
+                            include: {
+                                Property: true,
+                            },
+                        },
+                    },
+                },
             },
         });
     }
@@ -303,7 +319,11 @@ let IstaService = class IstaService {
             where: { id: customerId },
             include: {
                 orders: true,
-                contactPerson: true,
+                contactPerson: {
+                    include: {
+                        Property: true,
+                    },
+                },
             },
         });
     }

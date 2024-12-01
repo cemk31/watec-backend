@@ -766,6 +766,16 @@ export declare class IstaService {
             rejectionReasonText: string;
             syncDataId: number;
         }, unknown, never> & {})[];
+        property: import("@prisma/client/runtime").GetResult<{
+            id: number;
+            number: bigint;
+            id_HealthAuthorities: bigint;
+            contactPersonId: number;
+            addressId: number;
+            hotwatersupplyType_central: boolean;
+            hotwatersupplyType_decentral: boolean;
+            recordedSystemId: number;
+        }, unknown, never> & {};
         ExecutionOnSiteNotPossible: (import("@prisma/client/runtime").GetResult<{
             id: number;
             orderstatusType: string;
@@ -855,32 +865,48 @@ export declare class IstaService {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Customer: import("@prisma/client/runtime").GetResult<{
-            id: number;
-            istaId: number;
-            firstName: string;
-            lastName: string;
-            name1: string;
-            name2: string;
-            city: string;
-            postcode: string;
-            country: string;
-            telephone: string;
-            phoneNumber: string;
-            street: string;
-            zipCode: string;
-            userId: number;
-            email: string;
-            createdAt: Date;
-            place: string;
-            updatedAt: Date;
-            companyName: string;
-            fax: string;
-            propertyNumber: number;
-            addressId: number;
-            contactPersonId: number;
-        }, unknown, never> & {};
-        drinkingWaterFacility: import("@prisma/client/runtime").GetResult<{
+        drinkingWaterFacility: {
+            samplingPoints: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                consecutiveNumber: number;
+                installationNumber: number;
+                numberObjectInstallationLocation: number;
+                pipingSystemType: string;
+                remoteSamplingPoint: boolean;
+                roomType: string;
+                roomPosition: number;
+                positionDetail: string;
+                unitId: number;
+                drinkingWaterFacilityId: number;
+                samplingPointsId: number;
+            }, unknown, never> & {})[];
+            ascendingPipes: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                consecutiveNumber: number;
+                ascendingPipeTemperatureDisplayPresent: boolean;
+                flowTemperature: number;
+                circulationTemperatureDisplayPresent: boolean;
+                circulationTemperature: number;
+                pipeDiameter: string;
+                pipeMaterialtype: string;
+                drinkingWaterFacilityId: number;
+            }, unknown, never> & {})[];
+            drinkingWaterHeaters: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                consecutiveNumber: number;
+                inletTemperatureDisplayPresent: boolean;
+                inletTemperature: number;
+                outletTemperatureDisplayPresent: boolean;
+                outletTemperature: number;
+                pipeDiameterOutlet: string;
+                pipeMaterialtypeOutlet: string;
+                volumeLitre: number;
+                roomType: string;
+                roomPosition: number;
+                positionDetail: string;
+                drinkingWaterFacilityId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             consecutiveNumber: number;
             usageType: string;
@@ -907,6 +933,69 @@ export declare class IstaService {
             heatExchangerSystem_districtheating: boolean;
             heatExchangerSystem_continuousflowprinciple: boolean;
             recordedSystemId: number;
+        }, unknown, never> & {};
+        Customer: {
+            orders: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                propertyNumber: bigint;
+                orderNumberIsta: bigint;
+                number: bigint;
+                remarkExternal: string;
+                createdAt: Date;
+                actualStatus: Status;
+                customerId: number;
+                updatedAt: Date;
+                serviceType: string;
+                executionFlag: boolean;
+                releasedOn: Date;
+                drinkingWaterFacilityId: number;
+                propertyId: number;
+            }, unknown, never> & {})[];
+            contactPerson: {
+                Property: (import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    number: bigint;
+                    id_HealthAuthorities: bigint;
+                    contactPersonId: number;
+                    addressId: number;
+                    hotwatersupplyType_central: boolean;
+                    hotwatersupplyType_decentral: boolean;
+                    recordedSystemId: number;
+                }, unknown, never> & {})[];
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                salutation: string;
+                name: string;
+                forename: string;
+                telephone: string;
+                telephoneMobile: string;
+                role: string;
+                customerId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            istaId: number;
+            firstName: string;
+            lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
+            phoneNumber: string;
+            street: string;
+            zipCode: string;
+            userId: number;
+            email: string;
+            createdAt: Date;
+            place: string;
+            updatedAt: Date;
+            companyName: string;
+            fax: string;
+            propertyNumber: number;
+            addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -1172,7 +1261,18 @@ export declare class IstaService {
             drinkingWaterFacilityId: number;
             propertyId: number;
         }, unknown, never> & {})[];
-        contactPerson: import("@prisma/client/runtime").GetResult<{
+        contactPerson: {
+            Property: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                number: bigint;
+                id_HealthAuthorities: bigint;
+                contactPersonId: number;
+                addressId: number;
+                hotwatersupplyType_central: boolean;
+                hotwatersupplyType_decentral: boolean;
+                recordedSystemId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             salutation: string;
             name: string;
