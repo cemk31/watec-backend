@@ -393,9 +393,9 @@ export class SoapService {
                     roomPosition: sp.roomPosition
                       ? parseInt(sp.roomPosition, 10)
                       : null,
-                    id_healthAuthorities: sp.id_healthAuthorities
-                      ? parseInt(sp.id_healthAuthorities, 10)
-                      : null,
+                    // id_healthAuthorities: sp.id_healthAuthorities
+                    //   ? parseInt(sp.id_healthAuthorities, 10)
+                    //   : null,
                     DrinkingWaterFacility: {
                       connect: { id: drinkingWaterFacilityId },
                     },

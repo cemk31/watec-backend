@@ -310,6 +310,7 @@ export class IstaService {
           },
         },
         Customer: true,
+        drinkingWaterFacility: true,
       },
     });
   }

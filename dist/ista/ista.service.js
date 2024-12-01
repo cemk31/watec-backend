@@ -193,6 +193,7 @@ let IstaService = class IstaService {
                     },
                 },
                 Customer: true,
+                drinkingWaterFacility: true,
             },
         });
     }
