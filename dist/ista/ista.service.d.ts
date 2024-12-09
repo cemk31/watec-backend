@@ -345,6 +345,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -381,6 +382,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -424,6 +426,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -463,6 +466,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -504,6 +508,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -544,6 +549,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -645,6 +651,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -879,6 +886,7 @@ export declare class IstaService {
                 unitId: number;
                 drinkingWaterFacilityId: number;
                 samplingPointsId: number;
+                id_healthAuthorities: number;
             }, unknown, never> & {})[];
             ascendingPipes: (import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1047,6 +1055,7 @@ export declare class IstaService {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{

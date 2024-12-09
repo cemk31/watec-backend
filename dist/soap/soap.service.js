@@ -43,6 +43,15 @@ let SoapService = class SoapService {
                 ? orders.order
                 : [orders.order];
             for (const order of ordersArray) {
+                const existingOrder = await this.prisma.order.findFirst({
+                    where: {
+                        orderNumberIsta: parseInt(order.number, 10),
+                    },
+                });
+                if (existingOrder) {
+                    console.log(`Order with number ${order.number} already exists. Skipping...`);
+                    continue;
+                }
                 try {
                     if (!order) {
                         console.error('Order is undefined or null:', order);
