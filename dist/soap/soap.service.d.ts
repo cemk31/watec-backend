@@ -28,6 +28,10 @@ export declare class SoapService {
             receivedId: number;
             statusReportId: number;
             executionOnSiteNotPossibleId: number;
+            notPossibleId: number;
+            rejectedId: number;
+            postponedId: number;
+            cancelledId: number;
         }, unknown, never> & {})[];
     } & import("@prisma/client/runtime").GetResult<{
         id: number;

@@ -232,7 +232,15 @@ Table CustomerContact {
   receivedId Int
   statusReportId Int
   executionOnSiteNotPossibleId Int
+  notPossibleId Int
+  rejectedId Int
+  postponedId Int
+  cancelledId Int
   ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
+  NotPossible NotPossible
+  Cancelled Cancelled
+  Postponed Postponed
+  rejected Rejected
   order Order
   planned Planned
   received Received
@@ -525,6 +533,7 @@ Table Postponed {
   updatedAt DateTime [not null]
   syncDataId Int [unique]
   Contact Contact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   syncData Sync
@@ -542,6 +551,7 @@ Table Rejected {
   rejectionReasonText String
   syncDataId Int [unique]
   Contact Contact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   syncData Sync
@@ -557,6 +567,7 @@ Table NotPossible {
   updatedAt DateTime
   syncDataId Int [unique]
   Contact Contact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   syncData Sync
@@ -595,6 +606,7 @@ Table Cancelled {
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   syncDataId Int [unique]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   Contact Contact [not null]
@@ -745,6 +757,14 @@ Ref: Order.propertyId > Property.id
 Ref: OrderStatus.orderId > Order.id
 
 Ref: CustomerContact.executionOnSiteNotPossibleId > ExecutionOnSiteNotPossible.id
+
+Ref: CustomerContact.notPossibleId > NotPossible.id
+
+Ref: CustomerContact.cancelledId > Cancelled.id
+
+Ref: CustomerContact.postponedId > Postponed.id
+
+Ref: CustomerContact.rejectedId > Rejected.id
 
 Ref: CustomerContact.orderId > Order.id
 
