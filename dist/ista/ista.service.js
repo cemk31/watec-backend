@@ -159,6 +159,16 @@ let IstaService = class IstaService {
                         Request: true,
                     },
                 },
+                Customer: {
+                    include: {
+                        contactPerson: {
+                            include: {
+                                Property: true,
+                            },
+                        },
+                    },
+                },
+                property: true,
             },
         });
         return order;
@@ -211,7 +221,15 @@ let IstaService = class IstaService {
                         Request: true,
                     },
                 },
-                property: true,
+                property: {
+                    include: {
+                        building: {
+                            include: {
+                                address: true,
+                            },
+                        },
+                    },
+                },
                 ExecutionOnSiteNotPossible: true,
                 ClosedContractPartner: {
                     include: {

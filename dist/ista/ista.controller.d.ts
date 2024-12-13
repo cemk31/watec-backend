@@ -783,6 +783,63 @@ export declare class IstaController {
             rejectionReasonText: string;
             syncDataId: number;
         }, unknown, never> & {})[];
+        Customer: {
+            contactPerson: {
+                Property: (import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    number: bigint;
+                    id_HealthAuthorities: bigint;
+                    contactPersonId: number;
+                    addressId: number;
+                    hotwatersupplyType_central: boolean;
+                    hotwatersupplyType_decentral: boolean;
+                    recordedSystemId: number;
+                }, unknown, never> & {})[];
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                salutation: string;
+                name: string;
+                forename: string;
+                telephone: string;
+                telephoneMobile: string;
+                role: string;
+                customerId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            istaId: number;
+            firstName: string;
+            lastName: string;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
+            phoneNumber: string;
+            street: string;
+            zipCode: string;
+            userId: number;
+            email: string;
+            createdAt: Date;
+            place: string;
+            updatedAt: Date;
+            companyName: string;
+            fax: string;
+            propertyNumber: number;
+            addressId: number;
+            contactPersonId: number;
+        }, unknown, never> & {};
+        property: import("@prisma/client/runtime").GetResult<{
+            id: number;
+            number: bigint;
+            id_HealthAuthorities: bigint;
+            contactPersonId: number;
+            addressId: number;
+            hotwatersupplyType_central: boolean;
+            hotwatersupplyType_decentral: boolean;
+            recordedSystemId: number;
+        }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
         propertyNumber: bigint;
@@ -1118,7 +1175,31 @@ export declare class IstaController {
             rejectionReasonText: string;
             syncDataId: number;
         }, unknown, never> & {})[];
-        property: import("@prisma/client/runtime").GetResult<{
+        property: {
+            building: ({
+                address: import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    street: string;
+                    streetnumber: string;
+                    postcode: string;
+                    city: string;
+                    country: string;
+                    createdAt: Date;
+                    customerId: number;
+                    updatedAt: Date;
+                    houseNumber: string;
+                }, unknown, never> & {};
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                addressId: number;
+                street: string;
+                streetnumber: string;
+                postcode: string;
+                city: string;
+                country: string;
+                propertyId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             number: bigint;
             id_HealthAuthorities: bigint;
