@@ -373,9 +373,25 @@ export class IstaService {
         },
         drinkingWaterFacility: {
           include: {
-            samplingPoints: true,
+            samplingPoints: {
+              include: {
+                unit: {
+                  include: {
+                    building: true,
+                  },
+                },
+              },
+            },
             ascendingPipes: true,
-            drinkingWaterHeaters: true,
+            drinkingWaterHeaters: {
+              include: {
+                unit: {
+                  include: {
+                    building: true,
+                  },
+                },
+              },
+            },
           },
         },
         Customer: {

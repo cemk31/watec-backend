@@ -771,4 +771,10 @@ export class SoapController {
   //   const planned = await this.soapService.reportOrderPlanned(statusId, user);
   //   return planned;
   // }
+
+  //   @Post('/sync')
+  //   updateStatus(@Body() orderDTO: OrderDto) {
+  //     console.log(orderDTO);
+  //     return this.istaService.updateOrder(orderDTO.id, orderDTO);
+  //   }
 }

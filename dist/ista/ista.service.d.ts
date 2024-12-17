@@ -1116,7 +1116,29 @@ export declare class IstaService {
             syncDataId: number;
         }, unknown, never> & {})[];
         drinkingWaterFacility: {
-            samplingPoints: (import("@prisma/client/runtime").GetResult<{
+            samplingPoints: ({
+                unit: {
+                    building: import("@prisma/client/runtime").GetResult<{
+                        id: number;
+                        addressId: number;
+                        street: string;
+                        streetnumber: string;
+                        postcode: string;
+                        city: string;
+                        country: string;
+                        propertyId: number;
+                    }, unknown, never> & {};
+                } & import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    floor: number;
+                    storey: string;
+                    position: number;
+                    userName: string;
+                    generalUnit: boolean;
+                    drinkingWaterHeaterId: number;
+                    buildingId: number;
+                }, unknown, never> & {};
+            } & import("@prisma/client/runtime").GetResult<{
                 id: number;
                 consecutiveNumber: number;
                 installationNumber: number;
@@ -1142,7 +1164,29 @@ export declare class IstaService {
                 pipeMaterialtype: string;
                 drinkingWaterFacilityId: number;
             }, unknown, never> & {})[];
-            drinkingWaterHeaters: (import("@prisma/client/runtime").GetResult<{
+            drinkingWaterHeaters: ({
+                unit: {
+                    building: import("@prisma/client/runtime").GetResult<{
+                        id: number;
+                        addressId: number;
+                        street: string;
+                        streetnumber: string;
+                        postcode: string;
+                        city: string;
+                        country: string;
+                        propertyId: number;
+                    }, unknown, never> & {};
+                } & import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    floor: number;
+                    storey: string;
+                    position: number;
+                    userName: string;
+                    generalUnit: boolean;
+                    drinkingWaterHeaterId: number;
+                    buildingId: number;
+                }, unknown, never> & {};
+            } & import("@prisma/client/runtime").GetResult<{
                 id: number;
                 consecutiveNumber: number;
                 inletTemperatureDisplayPresent: boolean;
