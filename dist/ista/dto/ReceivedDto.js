@@ -85,11 +85,8 @@ __decorate([
     __metadata("design:type", Number)
 ], received.prototype, "propertyNumber", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: [CustomerContactDto_1.CustomerContactDto] }),
+    (0, swagger_1.ApiProperty)({ type: () => [CustomerContactDto_1.CustomerContactDto] }),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => CustomerContactDto_1.CustomerContactDto),
     __metadata("design:type", Array)
 ], received.prototype, "customerContacts", void 0);
 exports.received = received;

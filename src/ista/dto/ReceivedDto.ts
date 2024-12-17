@@ -69,10 +69,7 @@ export class received {
   @IsNumber()
   propertyNumber: number;
 
-  @ApiProperty({ type: [CustomerContactDto] })
+  @ApiProperty({ type: () => [CustomerContactDto] })
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CustomerContactDto)
   customerContacts: CustomerContactDto[];
 }
