@@ -44,6 +44,7 @@ let IstaService = class IstaService {
                     status: true,
                     Received: true,
                     Planned: true,
+                    Done: true,
                     customerContacts: true,
                     NotPossible: true,
                     Postponed: true,
@@ -107,6 +108,7 @@ let IstaService = class IstaService {
                 status: true,
                 Received: true,
                 Planned: true,
+                Done: true,
                 customerContacts: true,
                 NotPossible: true,
                 Postponed: true,
@@ -129,6 +131,12 @@ let IstaService = class IstaService {
                     },
                 },
                 Planned: {
+                    include: {
+                        customerContacts: true,
+                        Request: true,
+                    },
+                },
+                Done: {
                     include: {
                         customerContacts: true,
                         Request: true,
@@ -192,6 +200,12 @@ let IstaService = class IstaService {
                     },
                 },
                 Planned: {
+                    include: {
+                        customerContacts: true,
+                        Request: true,
+                    },
+                },
+                Done: {
                     include: {
                         customerContacts: true,
                         Request: true,
@@ -339,6 +353,12 @@ let IstaService = class IstaService {
                     },
                 },
                 Planned: {
+                    include: {
+                        customerContacts: true,
+                        Request: true,
+                    },
+                },
+                Done: {
                     include: {
                         customerContacts: true,
                         Request: true,
@@ -946,6 +966,7 @@ let IstaService = class IstaService {
             });
             await this.prisma.notPossible.deleteMany({ where: { orderId } });
             await this.prisma.planned.deleteMany({ where: { orderId } });
+            await this.prisma.done.deleteMany({ where: { orderId } });
             await this.prisma.postponed.deleteMany({ where: { orderId } });
             await this.prisma.received.deleteMany({ where: { orderId } });
             await this.prisma.rejected.deleteMany({ where: { orderId } });
@@ -962,32 +983,42 @@ let IstaService = class IstaService {
             throw new Error('Order could not be deleted. Please check for related data.');
         }
     }
-    async doneOrder(orderId) {
+    async orderDone(orderId, dto) {
+        var _a;
         try {
-            console.log('Updating order with id:', orderId);
-            const updatedOrder = await this.prisma.order.update({
+            await this.prisma.order.update({
                 where: { id: orderId },
                 data: {
-                    actualStatus: client_1.Status.DONE,
                     updatedAt: new Date(),
-                },
-                include: {
-                    status: true,
-                    Received: true,
-                    Planned: true,
-                    customerContacts: true,
-                    NotPossible: true,
-                    Postponed: true,
-                    Cancelled: true,
-                    Rejected: true,
-                    ClosedContractPartner: true,
-                    Customer: true,
+                    actualStatus: client_1.Status.DONE,
                 },
             });
-            return updatedOrder;
+            const customerContacts = (_a = dto.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
+                contactAttemptOn: contact.contactAttemptOn,
+                contactPersonCustomer: contact.contactPersonCustomer,
+                agentCP: contact.agentCP,
+                result: contact.result,
+                remark: contact.remark,
+            }));
+            const doneEntry = await this.prisma.done.create({
+                data: {
+                    orderstatusType: client_1.Status.DONE,
+                    setOn: dto.setOn,
+                    isChecked: dto.isChecked,
+                    Order: {
+                        connect: {
+                            id: orderId,
+                        },
+                    },
+                    customerContacts: {
+                        create: customerContacts,
+                    },
+                },
+            });
+            return doneEntry;
         }
         catch (error) {
-            console.error('Error updating order:', error);
+            console.error('Error creating `done` entry:', error);
             return null;
         }
     }
@@ -999,6 +1030,11 @@ let IstaService = class IstaService {
         }
         if (type === 'planned') {
             return this.prisma.planned.findFirst({
+                where: { id: statusId },
+            });
+        }
+        if (type === 'Done') {
+            return this.prisma.done.findFirst({
                 where: { id: statusId },
             });
         }

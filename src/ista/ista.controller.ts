@@ -29,7 +29,7 @@ import { PostponedDto } from './dto/PostponedDto';
 import { CancelledDto } from './dto/CancelledDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
-import { DoneDto } from 'src/auftrag/dto/create-done.dto';
+import { DoneDto } from './dto/DoneDto';
 import { Received } from '@prisma/client';
 
 @UseGuards(JwtGuard)
@@ -307,6 +307,12 @@ export class IstaController {
     console.log('orderPlanned', dto);
     return this.istaService.orderPlanned(dto.orderId, dto.requestId, dto);
   }
+
+  @Post('/Done')
+  orderDone(@Body() dto: DoneDto) {
+    console.log('orderDone', dto);
+    return this.istaService.orderDone(dto.orderId, dto);
+  }
   //Execution on site done
 
   //closed cp - Übernahme TWA
@@ -404,12 +410,6 @@ export class IstaController {
     if (closedContractPartner !== null) {
       return this.closedContractPartner;
     }
-  }
-
-  @Post('/done')
-  done(@Body() dto: DoneDto) {
-    console.log('done', dto);
-    return this.istaService.doneOrder(dto.orderId);
   }
 
   @Post('/sync')

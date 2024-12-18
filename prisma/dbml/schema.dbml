@@ -200,6 +200,7 @@ Table Order {
   Postponed Postponed [not null]
   Received Received [not null]
   Rejected Rejected [not null]
+  Done Done [not null]
   serviceType String
   executionFlag Boolean
   releasedOn DateTime
@@ -236,6 +237,7 @@ Table CustomerContact {
   rejectedId Int
   postponedId Int
   cancelledId Int
+  DoneId Int
   ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
   NotPossible NotPossible
   Cancelled Cancelled
@@ -244,6 +246,7 @@ Table CustomerContact {
   order Order
   planned Planned
   received Received
+  Done Done
   statusReport StatusReport
   ClosedContractPartner ClosedContractPartner [not null]
 }
@@ -509,6 +512,7 @@ Table Request {
   postponedId Int
   cancelledId Int
   plannedId Int
+  DoneId Int
   ExecutionOnSiteNotPossibleId Int
   receivedId Int
   Body Body
@@ -519,6 +523,7 @@ Table Request {
   Postponed Postponed
   Received Received
   Rejected Rejected
+  Done Done
 }
 
 Table Postponed {
@@ -632,6 +637,22 @@ Table Planned {
   syncData Sync
 }
 
+Table Done {
+  id Int [pk, increment]
+  orderId Int [not null]
+  orderstatusType String
+  setOn DateTime [default: `now()`]
+  requestId Int [unique]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  syncDataId Int [unique]
+  isChecked Boolean [default: false]
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  Request Request
+  syncData Sync
+}
+
 Table Received {
   id Int [pk, increment]
   orderId Int [not null]
@@ -682,6 +703,7 @@ Table Sync {
   userId Int [not null]
   receivedId Int [unique]
   plannedId Int [unique]
+  DoneId Int [unique]
   postponedId Int [unique]
   rejectedId Int [unique]
   cancelledId Int [unique]
@@ -696,6 +718,7 @@ Table Sync {
   Postponed Postponed
   Received Received
   Rejected Rejected
+  Done Done
   user users [not null]
 }
 
@@ -771,6 +794,8 @@ Ref: CustomerContact.orderId > Order.id
 Ref: CustomerContact.plannedId > Planned.id
 
 Ref: CustomerContact.receivedId > Received.id
+
+Ref: CustomerContact.DoneId > Done.id
 
 Ref: CustomerContact.statusReportId > StatusReport.id
 
@@ -856,6 +881,10 @@ Ref: Planned.orderId > Order.id
 
 Ref: Planned.requestId - Request.id
 
+Ref: Done.orderId > Order.id
+
+Ref: Done.requestId - Request.id
+
 Ref: Received.orderId > Order.id
 
 Ref: Received.requestId - Request.id
@@ -879,5 +908,7 @@ Ref: Sync.postponedId - Postponed.id
 Ref: Sync.receivedId - Received.id
 
 Ref: Sync.rejectedId - Rejected.id
+
+Ref: Sync.DoneId - Done.id
 
 Ref: Sync.userId > users.id

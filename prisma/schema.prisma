@@ -233,6 +233,7 @@ model Order {
   Postponed                  Postponed[]
   Received                   Received[]
   Rejected                   Rejected[]
+  Done                       Done[]
 
   serviceType             String?
   executionFlag           Boolean?
@@ -272,6 +273,7 @@ model CustomerContact {
   rejectedId                   Int?
   postponedId                  Int?
   cancelledId                  Int?
+  DoneId                       Int?
   ExecutionOnSiteNotPossible   ExecutionOnSiteNotPossible? @relation(fields: [executionOnSiteNotPossibleId], references: [id])
   NotPossible                  NotPossible?                @relation(fields: [notPossibleId], references: [id])
   Cancelled                    Cancelled?                  @relation(fields: [cancelledId], references: [id])
@@ -280,6 +282,7 @@ model CustomerContact {
   order                        Order?                      @relation(fields: [orderId], references: [id])
   planned                      Planned?                    @relation(fields: [plannedId], references: [id])
   received                     Received?                   @relation(fields: [receivedId], references: [id])
+  Done                         Done?                       @relation(fields: [DoneId], references: [id])
   statusReport                 StatusReport?               @relation(fields: [statusReportId], references: [id])
   ClosedContractPartner        ClosedContractPartner[]     @relation("ClosedContractPartnerToCustomerContact")
 }
@@ -554,6 +557,7 @@ model Request {
   postponedId                  Int?
   cancelledId                  Int?
   plannedId                    Int?
+  DoneId                       Int?
   ExecutionOnSiteNotPossibleId Int?
   receivedId                   Int?
   Body                         Body?
@@ -564,6 +568,7 @@ model Request {
   Postponed                    Postponed?
   Received                     Received?
   Rejected                     Rejected?
+  Done                         Done? 
 }
 
 model Postponed {
@@ -677,6 +682,22 @@ model Planned {
   syncData                    Sync?
 }
 
+model Done {
+  id                          Int               @id @default(autoincrement())
+  orderId                     Int
+  orderstatusType             String?
+  setOn                       DateTime?         @default(now())
+  requestId                   Int?              @unique
+  createdAt                   DateTime?         @default(now())
+  updatedAt                   DateTime?         @updatedAt
+  syncDataId                  Int?              @unique
+  isChecked                   Boolean?          @default(false)
+  customerContacts            CustomerContact[]
+  Order                       Order             @relation(fields: [orderId], references: [id])
+  Request                     Request?          @relation(fields: [requestId], references: [id])
+  syncData                    Sync?
+}
+
 model Received {
   id               Int               @id @default(autoincrement())
   orderId          Int
@@ -727,6 +748,7 @@ model Sync {
   userId                       Int
   receivedId                   Int?                        @unique
   plannedId                    Int?                        @unique
+  DoneId                       Int?                        @unique
   postponedId                  Int?                        @unique
   rejectedId                   Int?                        @unique
   cancelledId                  Int?                        @unique
@@ -741,6 +763,7 @@ model Sync {
   Postponed                    Postponed?                  @relation(fields: [postponedId], references: [id])
   Received                     Received?                   @relation(fields: [receivedId], references: [id])
   Rejected                     Rejected?                   @relation(fields: [rejectedId], references: [id])
+  Done                         Done?                       @relation(fields: [DoneId], references: [id])
   user                         User                        @relation(fields: [userId], references: [id])
 }
 

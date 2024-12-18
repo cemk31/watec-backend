@@ -20,6 +20,7 @@ import { PostponedDto } from './PostponedDto';
 import { RejectedDto } from './RejectedDto';
 import { CustomerDTO } from 'src/customer/dto';
 import { received } from './ReceivedDto';
+import { DoneDto } from './DoneDto';
 
 export class OrderDto {
   @ApiProperty({ example: 1 })
@@ -81,6 +82,11 @@ export class OrderDto {
   @IsOptional()
   @IsArray()
   planned: PlannedDto[];
+
+  @ApiProperty({ type: () => [DoneDto] })
+  @IsOptional()
+  @IsArray()
+  Done: DoneDto[];
 
   @ApiProperty({ type: () => [received] })
   @IsOptional()

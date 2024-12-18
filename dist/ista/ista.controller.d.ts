@@ -6,7 +6,7 @@ import { PostponedDto } from './dto/PostponedDto';
 import { CancelledDto } from './dto/CancelledDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
-import { DoneDto } from 'src/auftrag/dto/create-done.dto';
+import { DoneDto } from './dto/DoneDto';
 export declare class IstaController {
     private istaService;
     constructor(istaService: IstaService);
@@ -44,6 +44,17 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
+        Done: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
+        }, unknown, never> & {})[];
         customerContacts: (import("@prisma/client/runtime").GetResult<{
             id: number;
             contactAttemptOn: Date;
@@ -60,6 +71,7 @@ export declare class IstaController {
             rejectedId: number;
             postponedId: number;
             cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
         NotPossible: (import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -193,6 +205,17 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
+        Done: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
+        }, unknown, never> & {})[];
         customerContacts: (import("@prisma/client/runtime").GetResult<{
             id: number;
             contactAttemptOn: Date;
@@ -209,6 +232,7 @@ export declare class IstaController {
             rejectedId: number;
             postponedId: number;
             cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
         NotPossible: (import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -445,6 +469,17 @@ export declare class IstaController {
         updatedAt: Date;
         syncDataId: number;
     }, unknown, never> & {}>;
+    orderDone(dto: DoneDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        orderId: number;
+        orderstatusType: string;
+        setOn: Date;
+        requestId: number;
+        createdAt: Date;
+        updatedAt: Date;
+        syncDataId: number;
+        isChecked: boolean;
+    }, unknown, never> & {}>;
     orderClosed(dto: ClosedContractPartnerDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         orderId: number;
@@ -529,6 +564,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -540,6 +576,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -570,6 +607,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -581,6 +619,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -597,6 +636,50 @@ export declare class IstaController {
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
+        }, unknown, never> & {})[];
+        Done: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
         }, unknown, never> & {})[];
         NotPossible: ({
             customerContacts: (import("@prisma/client/runtime").GetResult<{
@@ -615,6 +698,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Contact: (import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -642,6 +726,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -672,6 +757,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -683,6 +769,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -715,6 +802,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -726,6 +814,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -757,6 +846,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -768,6 +858,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -883,6 +974,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -894,6 +986,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -960,6 +1053,7 @@ export declare class IstaController {
             rejectedId: number;
             postponedId: number;
             cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
         Planned: ({
             customerContacts: (import("@prisma/client/runtime").GetResult<{
@@ -978,6 +1072,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -989,6 +1084,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1005,6 +1101,50 @@ export declare class IstaController {
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
+        }, unknown, never> & {})[];
+        Done: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
         }, unknown, never> & {})[];
         NotPossible: ({
             customerContacts: (import("@prisma/client/runtime").GetResult<{
@@ -1023,6 +1163,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1034,6 +1175,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1064,6 +1206,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1075,6 +1218,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1107,6 +1251,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1118,6 +1263,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1149,6 +1295,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1160,6 +1307,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1518,6 +1666,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1529,6 +1678,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1559,6 +1709,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1570,6 +1721,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1587,6 +1739,50 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
+        Done: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
+        }, unknown, never> & {})[];
         customerContacts: (import("@prisma/client/runtime").GetResult<{
             id: number;
             contactAttemptOn: Date;
@@ -1603,6 +1799,7 @@ export declare class IstaController {
             rejectedId: number;
             postponedId: number;
             cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
         NotPossible: ({
             customerContacts: (import("@prisma/client/runtime").GetResult<{
@@ -1621,6 +1818,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1632,6 +1830,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1662,6 +1861,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1673,6 +1873,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1705,6 +1906,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1716,6 +1918,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1747,6 +1950,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
@@ -1758,6 +1962,7 @@ export declare class IstaController {
                 postponedId: number;
                 cancelledId: number;
                 plannedId: number;
+                DoneId: number;
                 ExecutionOnSiteNotPossibleId: number;
                 receivedId: number;
             }, unknown, never> & {};
@@ -1790,6 +1995,7 @@ export declare class IstaController {
                 rejectedId: number;
                 postponedId: number;
                 cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -1871,21 +2077,5 @@ export declare class IstaController {
         propertyId: number;
     }, unknown, never> & {}>;
     closedContractPartner(dto: ClosedContractPartnerDto): (dto: ClosedContractPartnerDto) => any;
-    done(dto: DoneDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        propertyNumber: bigint;
-        orderNumberIsta: bigint;
-        number: bigint;
-        remarkExternal: string;
-        createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
-        customerId: number;
-        updatedAt: Date;
-        serviceType: string;
-        executionFlag: boolean;
-        releasedOn: Date;
-        drinkingWaterFacilityId: number;
-        propertyId: number;
-    }, unknown, never> & {}>;
     reportStatusToISTA(dto: SyncDto): void;
 }

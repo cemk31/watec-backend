@@ -8,6 +8,7 @@ import { PostponedDto } from './PostponedDto';
 import { RejectedDto } from './RejectedDto';
 import { CustomerDTO } from 'src/customer/dto';
 import { received } from './ReceivedDto';
+import { DoneDto } from './DoneDto';
 export declare class OrderDto {
     id: number;
     number: string;
@@ -21,6 +22,7 @@ export declare class OrderDto {
     rejected: RejectedDto[];
     closedContractPartner: ClosedContractPartnerDto[];
     planned: PlannedDto[];
+    Done: DoneDto[];
     received: received[];
     customer: CustomerDTO;
 }

@@ -14,12 +14,14 @@ import {
   NotPossible,
   Order,
   Planned,
+  Done,
   Postponed,
   ExecutionOnSiteNotPossible,
   Received,
   Status,
 } from '@prisma/client';
 import { CancelledDto } from './dto/CancelledDto';
+import { DoneDto } from './dto/DoneDto';
 import { PlannedDto } from './dto/PlannedDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
@@ -135,6 +137,7 @@ export class IstaService {
           status: true,
           Received: true,
           Planned: true,
+          Done: true,
           customerContacts: true,
           NotPossible: true,
           Postponed: true,
@@ -219,6 +222,7 @@ export class IstaService {
         status: true,
         Received: true,
         Planned: true,
+        Done: true,
         customerContacts: true,
         NotPossible: true,
         Postponed: true,
@@ -242,6 +246,12 @@ export class IstaService {
           },
         },
         Planned: {
+          include: {
+            customerContacts: true,
+            Request: true,
+          },
+        },
+        Done: {
           include: {
             customerContacts: true,
             Request: true,
@@ -319,6 +329,12 @@ export class IstaService {
           },
         },
         Planned: {
+          include: {
+            customerContacts: true,
+            Request: true,
+          },
+        },
+        Done: {
           include: {
             customerContacts: true,
             Request: true,
@@ -501,6 +517,12 @@ export class IstaService {
           },
         },
         Planned: {
+          include: {
+            customerContacts: true,
+            Request: true,
+          },
+        },
+        Done: {
           include: {
             customerContacts: true,
             Request: true,
@@ -1193,6 +1215,7 @@ export class IstaService {
       });
       await this.prisma.notPossible.deleteMany({ where: { orderId } });
       await this.prisma.planned.deleteMany({ where: { orderId } });
+      await this.prisma.done.deleteMany({ where: { orderId } });
       await this.prisma.postponed.deleteMany({ where: { orderId } });
       await this.prisma.received.deleteMany({ where: { orderId } });
       await this.prisma.rejected.deleteMany({ where: { orderId } });
@@ -1215,32 +1238,49 @@ export class IstaService {
       );
     }
   }
-
-  async doneOrder(orderId: number): Promise<Order | null> {
+  async orderDone(orderId: number, dto: DoneDto): Promise<Done | null> {
     try {
-      console.log('Updating order with id:', orderId);
-      const updatedOrder = await this.prisma.order.update({
+      // Update the `order` entity with DONE status and additional fields
+      await this.prisma.order.update({
         where: { id: orderId },
         data: {
-          actualStatus: Status.DONE,
           updatedAt: new Date(),
-        },
-        include: {
-          status: true,
-          Received: true,
-          Planned: true,
-          customerContacts: true,
-          NotPossible: true,
-          Postponed: true,
-          Cancelled: true,
-          Rejected: true,
-          ClosedContractPartner: true,
-          Customer: true,
+          actualStatus: Status.DONE,
         },
       });
-      return updatedOrder;
+
+      // Map the `customerContacts` from the DTO (if any)
+      const customerContacts = dto.customerContacts?.map((contact) => ({
+        contactAttemptOn: contact.contactAttemptOn,
+        contactPersonCustomer: contact.contactPersonCustomer,
+        agentCP: contact.agentCP,
+        result: contact.result,
+        remark: contact.remark,
+      }));
+
+      // Create the `done` entry and associate it with the order
+      const doneEntry = await this.prisma.done.create({
+        data: {
+          orderstatusType: Status.DONE, // Status for this `done` entry
+          setOn: dto.setOn, // Set the `setOn` timestamp
+          isChecked: dto.isChecked,
+          Order: {
+            // Connect this `done` entry to the associated order
+            connect: {
+              id: orderId,
+            },
+          },
+          customerContacts: {
+            // Create `customerContacts` if provided
+            create: customerContacts,
+          },
+        },
+      });
+
+      // Return the newly created `done` entry
+      return doneEntry;
     } catch (error) {
-      console.error('Error updating order:', error);
+      console.error('Error creating `done` entry:', error);
       return null;
     }
   }
@@ -1253,6 +1293,11 @@ export class IstaService {
     }
     if (type === 'planned') {
       return this.prisma.planned.findFirst({
+        where: { id: statusId },
+      });
+    }
+    if (type === 'Done') {
+      return this.prisma.done.findFirst({
         where: { id: statusId },
       });
     }

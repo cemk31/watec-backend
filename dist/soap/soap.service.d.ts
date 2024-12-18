@@ -32,6 +32,7 @@ export declare class SoapService {
             rejectedId: number;
             postponedId: number;
             cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
