@@ -28,11 +28,6 @@ async function bootstrap() {
         0;
         next();
     });
-    app.enableCors({
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: ['Content-Type', 'Authorization'],
-    });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
     }));
