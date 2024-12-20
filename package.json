@@ -61,7 +61,6 @@
         "faker": "^5.5.3",
         "json-to-prisma-schema-convertor": "^0.1.0",
         "moment": "^2.30.1",
-        "nestjs-soap": "^3.0.2",
         "nodemailer": "^6.9.7",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",
@@ -69,7 +68,6 @@
         "rimraf": "3.0.2",
         "rxjs": "7.2.0",
         "serverless-http": "3.2.0",
-        "soap": "^1.1.2",
         "typeorm": "0.3.15",
         "xml2js": "^0.6.2"
     },

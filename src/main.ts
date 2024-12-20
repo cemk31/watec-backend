@@ -6,7 +6,9 @@ import * as bodyParser from 'body-parser';
 import * as xml2js from 'xml2js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+  });
 
   // JSON Body Parser
   app.use(bodyParser.json());
@@ -24,27 +26,19 @@ async function bootstrap() {
         req.body = result;
       });
     }
+    console.log(`Request received: ${req.method} ${req.url}`);
+    0;
     next();
   });
 
   app.enableCors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        'https://www.watec-admin-angular-fe.vercel.app',
-        'https://www.watec-dashboard-dev.vercel.app',
-        'http://localhost:4200',
-        'https://watec-admin-angular-fe.vercel.app',
-        'https://watec-dashboard-dev.vercel.app',
-        '*',
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: [
+      'http://localhost:4200',
+      'https://www.watec-admin-angular-fe.vercel.app',
+      'https://www.watec-dashboard-dev.vercel.app',
+    ],
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    // credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
@@ -67,7 +61,7 @@ async function bootstrap() {
     )
     .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
     .setLicense('WATEC License', 'https://yourwebsite.com/license')
-    .addServer('http://localhost:3000', 'Local Development Server')
+    .addServer('http://localhost:4000', 'Local Development Server')
     .addServer('https://watec-backend.vercel.app', 'Production Server')
     .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
     .build();
@@ -75,8 +69,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
+  const port = process.env.PORT || 4000;
+  await app.listen(port, '0.0.0.0');
 
   (BigInt.prototype as any).toJSON = function () {
     return this.toString();

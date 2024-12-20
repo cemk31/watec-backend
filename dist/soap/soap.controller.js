@@ -21,6 +21,7 @@ const soapReceveidDTO_1 = require("../ista/dto/soapReceveidDTO");
 const decorator_1 = require("../auth/decorator");
 const axios_1 = require("axios");
 const dotenv = require("dotenv");
+const SyncDto_1 = require("./dto/SyncDto");
 dotenv.config();
 let SoapController = class SoapController {
     constructor(soapService) {
@@ -651,9 +652,12 @@ let SoapController = class SoapController {
     </soap:Envelope>`;
         await this.soapService.polling(mockSoapResponse);
     }
+    async updateStatus(syncDTO, user) {
+        this.soapService.syncStatus(syncDTO, user);
+    }
 };
 __decorate([
-    (0, common_1.Post)('/polling'),
+    (0, common_1.Get)('/polling'),
     (0, swagger_1.ApiConsumes)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
     (0, swagger_1.ApiProduces)('application/json', 'application/xml', 'text/xml', 'application/soap+xml'),
     (0, swagger_1.ApiOperation)({ summary: 'Report Order Status' }),
@@ -677,6 +681,23 @@ __decorate([
     __metadata("design:paramtypes", [Response]),
     __metadata("design:returntype", Promise)
 ], SoapController.prototype, "pollingWithMockData", null);
+__decorate([
+    (0, common_1.Post)('/sync'),
+    (0, swagger_1.ApiResponse)({
+        status: 201,
+        description: 'Synchronisation erfolgreich durchgeführt.',
+        type: SyncDto_1.SyncDto,
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 400,
+        description: 'Fehlerhafte Anfrage.',
+    }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [SyncDto_1.SyncDto, Object]),
+    __metadata("design:returntype", Promise)
+], SoapController.prototype, "updateStatus", null);
 SoapController = __decorate([
     (0, common_1.UseGuards)(guard_1.JwtGuard),
     (0, swagger_1.ApiTags)('SOAP API'),

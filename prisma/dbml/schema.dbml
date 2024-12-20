@@ -200,6 +200,7 @@ Table Order {
   Postponed Postponed [not null]
   Received Received [not null]
   Rejected Rejected [not null]
+  Done Done [not null]
   serviceType String
   executionFlag Boolean
   releasedOn DateTime
@@ -232,10 +233,20 @@ Table CustomerContact {
   receivedId Int
   statusReportId Int
   executionOnSiteNotPossibleId Int
+  notPossibleId Int
+  rejectedId Int
+  postponedId Int
+  cancelledId Int
+  DoneId Int
   ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
+  NotPossible NotPossible
+  Cancelled Cancelled
+  Postponed Postponed
+  rejected Rejected
   order Order
   planned Planned
   received Received
+  Done Done
   statusReport StatusReport
   ClosedContractPartner ClosedContractPartner [not null]
 }
@@ -434,6 +445,7 @@ Table SamplingPoint {
   unitId Int [not null]
   drinkingWaterFacilityId Int [not null]
   samplingPointsId Int
+  id_healthAuthorities Int
   DrinkingWaterFacility DrinkingWaterFacility [not null]
   SamplingPoints SamplingPoints
   unit Unit [not null]
@@ -500,14 +512,18 @@ Table Request {
   postponedId Int
   cancelledId Int
   plannedId Int
+  DoneId Int
+  ExecutionOnSiteNotPossibleId Int
   receivedId Int
   Body Body
   Cancelled Cancelled
   NotPossible NotPossible
   Planned Planned
+  ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
   Postponed Postponed
   Received Received
   Rejected Rejected
+  Done Done
 }
 
 Table Postponed {
@@ -522,6 +538,7 @@ Table Postponed {
   updatedAt DateTime [not null]
   syncDataId Int [unique]
   Contact Contact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   syncData Sync
@@ -539,6 +556,7 @@ Table Rejected {
   rejectionReasonText String
   syncDataId Int [unique]
   Contact Contact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   syncData Sync
@@ -554,6 +572,7 @@ Table NotPossible {
   updatedAt DateTime
   syncDataId Int [unique]
   Contact Contact [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   syncData Sync
@@ -592,6 +611,7 @@ Table Cancelled {
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   syncDataId Int [unique]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
   Contact Contact [not null]
@@ -611,6 +631,22 @@ Table Planned {
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   syncDataId Int [unique]
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  Request Request
+  syncData Sync
+}
+
+Table Done {
+  id Int [pk, increment]
+  orderId Int [not null]
+  orderstatusType String
+  setOn DateTime [default: `now()`]
+  requestId Int [unique]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  syncDataId Int [unique]
+  isChecked Boolean [default: false]
   customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
@@ -644,6 +680,7 @@ Table ExecutionOnSiteNotPossible {
   nonExecutionReason String
   customerContacts CustomerContact [not null]
   Order Order [not null]
+  request Request
   syncData Sync
 }
 
@@ -659,13 +696,14 @@ Table Sync {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   lastSyncTime DateTime [default: `now()`, not null]
-  statusType Status [not null]
-  syncStatus String [not null]
+  statusType String
+  syncStatus String
   syncError String
   userEmail String
-  userId Int [not null]
+  userId Int
   receivedId Int [unique]
   plannedId Int [unique]
+  DoneId Int [unique]
   postponedId Int [unique]
   rejectedId Int [unique]
   cancelledId Int [unique]
@@ -680,7 +718,8 @@ Table Sync {
   Postponed Postponed
   Received Received
   Rejected Rejected
-  user users [not null]
+  Done Done
+  user users
 }
 
 Enum Auftragsstatus {
@@ -742,11 +781,21 @@ Ref: OrderStatus.orderId > Order.id
 
 Ref: CustomerContact.executionOnSiteNotPossibleId > ExecutionOnSiteNotPossible.id
 
+Ref: CustomerContact.notPossibleId > NotPossible.id
+
+Ref: CustomerContact.cancelledId > Cancelled.id
+
+Ref: CustomerContact.postponedId > Postponed.id
+
+Ref: CustomerContact.rejectedId > Rejected.id
+
 Ref: CustomerContact.orderId > Order.id
 
 Ref: CustomerContact.plannedId > Planned.id
 
 Ref: CustomerContact.receivedId > Received.id
+
+Ref: CustomerContact.DoneId > Done.id
 
 Ref: CustomerContact.statusReportId > StatusReport.id
 
@@ -832,11 +881,17 @@ Ref: Planned.orderId > Order.id
 
 Ref: Planned.requestId - Request.id
 
+Ref: Done.orderId > Order.id
+
+Ref: Done.requestId - Request.id
+
 Ref: Received.orderId > Order.id
 
 Ref: Received.requestId - Request.id
 
 Ref: ExecutionOnSiteNotPossible.orderId > Order.id
+
+Ref: ExecutionOnSiteNotPossible.requestId - Request.id
 
 Ref: Sync.cancelledId - Cancelled.id
 
@@ -853,5 +908,7 @@ Ref: Sync.postponedId - Postponed.id
 Ref: Sync.receivedId - Received.id
 
 Ref: Sync.rejectedId - Rejected.id
+
+Ref: Sync.DoneId - Done.id
 
 Ref: Sync.userId > users.id

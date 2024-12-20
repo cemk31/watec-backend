@@ -1,20 +1,18 @@
 import { Order, User } from '@prisma/client';
-import { Client } from 'nestjs-soap';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
+import { SyncDto } from 'src/ista/dto';
+import { SoapHelperService } from './soap.helper.service';
 export declare class SoapService {
-    private readonly client;
     private prisma;
     private userService;
+    private soapHelperService;
     user: User;
-    constructor(client: Client, prisma: PrismaService, userService: UserService);
+    constructor(prisma: PrismaService, userService: UserService, soapHelperService: SoapHelperService);
     private soapUrl;
     polling(soapResponse: string): Promise<void>;
     private createAddress;
-    private createBuilding;
-    private createContactPerson;
     pollingWithMockData(): Promise<void>;
-    reportOrderPlanned(statusId: number, user: User): Promise<any>;
     getPlanned(id: number): Promise<{
         customerContacts: (import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -28,6 +26,11 @@ export declare class SoapService {
             receivedId: number;
             statusReportId: number;
             executionOnSiteNotPossibleId: number;
+            notPossibleId: number;
+            rejectedId: number;
+            postponedId: number;
+            cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -58,4 +61,5 @@ export declare class SoapService {
         }, unknown, never> & {};
     }>;
     xmlToJson(xml: string): Promise<any>;
+    syncStatus(syncDTO: SyncDto, user: User): Promise<any>;
 }

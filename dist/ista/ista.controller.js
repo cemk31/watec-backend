@@ -24,7 +24,7 @@ const PostponedDto_1 = require("./dto/PostponedDto");
 const CancelledDto_1 = require("./dto/CancelledDto");
 const NotPossibleDto_1 = require("./dto/NotPossibleDto");
 const ClosedContractPartnerDto_1 = require("./dto/ClosedContractPartnerDto");
-const create_done_dto_1 = require("../auftrag/dto/create-done.dto");
+const DoneDto_1 = require("./dto/DoneDto");
 let IstaController = class IstaController {
     constructor(istaService) {
         this.istaService = istaService;
@@ -50,6 +50,10 @@ let IstaController = class IstaController {
     orderPlanned(dto) {
         console.log('orderPlanned', dto);
         return this.istaService.orderPlanned(dto.orderId, dto.requestId, dto);
+    }
+    orderDone(dto) {
+        console.log('orderDone', dto);
+        return this.istaService.orderDone(dto.orderId, dto);
     }
     orderClosed(dto) {
         return this.istaService.orderClosedContractPartner(dto.orderId, dto);
@@ -104,10 +108,6 @@ let IstaController = class IstaController {
             return this.closedContractPartner;
         }
     }
-    done(dto) {
-        console.log('done', dto);
-        return this.istaService.doneOrder(dto.orderId);
-    }
     reportStatusToISTA(dto) {
         console.log('reportStatus', dto);
     }
@@ -156,6 +156,13 @@ __decorate([
     __metadata("design:paramtypes", [PlannedDto_1.PlannedDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "orderPlanned", null);
+__decorate([
+    (0, common_1.Post)('/Done'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [DoneDto_1.DoneDto]),
+    __metadata("design:returntype", void 0)
+], IstaController.prototype, "orderDone", null);
 __decorate([
     (0, common_1.Post)('/closed'),
     __param(0, (0, common_1.Body)()),
@@ -240,13 +247,6 @@ __decorate([
     __metadata("design:paramtypes", [ClosedContractPartnerDto_1.ClosedContractPartnerDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "closedContractPartner", null);
-__decorate([
-    (0, common_1.Post)('/done'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_done_dto_1.DoneDto]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "done", null);
 __decorate([
     (0, common_1.Post)('/sync'),
     __param(0, (0, common_1.Body)()),

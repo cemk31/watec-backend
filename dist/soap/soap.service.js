@@ -14,23 +14,21 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SoapService = void 0;
 const common_1 = require("@nestjs/common");
-const client_1 = require("@prisma/client");
-const axios_1 = require("axios");
-const nestjs_soap_1 = require("nestjs-soap");
 const decorator_1 = require("../auth/decorator");
 const prisma_service_1 = require("../prisma/prisma.service");
 const user_service_1 = require("../user/user.service");
 const xml2js = require("xml2js");
 const xml2js_1 = require("xml2js");
+const soap_helper_service_1 = require("./soap.helper.service");
 let SoapService = class SoapService {
-    constructor(client, prisma, userService) {
-        this.client = client;
+    constructor(prisma, userService, soapHelperService) {
         this.prisma = prisma;
         this.userService = userService;
+        this.soapHelperService = soapHelperService;
         this.soapUrl = 'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl';
     }
     async polling(soapResponse) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
         try {
             const parsedData = await (0, xml2js_1.parseStringPromise)(soapResponse, {
                 explicitArray: false,
@@ -176,8 +174,6 @@ let SoapService = class SoapService {
                                     'true',
                                 pipingVolumeGr3Litres: drinkingWaterFacility.pipingVolumeGr3Litres === 'true',
                                 deadPipeKnown: drinkingWaterFacility.deadPipeKnown === 'true',
-                                numberAscendingPipes: parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
-                                    null,
                                 aerosolformation: drinkingWaterFacility.aerosolformation === 'true',
                                 explanation: drinkingWaterFacility.explanation || null,
                                 numberSuppliedPersons: parseInt(drinkingWaterFacility.numberSuppliedPersons, 10) ||
@@ -188,8 +184,10 @@ let SoapService = class SoapService {
                                     null,
                                 numberHotWaterLegs: parseInt(drinkingWaterFacility.numberHotWaterLegs, 10) ||
                                     null,
-                                temperatureCirculationDWH_A: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_A) || null,
-                                temperatureCirculationDWH_B: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_B) || null,
+                                numberAscendingPipes: parseInt(drinkingWaterFacility.numberAscendingPipes, 10) ||
+                                    0,
+                                temperatureCirculationDWH_A: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_A) || 0,
+                                temperatureCirculationDWH_B: parseFloat(drinkingWaterFacility.temperatureCirculationDWH_B) || 0,
                                 heatExchangerSystem_central: drinkingWaterFacility.heatExchangerSystem_central ===
                                     'true',
                                 heatExchangerSystem_districtheating: drinkingWaterFacility.heatExchangerSystem_districtheating ===
@@ -199,13 +197,166 @@ let SoapService = class SoapService {
                             },
                         });
                         drinkingWaterFacilityId = createdDrinkingWaterFacility.id;
+                        console.log('Created DrinkingWaterFacility ID:', drinkingWaterFacilityId);
+                        if ((_e = drinkingWaterFacility.drinkingWaterHeaters) === null || _e === void 0 ? void 0 : _e.drinkingWaterHeater) {
+                            const heatersArray = Array.isArray(drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater)
+                                ? drinkingWaterFacility.drinkingWaterHeaters.drinkingWaterHeater
+                                : [
+                                    drinkingWaterFacility.drinkingWaterHeaters
+                                        .drinkingWaterHeater,
+                                ];
+                            for (const heater of heatersArray) {
+                                await this.prisma.drinkingWaterHeater.create({
+                                    data: {
+                                        consecutiveNumber: parseInt(heater.consecutiveNumber, 10) || null,
+                                        inletTemperatureDisplayPresent: heater.inletTemperatureDisplayPresent === 'true',
+                                        inletTemperature: heater.inletTemperature
+                                            ? parseFloat(heater.inletTemperature)
+                                            : null,
+                                        outletTemperatureDisplayPresent: heater.outletTemperatureDisplayPresent === 'true',
+                                        outletTemperature: heater.outletTemperature
+                                            ? parseFloat(heater.outletTemperature)
+                                            : null,
+                                        pipeDiameterOutlet: heater.pipeDiameterOutlet || null,
+                                        pipeMaterialtypeOutlet: heater.pipeMaterialtypeOutlet || null,
+                                        volumeLitre: heater.volumeLitre
+                                            ? parseInt(heater.volumeLitre, 10)
+                                            : null,
+                                        roomType: heater.roomType || null,
+                                        roomPosition: heater.roomPosition
+                                            ? parseInt(heater.roomPosition, 10)
+                                            : null,
+                                        drinkingWaterFacilityId: drinkingWaterFacilityId,
+                                        unit: heater.unit
+                                            ? {
+                                                create: {
+                                                    floor: heater.unit.floor
+                                                        ? parseInt(heater.unit.floor, 10)
+                                                        : null,
+                                                    storey: heater.unit.storey || null,
+                                                    position: heater.unit.position
+                                                        ? parseInt(heater.unit.position, 10)
+                                                        : null,
+                                                    generalUnit: heater.unit.generalUnit === 'true',
+                                                    building: heater.unit.building
+                                                        ? {
+                                                            create: {
+                                                                address: {
+                                                                    create: {
+                                                                        street: ((_f = heater.unit.building.address) === null || _f === void 0 ? void 0 : _f.street) || null,
+                                                                        streetnumber: ((_g = heater.unit.building.address) === null || _g === void 0 ? void 0 : _g.streetnumber) || null,
+                                                                        city: ((_h = heater.unit.building.address) === null || _h === void 0 ? void 0 : _h.city) ||
+                                                                            null,
+                                                                        postcode: ((_j = heater.unit.building.address) === null || _j === void 0 ? void 0 : _j.postcode) || null,
+                                                                        country: ((_k = heater.unit.building.address) === null || _k === void 0 ? void 0 : _k.country) || null,
+                                                                    },
+                                                                },
+                                                            },
+                                                        }
+                                                        : undefined,
+                                                },
+                                            }
+                                            : undefined,
+                                    },
+                                });
+                            }
+                        }
+                    }
+                    else {
+                        console.log('No DrinkingWaterFacility provided for this order.');
+                    }
+                    if (drinkingWaterFacility === null || drinkingWaterFacility === void 0 ? void 0 : drinkingWaterFacility.ascendingPipes) {
+                        const ascendingPipesArray = Array.isArray(drinkingWaterFacility.ascendingPipes)
+                            ? drinkingWaterFacility.ascendingPipes
+                            : [drinkingWaterFacility.ascendingPipes];
+                        for (const pipe of ascendingPipesArray) {
+                            const createdPipe = await this.prisma.ascendingPipe.create({
+                                data: {
+                                    consecutiveNumber: pipe.consecutiveNumber
+                                        ? parseInt(pipe.consecutiveNumber, 10)
+                                        : null,
+                                    ascendingPipeTemperatureDisplayPresent: pipe.ascendingPipeTemperatureDisplayPresent === 'true',
+                                    flowTemperature: pipe.flowTemperature
+                                        ? parseFloat(pipe.flowTemperature)
+                                        : null,
+                                    circulationTemperatureDisplayPresent: pipe.circulationTemperatureDisplayPresent === 'true',
+                                    circulationTemperature: pipe.circulationTemperature
+                                        ? parseFloat(pipe.circulationTemperature)
+                                        : null,
+                                    pipeDiameter: pipe.pipeDiameter || null,
+                                    pipeMaterialtype: pipe.pipeMaterialtype || null,
+                                    drinkingWaterFacilityId: drinkingWaterFacilityId,
+                                },
+                            });
+                            console.log('Created AscendingPipe:', createdPipe);
+                        }
+                    }
+                    else {
+                        console.log('No AscendingPipes provided for this DrinkingWaterFacility.');
+                    }
+                    if ((_l = drinkingWaterFacility === null || drinkingWaterFacility === void 0 ? void 0 : drinkingWaterFacility.samplingPoints) === null || _l === void 0 ? void 0 : _l.samplingPoint) {
+                        const samplingPointsArray = Array.isArray(drinkingWaterFacility.samplingPoints.samplingPoint)
+                            ? drinkingWaterFacility.samplingPoints.samplingPoint
+                            : [drinkingWaterFacility.samplingPoints.samplingPoint];
+                        for (const sp of samplingPointsArray) {
+                            const createdSamplingPoint = await this.prisma.samplingPoint.create({
+                                data: {
+                                    consecutiveNumber: sp.consecutiveNumber
+                                        ? parseInt(sp.consecutiveNumber, 10)
+                                        : null,
+                                    pipingSystemType: sp.pipingSystemType || null,
+                                    remoteSamplingPoint: sp.remoteSamplingPoint === 'true',
+                                    roomType: sp.roomType || null,
+                                    roomPosition: sp.roomPosition
+                                        ? parseInt(sp.roomPosition, 10)
+                                        : null,
+                                    DrinkingWaterFacility: {
+                                        connect: { id: drinkingWaterFacilityId },
+                                    },
+                                    unit: sp.unit
+                                        ? {
+                                            create: {
+                                                floor: sp.unit.floor
+                                                    ? parseInt(sp.unit.floor, 10)
+                                                    : null,
+                                                storey: sp.unit.storey || null,
+                                                position: sp.unit.position
+                                                    ? parseInt(sp.unit.position, 10)
+                                                    : null,
+                                                generalUnit: sp.unit.generalUnit === 'true',
+                                                building: sp.unit.building
+                                                    ? {
+                                                        create: {
+                                                            address: {
+                                                                create: {
+                                                                    street: ((_m = sp.unit.building.address) === null || _m === void 0 ? void 0 : _m.street) ||
+                                                                        null,
+                                                                    streetnumber: ((_o = sp.unit.building.address) === null || _o === void 0 ? void 0 : _o.streetnumber) || null,
+                                                                    city: ((_p = sp.unit.building.address) === null || _p === void 0 ? void 0 : _p.city) ||
+                                                                        null,
+                                                                    postcode: ((_q = sp.unit.building.address) === null || _q === void 0 ? void 0 : _q.postcode) ||
+                                                                        null,
+                                                                    country: ((_r = sp.unit.building.address) === null || _r === void 0 ? void 0 : _r.country) ||
+                                                                        null,
+                                                                },
+                                                            },
+                                                        },
+                                                    }
+                                                    : undefined,
+                                            },
+                                        }
+                                        : undefined,
+                                },
+                            });
+                            console.log('Created SamplingPoint:', createdSamplingPoint);
+                        }
+                    }
+                    else {
+                        console.log('No SamplingPoints provided for this DrinkingWaterFacility.');
                     }
                     await this.prisma.order.create({
                         data: {
                             orderNumberIsta: parseInt(order.number, 10),
-                            serviceType: order.serviceType || null,
-                            executionFlag: order.executionFlag === 'true',
-                            releasedOn: order.releasedOn ? new Date(order.releasedOn) : null,
                             customerId: customerId,
                             propertyId: propertyId,
                             drinkingWaterFacilityId: drinkingWaterFacilityId,
@@ -233,24 +384,6 @@ let SoapService = class SoapService {
             country: data.country,
         };
     }
-    createBuilding(data) {
-        return {
-            address: {
-                create: this.createAddress(data.address),
-            },
-        };
-    }
-    createContactPerson(data) {
-        return {
-            salutation: data.salutation,
-            name: data.name,
-            forename: data.forename,
-            telephone: data.telephone,
-            telephoneMobile: data.telephoneMobile,
-            role: data.role,
-        };
-        console.log('test');
-    }
     async pollingWithMockData() {
         const mockSoapResponse = `
   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
@@ -272,75 +405,6 @@ let SoapService = class SoapService {
         catch (error) {
             console.error('Fehler beim Verarbeiten der SOAP-Antwort:', error);
             throw new Error('Fehler beim Verarbeiten der Bestellung');
-        }
-    }
-    async reportOrderPlanned(statusId, user) {
-        try {
-            const planned = await this.getPlanned(statusId);
-            const customerContacts = planned.customerContacts;
-            const order = this.getOrderById(planned.orderId);
-            const soapEnvelope = `
-      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
-        <soapenv:Header/>
-        <soapenv:Body>
-          <ins:reportOrderStatusRequest>
-            <com:environment>Development</com:environment>
-            <com:language>DE</com:language>
-            <com:consumer>soapUI</com:consumer>
-            <planned>
-              <order>
-                <number>${(await order).number}</number>
-                <remarkExternal>${(await order).remarkExternal}</remarkExternal>
-              </order>
-              <orderstatusType>020</orderstatusType>
-              <setOn>${(await planned).setOn}</setOn>
-              <customerContacts>
-                ${customerContacts
-                .map((contact) => `
-                <customerContact>
-                  <customerContactAttemptOn>${contact.contactAttemptOn}</customerContactAttemptOn>
-                  <contactPersonCustomer>${contact.contactPersonCustomer}</contactPersonCustomer>
-                  <agentCP>${contact.agentCP}</agentCP>
-                  <result>${contact.result}</result>
-                  <remark>${contact.remark}</remark>
-                </customerContact>
-                `)
-                .join('')}
-              </customerContacts><
-            </planned>
-
-          </ins:reportOrderStatusRequest>
-        </soapenv:Body>
-      </soapenv:Envelope>
-    `;
-            const response = await axios_1.default.post(this.soapUrl, soapEnvelope, {
-                headers: {
-                    'Content-Type': 'application/xml',
-                },
-            });
-            if (response) {
-                this.prisma.sync.create({
-                    data: {
-                        Planned: {
-                            connect: {
-                                id: planned.id,
-                            },
-                        },
-                        user: {
-                            connect: {
-                                id: user.id,
-                            },
-                        },
-                        statusType: client_1.Status.PLANNED,
-                        syncStatus: 'erfolgreich übermittelt ' + new Date() + response.status,
-                    },
-                });
-            }
-            return response.data;
-        }
-        catch (error) {
-            console.error('Fehler beim Speichern:', error);
-            throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
         }
     }
     async getPlanned(id) {
@@ -375,6 +439,9 @@ let SoapService = class SoapService {
             });
         });
     }
+    async syncStatus(syncDTO, user) {
+        return this.soapHelperService.processStatus(syncDTO.statusType, syncDTO.statusId, user);
+    }
 };
 __decorate([
     __param(0, (0, decorator_1.GetUser)()),
@@ -384,10 +451,9 @@ __decorate([
 ], SoapService.prototype, "getCurrentUser", null);
 SoapService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('MY_SOAP_CLIENT')),
-    __metadata("design:paramtypes", [nestjs_soap_1.Client,
-        prisma_service_1.PrismaService,
-        user_service_1.UserService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        user_service_1.UserService,
+        soap_helper_service_1.SoapHelperService])
 ], SoapService);
 exports.SoapService = SoapService;
 //# sourceMappingURL=soap.service.js.map
