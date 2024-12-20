@@ -1,5 +1,9 @@
 export declare class SyncDto {
-    id: number;
-    name: string;
-    description: string;
+    lastSyncTime: Date;
+    statusType: string;
+    syncStatus: string;
+    statusId: number;
+    syncError?: string;
+    userEmail?: string;
+    userId: number;
 }

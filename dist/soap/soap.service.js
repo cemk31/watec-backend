@@ -14,19 +14,19 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SoapService = void 0;
 const common_1 = require("@nestjs/common");
-const client_1 = require("@prisma/client");
-const axios_1 = require("axios");
 const nestjs_soap_1 = require("nestjs-soap");
 const decorator_1 = require("../auth/decorator");
 const prisma_service_1 = require("../prisma/prisma.service");
 const user_service_1 = require("../user/user.service");
 const xml2js = require("xml2js");
 const xml2js_1 = require("xml2js");
+const soap_helper_service_1 = require("./soap.helper.service");
 let SoapService = class SoapService {
-    constructor(client, prisma, userService) {
+    constructor(client, prisma, userService, soapHelperService) {
         this.client = client;
         this.prisma = prisma;
         this.userService = userService;
+        this.soapHelperService = soapHelperService;
         this.soapUrl = 'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl';
     }
     async polling(soapResponse) {
@@ -386,24 +386,6 @@ let SoapService = class SoapService {
             country: data.country,
         };
     }
-    createBuilding(data) {
-        return {
-            address: {
-                create: this.createAddress(data.address),
-            },
-        };
-    }
-    createContactPerson(data) {
-        return {
-            salutation: data.salutation,
-            name: data.name,
-            forename: data.forename,
-            telephone: data.telephone,
-            telephoneMobile: data.telephoneMobile,
-            role: data.role,
-        };
-        console.log('test');
-    }
     async pollingWithMockData() {
         const mockSoapResponse = `
   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
@@ -425,75 +407,6 @@ let SoapService = class SoapService {
         catch (error) {
             console.error('Fehler beim Verarbeiten der SOAP-Antwort:', error);
             throw new Error('Fehler beim Verarbeiten der Bestellung');
-        }
-    }
-    async reportOrderPlanned(statusId, user) {
-        try {
-            const planned = await this.getPlanned(statusId);
-            const customerContacts = planned.customerContacts;
-            const order = this.getOrderById(planned.orderId);
-            const soapEnvelope = `
-      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
-        <soapenv:Header/>
-        <soapenv:Body>
-          <ins:reportOrderStatusRequest>
-            <com:environment>Development</com:environment>
-            <com:language>DE</com:language>
-            <com:consumer>soapUI</com:consumer>
-            <planned>
-              <order>
-                <number>${(await order).number}</number>
-                <remarkExternal>${(await order).remarkExternal}</remarkExternal>
-              </order>
-              <orderstatusType>020</orderstatusType>
-              <setOn>${(await planned).setOn}</setOn>
-              <customerContacts>
-                ${customerContacts
-                .map((contact) => `
-                <customerContact>
-                  <customerContactAttemptOn>${contact.contactAttemptOn}</customerContactAttemptOn>
-                  <contactPersonCustomer>${contact.contactPersonCustomer}</contactPersonCustomer>
-                  <agentCP>${contact.agentCP}</agentCP>
-                  <result>${contact.result}</result>
-                  <remark>${contact.remark}</remark>
-                </customerContact>
-                `)
-                .join('')}
-              </customerContacts><
-            </planned>
-
-          </ins:reportOrderStatusRequest>
-        </soapenv:Body>
-      </soapenv:Envelope>
-    `;
-            const response = await axios_1.default.post(this.soapUrl, soapEnvelope, {
-                headers: {
-                    'Content-Type': 'application/xml',
-                },
-            });
-            if (response) {
-                this.prisma.sync.create({
-                    data: {
-                        Planned: {
-                            connect: {
-                                id: planned.id,
-                            },
-                        },
-                        user: {
-                            connect: {
-                                id: user.id,
-                            },
-                        },
-                        statusType: client_1.Status.PLANNED,
-                        syncStatus: 'erfolgreich übermittelt ' + new Date() + response.status,
-                    },
-                });
-            }
-            return response.data;
-        }
-        catch (error) {
-            console.error('Fehler beim Speichern:', error);
-            throw new Error('Fehler beim Speichern der Bestellung und des Kunden');
         }
     }
     async getPlanned(id) {
@@ -528,6 +441,9 @@ let SoapService = class SoapService {
             });
         });
     }
+    async syncStatus(syncDTO, user) {
+        return this.soapHelperService.processStatus(syncDTO.statusType, syncDTO.statusId, user);
+    }
 };
 __decorate([
     __param(0, (0, decorator_1.GetUser)()),
@@ -540,7 +456,8 @@ SoapService = __decorate([
     __param(0, (0, common_1.Inject)('MY_SOAP_CLIENT')),
     __metadata("design:paramtypes", [nestjs_soap_1.Client,
         prisma_service_1.PrismaService,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        soap_helper_service_1.SoapHelperService])
 ], SoapService);
 exports.SoapService = SoapService;
 //# sourceMappingURL=soap.service.js.map

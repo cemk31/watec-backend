@@ -1,0 +1,392 @@
+Fehler beim Senden des SOAP-Requests: AxiosError: Request failed with status code 500
+at settle
+(/Users/cemkanmaz/Documents/projects/gitHub/watec-backend/node_modules/axios/lib/core/settle.js:19:12)
+at IncomingMessage.handleStreamEnd
+(/Users/cemkanmaz/Documents/projects/gitHub/watec-backend/node_modules/axios/lib/adapters/http.js:599:11)
+at IncomingMessage.emit (node:events:526:35)
+at endReadableNT (node:internal/streams/readable:1589:12)
+at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+at Axios.request
+(/Users/cemkanmaz/Documents/projects/gitHub/watec-backend/node_modules/axios/lib/core/Axios.js:45:41)
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+at SoapHelperService.sendSoapRequest
+(/Users/cemkanmaz/Documents/projects/gitHub/watec-backend/src/soap/soap.helper.service.ts:134:24)
+at SoapHelperService.processStatus
+(/Users/cemkanmaz/Documents/projects/gitHub/watec-backend/src/soap/soap.helper.service.ts:32:12) {
+code: 'ERR_BAD_RESPONSE',
+config: {
+transitional: {
+silentJSONParsing: true,
+forcedJSONParsing: true,
+clarifyTimeoutError: false
+},
+adapter: [ 'xhr', 'http', 'fetch' ],
+transformRequest: [ [Function: transformRequest] ],
+transformResponse: [ [Function: transformResponse] ],
+timeout: 0,
+xsrfCookieName: 'XSRF-TOKEN',
+xsrfHeaderName: 'X-XSRF-TOKEN',
+maxContentLength: -1,
+maxBodyLength: -1,
+env: { FormData: [Function], Blob: [class Blob] },
+validateStatus: [Function: validateStatus],
+headers: Object [AxiosHeaders] {
+Accept: 'application/json, text/plain, */*',
+'Content-Type': 'text/xml',
+'User-Agent': 'axios/1.7.7',
+'Content-Length': '934',
+'Accept-Encoding': 'gzip, compress, deflate, br'
+},
+auth: {
+username: 'DWS_WATEC',
+password: 'V9RkJb0eq7dpvQcgP2IG8DF1yufxaEznrNoKM6ZO'
+},
+method: 'post',
+url: 'https://services-test.ista.com/DrinkingWaterSystem/InstallationService',
+data: '\n' +
+'
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService"
+    xmlns:com="http://www.ista.com/CommonTypes">\n' + ' <soapenv:Header />\n' + ' <soapenv:Body>\n'
+    + ' <ins:reportOrderStatusRequest>\n' + ' <com:environment>Development</com:environment>\n' + ' <com:language>
+    DE</com:language>\n' + ' <com:consumer>soapUI</com:consumer>\n' + ' <planned>\n' + ' <order>\n'
+    + ' <number>undefined</number>\n' + ' <remarkExternal></remarkExternal>\n' + ' </order>\n' + ' <orderstatusType>
+    020</orderstatusType>\n' + ' <setOn>Sat Dec 14 2024 03:03:06 GMT+0100 (GMT+01:00)</setOn>\n' + ' </planned>\n'
+    + ' </ins:reportOrderStatusRequest>\n' + ' </soapenv:Body>\n' + ' </soapenv:Envelope>\n' +
+' '
+},
+request:
+<ref *1> ClientRequest {
+_events: [Object: null prototype] {
+abort: [Function (anonymous)],
+aborted: [Function (anonymous)],
+connect: [Function (anonymous)],
+error: [Function (anonymous)],
+socket: [Function (anonymous)],
+timeout: [Function (anonymous)],
+finish: [Function: requestOnFinish]
+},
+_eventsCount: 7,
+_maxListeners: undefined,
+outputData: [],
+outputSize: 0,
+writable: true,
+destroyed: false,
+_last: false,
+chunkedEncoding: false,
+shouldKeepAlive: false,
+maxRequestsOnConnectionReached: false,
+_defaultKeepAlive: true,
+useChunkedEncodingByDefault: true,
+sendDate: false,
+_removedConnection: false,
+_removedContLen: false,
+_removedTE: false,
+strictContentLength: false,
+_contentLength: '934',
+_hasBody: true,
+_trailer: '',
+finished: true,
+_headerSent: true,
+_closed: false,
+socket: TLSSocket {
+_tlsOptions: [Object],
+_secureEstablished: true,
+_securePending: false,
+_newSessionPending: false,
+_controlReleased: true,
+secureConnecting: false,
+_SNICallback: null,
+servername: 'services-test.ista.com',
+alpnProtocol: false,
+authorized: true,
+authorizationError: null,
+encrypted: true,
+_events: [Object: null prototype],
+_eventsCount: 10,
+connecting: false,
+_hadError: false,
+_parent: null,
+_host: 'services-test.ista.com',
+_closeAfterHandlingError: false,
+_readableState: [ReadableState],
+_maxListeners: undefined,
+_writableState: [WritableState],
+allowHalfOpen: false,
+_sockname: null,
+_pendingData: null,
+_pendingEncoding: '',
+server: undefined,
+_server: null,
+ssl: [TLSWrap],
+_requestCert: true,
+_rejectUnauthorized: true,
+timeout: 5000,
+parser: null,
+_httpMessage: [Circular *1],
+[Symbol(alpncallback)]: null,
+[Symbol(res)]: [TLSWrap],
+[Symbol(verified)]: true,
+[Symbol(pendingSession)]: null,
+[Symbol(async_id_symbol)]: 292,
+[Symbol(kHandle)]: [TLSWrap],
+[Symbol(lastWriteQueueSize)]: 0,
+[Symbol(timeout)]: Timeout {
+_idleTimeout: 5000,
+_idlePrev: [TimersList],
+_idleNext: [TimersList],
+_idleStart: 185372,
+_onTimeout: [Function: bound ],
+_timerArgs: undefined,
+_repeat: null,
+_destroyed: false,
+[Symbol(refed)]: false,
+[Symbol(kHasPrimitive)]: false,
+[Symbol(asyncId)]: 294,
+[Symbol(triggerId)]: 253
+},
+[Symbol(kBuffer)]: null,
+[Symbol(kBufferCb)]: null,
+[Symbol(kBufferGen)]: null,
+[Symbol(kCapture)]: false,
+[Symbol(kSetNoDelay)]: false,
+[Symbol(kSetKeepAlive)]: true,
+[Symbol(kSetKeepAliveInitialDelay)]: 60,
+[Symbol(kBytesRead)]: 0,
+[Symbol(kBytesWritten)]: 0,
+[Symbol(connect-options)]: [Object]
+},
+_header: 'POST /DrinkingWaterSystem/InstallationService HTTP/1.1\r\n' +
+'Accept: application/json, text/plain, */*\r\n' +
+'Content-Type: text/xml\r\n' +
+'User-Agent: axios/1.7.7\r\n' +
+'Content-Length: 934\r\n' +
+'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+'Host: services-test.ista.com\r\n' +
+'Authorization: Basic RFdTX1dBVEVDOlY5UmtKYjBlcTdkcHZRY2dQMklHOERGMXl1ZnhhRXpuck5vS002Wk8=\r\n' +
+'Connection: keep-alive\r\n' +
+'\r\n',
+_keepAliveTimeout: 0,
+_onPendingData: [Function: nop],
+agent: Agent {
+_events: [Object: null prototype],
+_eventsCount: 2,
+_maxListeners: undefined,
+defaultPort: 443,
+protocol: 'https:',
+options: [Object: null prototype],
+requests: [Object: null prototype] {},
+sockets: [Object: null prototype],
+freeSockets: [Object: null prototype] {},
+keepAliveMsecs: 1000,
+keepAlive: true,
+maxSockets: Infinity,
+maxFreeSockets: 256,
+scheduling: 'lifo',
+maxTotalSockets: Infinity,
+totalSocketCount: 1,
+maxCachedSessions: 100,
+_sessionCache: [Object],
+[Symbol(kCapture)]: false
+},
+socketPath: undefined,
+method: 'POST',
+maxHeaderSize: undefined,
+insecureHTTPParser: undefined,
+joinDuplicateHeaders: undefined,
+path: '/DrinkingWaterSystem/InstallationService',
+_ended: true,
+res: IncomingMessage {
+_readableState: [ReadableState],
+_events: [Object: null prototype],
+_eventsCount: 4,
+_maxListeners: undefined,
+socket: [TLSSocket],
+httpVersionMajor: 1,
+httpVersionMinor: 1,
+httpVersion: '1.1',
+complete: true,
+rawHeaders: [Array],
+rawTrailers: [],
+joinDuplicateHeaders: undefined,
+aborted: false,
+upgrade: false,
+url: '',
+method: null,
+statusCode: 500,
+statusMessage: 'Internal Server Error',
+client: [TLSSocket],
+_consuming: false,
+_dumped: false,
+req: [Circular *1],
+responseUrl:
+'https://DWS_WATEC:V9RkJb0eq7dpvQcgP2IG8DF1yufxaEznrNoKM6ZO@services-test.ista.com/DrinkingWaterSystem/InstallationService',
+redirects: [],
+[Symbol(kCapture)]: false,
+[Symbol(kHeaders)]: [Object],
+[Symbol(kHeadersCount)]: 16,
+[Symbol(kTrailers)]: null,
+[Symbol(kTrailersCount)]: 0
+},
+aborted: false,
+timeoutCb: [Function: emitRequestTimeout],
+upgradeOrConnect: false,
+parser: null,
+maxHeadersCount: null,
+reusedSocket: false,
+host: 'services-test.ista.com',
+protocol: 'https:',
+_redirectable: Writable {
+_writableState: [WritableState],
+_events: [Object: null prototype],
+_eventsCount: 3,
+_maxListeners: undefined,
+_options: [Object],
+_ended: true,
+_ending: true,
+_redirectCount: 0,
+_redirects: [],
+_requestBodyLength: 934,
+_requestBodyBuffers: [],
+_onNativeResponse: [Function (anonymous)],
+_currentRequest: [Circular *1],
+_currentUrl:
+'https://DWS_WATEC:V9RkJb0eq7dpvQcgP2IG8DF1yufxaEznrNoKM6ZO@services-test.ista.com/DrinkingWaterSystem/InstallationService',
+[Symbol(kCapture)]: false
+},
+[Symbol(kCapture)]: false,
+[Symbol(kBytesWritten)]: 0,
+[Symbol(kNeedDrain)]: false,
+[Symbol(corked)]: 0,
+[Symbol(kOutHeaders)]: [Object: null prototype] {
+accept: [Array],
+'content-type': [Array],
+'user-agent': [Array],
+'content-length': [Array],
+'accept-encoding': [Array],
+host: [Array],
+authorization: [Array]
+},
+[Symbol(errored)]: null,
+[Symbol(kHighWaterMark)]: 16384,
+[Symbol(kRejectNonStandardBodyWrites)]: false,
+[Symbol(kUniqueHeaders)]: null
+},
+response: {
+status: 500,
+statusText: 'Internal Server Error',
+headers: Object [AxiosHeaders] {
+date: 'Thu, 19 Dec 2024 16:21:07 GMT',
+server: 'Apache',
+expires: '0',
+'cache-control': 'no-cache, no-store, must-revalidate',
+pragma: 'no-cache',
+'content-type': 'text/xml;charset=UTF-8',
+'content-length': '246',
+connection: 'close'
+},
+config: {
+transitional: [Object],
+adapter: [Array],
+transformRequest: [Array],
+transformResponse: [Array],
+timeout: 0,
+xsrfCookieName: 'XSRF-TOKEN',
+xsrfHeaderName: 'X-XSRF-TOKEN',
+maxContentLength: -1,
+maxBodyLength: -1,
+env: [Object],
+validateStatus: [Function: validateStatus],
+headers: [Object [AxiosHeaders]],
+auth: [Object],
+method: 'post',
+url: 'https://services-test.ista.com/DrinkingWaterSystem/InstallationService',
+data: '\n' +
+'
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+    xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService"
+    xmlns:com="http://www.ista.com/CommonTypes">\n' + ' <soapenv:Header />\n' + ' <soapenv:Body>\n'
+    + ' <ins:reportOrderStatusRequest>\n' + ' <com:environment>Development</com:environment>\n' + ' <com:language>
+    DE</com:language>\n' + ' <com:consumer>soapUI</com:consumer>\n' + ' <planned>\n' + ' <order>\n'
+    + ' <number>undefined</number>\n' + ' <remarkExternal></remarkExternal>\n' + ' </order>\n' + ' <orderstatusType>
+    020</orderstatusType>\n' + ' <setOn>Sat Dec 14 2024 03:03:06 GMT+0100 (GMT+01:00)</setOn>\n' + ' </planned>\n'
+    + ' </ins:reportOrderStatusRequest>\n' + ' </soapenv:Body>\n' + ' </soapenv:Envelope>\n' +
+' '
+},
+request:
+<ref *1> ClientRequest {
+_events: [Object: null prototype],
+_eventsCount: 7,
+_maxListeners: undefined,
+outputData: [],
+outputSize: 0,
+writable: true,
+destroyed: false,
+_last: false,
+chunkedEncoding: false,
+shouldKeepAlive: false,
+maxRequestsOnConnectionReached: false,
+_defaultKeepAlive: true,
+useChunkedEncodingByDefault: true,
+sendDate: false,
+_removedConnection: false,
+_removedContLen: false,
+_removedTE: false,
+strictContentLength: false,
+_contentLength: '934',
+_hasBody: true,
+_trailer: '',
+finished: true,
+_headerSent: true,
+_closed: false,
+socket: [TLSSocket],
+_header: 'POST /DrinkingWaterSystem/InstallationService HTTP/1.1\r\n' +
+'Accept: application/json, text/plain, */*\r\n' +
+'Content-Type: text/xml\r\n' +
+'User-Agent: axios/1.7.7\r\n' +
+'Content-Length: 934\r\n' +
+'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+'Host: services-test.ista.com\r\n' +
+'Authorization: Basic RFdTX1dBVEVDOlY5UmtKYjBlcTdkcHZRY2dQMklHOERGMXl1ZnhhRXpuck5vS002Wk8=\r\n' +
+'Connection: keep-alive\r\n' +
+'\r\n',
+_keepAliveTimeout: 0,
+_onPendingData: [Function: nop],
+agent: [Agent],
+socketPath: undefined,
+method: 'POST',
+maxHeaderSize: undefined,
+insecureHTTPParser: undefined,
+joinDuplicateHeaders: undefined,
+path: '/DrinkingWaterSystem/InstallationService',
+_ended: true,
+res: [IncomingMessage],
+aborted: false,
+timeoutCb: [Function: emitRequestTimeout],
+upgradeOrConnect: false,
+parser: null,
+maxHeadersCount: null,
+reusedSocket: false,
+host: 'services-test.ista.com',
+protocol: 'https:',
+_redirectable: [Writable],
+[Symbol(kCapture)]: false,
+[Symbol(kBytesWritten)]: 0,
+[Symbol(kNeedDrain)]: false,
+[Symbol(corked)]: 0,
+[Symbol(kOutHeaders)]: [Object: null prototype],
+[Symbol(errored)]: null,
+[Symbol(kHighWaterMark)]: 16384,
+[Symbol(kRejectNonStandardBodyWrites)]: false,
+[Symbol(kUniqueHeaders)]: null
+},
+data: '
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <soap:Fault>
+            <faultcode>soap:Client</faultcode>
+            <faultstring>Unmarshalling Error: For input string: "undefined" </faultstring>
+        </soap:Fault>
+    </soap:Body>
+</soap:Envelope>'
+},

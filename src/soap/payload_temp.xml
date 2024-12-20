@@ -1,0 +1,9 @@
+"\n
+<soapenv:Envelope xmlns:soapenv= \"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ins= \"http://www.ista.com/DrinkingWaterSystem/InstallationService\" xmlns:com= \"http://www.ista.com/CommonTypes\">\n <soapenv:Header />\n <soapenv:Body>
+    \n <ins:reportOrderStatusRequest>\n <com:environment>Development</com:environment> \n <com:language>
+    DE</com:language>\n <com:consumer>soapUI</com:consumer>\n <planned> \n <order>\n <number>
+    undefined</number>\n <remarkExternal></remarkExternal>\n </order> \n <orderstatusType>020</orderstatusType>
+    \n <setOn>Sat Dec 14 2024 03:03:06
+                    GMT+0100 (GMT+01:00)</setOn>\n </planned>\n </ins:reportOrderStatusRequest>\n </soapenv:Body>
+    \n </soapenv:Envelope>\n
+"

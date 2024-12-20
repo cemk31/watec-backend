@@ -26,10 +26,11 @@ import {
 import { JwtGuard } from 'src/auth/guard';
 import * as xml2js from 'xml2js';
 import { Received, SoapEnvelopeDto } from 'src/ista/dto/soapReceveidDTO';
-import { User } from '@prisma/client';
+import { Sync, User } from '@prisma/client';
 import { GetUser } from 'src/auth/decorator';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
+import { SyncDto } from './dto/SyncDto';
 
 dotenv.config();
 
@@ -748,33 +749,17 @@ export class SoapController {
     //   .send({ message: 'Mock SOAP response processed successfully' });
   }
 
-  // @Post('/planned')
-  // @ApiConsumes(
-  //   'application/json',
-  //   'application/xml',
-  //   'text/xml',
-  //   'application/soap+xml',
-  // )
-  // @ApiProduces(
-  //   'application/json',
-  //   'application/xml',
-  //   'text/xml',
-  //   'application/soap+xml',
-  // )
-  // @ApiOperation({ summary: 'Report Order Status' })
-  // @ApiResponse({ status: 200, description: 'Successful operation' })
-  // @ApiResponse({ status: 400, description: 'Bad request' })
-  // async planned(
-  //   @Param('id', ParseIntPipe) statusId: number,
-  //   @GetUser() user: User,
-  // ) {
-  //   const planned = await this.soapService.reportOrderPlanned(statusId, user);
-  //   return planned;
-  // }
-
-  //   @Post('/sync')
-  //   updateStatus(@Body() orderDTO: OrderDto) {
-  //     console.log(orderDTO);
-  //     return this.istaService.updateOrder(orderDTO.id, orderDTO);
-  //   }
+  @Post('/sync')
+  @ApiResponse({
+    status: 201,
+    description: 'Synchronisation erfolgreich durchgeführt.',
+    type: SyncDto, // Hier wird die DTO-Klasse referenziert
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Fehlerhafte Anfrage.',
+  })
+  async updateStatus(@Body() syncDTO: SyncDto, @GetUser() user: User) {
+    this.soapService.syncStatus(syncDTO, user);
+  }
 }

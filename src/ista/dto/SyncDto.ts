@@ -12,7 +12,19 @@ export class SyncDto {
   @Type(() => Date)
   lastSyncTime: Date;
 
-  @ApiProperty({ example: 'RECEIVED', default: 'PLANNED' })
+  @ApiProperty({
+    example: 1,
+    description: 'StatusID of the status to be synchronized',
+  })
+  @IsInt()
+  @Type(() => Number)
+  statusId: number;
+
+  @ApiProperty({
+    example: 'RECEIVED',
+    default: 'PLANNED',
+    description: 'StatusType of the status to be synchronized',
+  })
   @IsString()
   @Type(() => Text)
   statusType: string;

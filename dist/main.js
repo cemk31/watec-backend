@@ -7,7 +7,9 @@ const swagger_1 = require("@nestjs/swagger");
 const bodyParser = require("body-parser");
 const xml2js = require("xml2js");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, {
+        logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+    });
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.text({ type: 'text/xml' }));
@@ -22,25 +24,17 @@ async function bootstrap() {
                 req.body = result;
             });
         }
+        console.log(`Request received: ${req.method} ${req.url}`);
+        0;
         next();
     });
     app.enableCors({
-        origin: (origin, callback) => {
-            const allowedOrigins = [
-                'https://www.watec-admin-angular-fe.vercel.app',
-                'https://www.watec-dashboard-dev.vercel.app',
-                'http://localhost:4200',
-                'https://watec-admin-angular-fe.vercel.app',
-                'https://watec-dashboard-dev.vercel.app',
-                '*',
-            ];
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            }
-            else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+        origin: [
+            'http://localhost:4200',
+            'https://www.watec-admin-angular-fe.vercel.app',
+            'https://www.watec-dashboard-dev.vercel.app',
+        ],
+        credentials: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         allowedHeaders: ['Content-Type', 'Authorization'],
     });
@@ -55,14 +49,14 @@ async function bootstrap() {
         .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
         .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
         .setLicense('WATEC License', 'https://yourwebsite.com/license')
-        .addServer('http://localhost:3000', 'Local Development Server')
+        .addServer('http://localhost:4000', 'Local Development Server')
         .addServer('https://watec-backend.vercel.app', 'Production Server')
         .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
-    const port = process.env.PORT || 3000;
-    await app.listen(port);
+    const port = process.env.PORT || 4000;
+    await app.listen(port, '0.0.0.0');
     BigInt.prototype.toJSON = function () {
         return this.toString();
     };

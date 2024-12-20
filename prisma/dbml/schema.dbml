@@ -696,11 +696,11 @@ Table Sync {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   lastSyncTime DateTime [default: `now()`, not null]
-  statusType Status [not null]
-  syncStatus String [not null]
+  statusType String
+  syncStatus String
   syncError String
   userEmail String
-  userId Int [not null]
+  userId Int
   receivedId Int [unique]
   plannedId Int [unique]
   DoneId Int [unique]
@@ -719,7 +719,7 @@ Table Sync {
   Received Received
   Rejected Rejected
   Done Done
-  user users [not null]
+  user users
 }
 
 Enum Auftragsstatus {
