@@ -32,12 +32,13 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: [
-      'http://localhost:4200',
-      'https://www.watec-admin-angular-fe.vercel.app',
-      'https://www.watec-dashboard-dev.vercel.app',
-    ],
-    credentials: true,
+    origin: '*',
+    // origin: [
+    //   'http://localhost:4200',
+    //   'https://www.watec-admin-angular-fe.vercel.app',
+    //   'https://www.watec-dashboard-dev.vercel.app',
+    // ],
+    // credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
