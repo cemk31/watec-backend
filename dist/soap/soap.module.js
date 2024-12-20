@@ -10,7 +10,6 @@ exports.SoapM = void 0;
 const common_1 = require("@nestjs/common");
 const soap_controller_1 = require("./soap.controller");
 const soap_service_1 = require("./soap.service");
-const nestjs_soap_1 = require("nestjs-soap");
 const user_service_1 = require("../user/user.service");
 const soap_helper_service_1 = require("./soap.helper.service");
 let SoapM = class SoapM {
@@ -19,12 +18,7 @@ SoapM = __decorate([
     (0, common_1.Module)({
         controllers: [soap_controller_1.SoapController],
         providers: [soap_service_1.SoapService, user_service_1.UserService, soap_helper_service_1.SoapHelperService],
-        imports: [
-            nestjs_soap_1.SoapModule.register({
-                clientName: 'MY_SOAP_CLIENT',
-                uri: 'http://10.49.139.248:18080/dws_webservices/InstallationServiceImpl?wsdl',
-            }),
-        ],
+        imports: [],
     })
 ], SoapM);
 exports.SoapM = SoapM;

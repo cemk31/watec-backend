@@ -1,16 +1,14 @@
 import { Order, User } from '@prisma/client';
-import { Client } from 'nestjs-soap';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { SyncDto } from 'src/ista/dto';
 import { SoapHelperService } from './soap.helper.service';
 export declare class SoapService {
-    private readonly client;
     private prisma;
     private userService;
     private soapHelperService;
     user: User;
-    constructor(client: Client, prisma: PrismaService, userService: UserService, soapHelperService: SoapHelperService);
+    constructor(prisma: PrismaService, userService: UserService, soapHelperService: SoapHelperService);
     private soapUrl;
     polling(soapResponse: string): Promise<void>;
     private createAddress;

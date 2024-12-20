@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CustomerContact, Order, Prisma, Status, User } from '@prisma/client';
 import axios from 'axios';
-import { Client } from 'nestjs-soap';
+// import { Client } from 'nestjs-soap';
 import { GetUser } from 'src/auth/decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
@@ -20,7 +20,7 @@ export class SoapService {
   public user!: User;
 
   constructor(
-    @Inject('MY_SOAP_CLIENT') private readonly client: Client,
+    // @Inject('MY_SOAP_CLIENT') private readonly client: Client,
     private prisma: PrismaService,
     private userService: UserService,
     private soapHelperService: SoapHelperService,

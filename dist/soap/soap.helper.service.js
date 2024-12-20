@@ -8,28 +8,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SoapHelperService = void 0;
 const common_1 = require("@nestjs/common");
-const soap_1 = require("soap");
 const prisma_service_1 = require("../prisma/prisma.service");
 const user_service_1 = require("../user/user.service");
 const axios_1 = require("axios");
 let SoapHelperService = class SoapHelperService {
-    constructor(client, prisma, userService) {
-        this.client = client;
+    constructor(prisma, userService) {
         this.prisma = prisma;
         this.userService = userService;
     }
     async processStatus(statusType, statusId, user) {
         const statusData = await this.getStatus(statusType, statusId);
+        const orderData = await this.prisma.order.findUnique({
+            where: { id: statusData.orderId },
+        });
         if (!statusData) {
             throw new Error(`No data found for statusType: ${statusType} and statusId: ${statusId}`);
         }
-        const payload = this.createPayload(statusType, statusData);
+        const orderNumberIsta = orderData.orderNumberIsta;
+        const payload = this.createPayload(statusType, statusData, orderNumberIsta);
         const cleanPayload = payload.replace(/\n/g, '').trim();
         return await this.sendSoapRequest(cleanPayload, statusType, user);
     }
@@ -52,11 +51,18 @@ let SoapHelperService = class SoapHelperService {
             where: { id: statusId },
         });
     }
-    createPayload(statusType, statusData) {
+    createPayload(statusType, statusData, orderNumberIsta) {
         const formatDate = (date) => {
             if (!date)
                 return '';
-            return new Date(date).toISOString();
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            const seconds = String(d.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         };
         const templates = {
             RECEIVED: (data) => `
@@ -69,7 +75,7 @@ let SoapHelperService = class SoapHelperService {
                  <com:consumer>soapUI</com:consumer>
                  <received>
                     <order>
-                       <number>${data.number || 'UNDEFINED'}</number>
+                       <number>${orderNumberIsta}</number>
                     </order>
                     <orderstatusType>007</orderstatusType>
                     <setOn>${formatDate(data.setOn)}</setOn>
@@ -79,25 +85,45 @@ let SoapHelperService = class SoapHelperService {
         </soapenv:Envelope>
       `,
             PLANNED: (data) => `
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <ins:reportOrderStatusRequest>
-                 <com:environment>Development</com:environment>
-                 <com:language>DE</com:language>
-                 <com:consumer>soapUI</com:consumer>
-                 <planned>
-                    <order>
-                       <number>${data.number || 'UNDEFINED'}</number>
-                       <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
-                    </order>
-                    <orderstatusType>020</orderstatusType>
-                    <setOn>${formatDate(data.setOn)}</setOn>
-                 </planned>
-              </ins:reportOrderStatusRequest>
-           </soapenv:Body>
-        </soapenv:Envelope>
-      `,
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <planned>
+                  <order>
+                     <number>${orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
+                  </order>
+                  <orderstatusType>020</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP}</agentCP>
+                        <result>${contact.result}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+                  <detailedScheduleDate>
+                  ${formatDate(data.detailedScheduleDate)}</detailedScheduleDate>
+                  <detailedScheduleTimeFrom>${data.detailedScheduleTimeFrom || ''}</detailedScheduleTimeFrom>
+                  <detailedScheduleTimeTo>${data.detailedScheduleTimeTo || ''}</detailedScheduleTimeTo>
+                  <detailedScheduleDelayReason>KAPA</detailedScheduleDelayReason>
+               </planned>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
         };
         const templateFn = templates[statusType];
         if (!templateFn) {
@@ -165,9 +191,7 @@ let SoapHelperService = class SoapHelperService {
 };
 SoapHelperService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('MY_SOAP_CLIENT')),
-    __metadata("design:paramtypes", [soap_1.Client,
-        prisma_service_1.PrismaService,
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         user_service_1.UserService])
 ], SoapHelperService);
 exports.SoapHelperService = SoapHelperService;

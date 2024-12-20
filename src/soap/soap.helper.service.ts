@@ -1,17 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { CANCELLED } from 'dns';
-import { Client } from 'soap';
-import { GetUser } from 'src/auth/decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import axios from 'axios';
-import { stat } from 'fs';
 
 @Injectable()
 export class SoapHelperService {
   constructor(
-    @Inject('MY_SOAP_CLIENT') private readonly client: Client,
     private prisma: PrismaService,
     private userService: UserService,
   ) {}
@@ -19,14 +14,17 @@ export class SoapHelperService {
   // Hauptmethode zur Verarbeitung eines Status
   async processStatus(statusType: string, statusId: number, user: User) {
     const statusData = await this.getStatus(statusType, statusId);
+    const orderData = await this.prisma.order.findUnique({
+      where: { id: statusData.orderId },
+    });
     if (!statusData) {
       throw new Error(
         `No data found for statusType: ${statusType} and statusId: ${statusId}`,
       );
     }
-
+    const orderNumberIsta = orderData.orderNumberIsta;
     // Dynamische Payload-Erstellung
-    const payload = this.createPayload(statusType, statusData);
+    const payload = this.createPayload(statusType, statusData, orderNumberIsta);
     const cleanPayload = payload.replace(/\n/g, '').trim();
 
     // SOAP-Request senden
@@ -62,11 +60,25 @@ export class SoapHelperService {
   }
 
   // Dynamische Erstellung der SOAP-Payload
-  private createPayload(statusType: string, statusData: any): string {
+  private createPayload(
+    statusType: string,
+    statusData: any,
+    orderNumberIsta: BigInt, // Typ angepasst
+  ): string {
     // Standardisiertes Datumsformat
     const formatDate = (date: string | Date): string => {
       if (!date) return '';
-      return new Date(date).toISOString(); // ISO-Format: YYYY-MM-DDTHH:mm:ss.sssZ
+      const d = new Date(date);
+
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+
+      // Format ohne Millisekunden und ohne Z
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     };
 
     // Templates für die Payload
@@ -81,7 +93,7 @@ export class SoapHelperService {
                  <com:consumer>soapUI</com:consumer>
                  <received>
                     <order>
-                       <number>${data.number || 'UNDEFINED'}</number>
+                       <number>${orderNumberIsta}</number>
                     </order>
                     <orderstatusType>007</orderstatusType>
                     <setOn>${formatDate(data.setOn)}</setOn>
@@ -91,27 +103,62 @@ export class SoapHelperService {
         </soapenv:Envelope>
       `,
       PLANNED: (data) => `
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <ins:reportOrderStatusRequest>
-                 <com:environment>Development</com:environment>
-                 <com:language>DE</com:language>
-                 <com:consumer>soapUI</com:consumer>
-                 <planned>
-                    <order>
-                       <number>${data.number || 'UNDEFINED'}</number>
-                       <remarkExternal>${
-                         data.remarkExternal || ''
-                       }</remarkExternal>
-                    </order>
-                    <orderstatusType>020</orderstatusType>
-                    <setOn>${formatDate(data.setOn)}</setOn>
-                 </planned>
-              </ins:reportOrderStatusRequest>
-           </soapenv:Body>
-        </soapenv:Envelope>
-      `,
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <planned>
+                  <order>
+                     <number>${orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${
+                       data.remarkExternal || ''
+                     }</remarkExternal>
+                  </order>
+                  <orderstatusType>020</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP}</agentCP>
+                        <result>${contact.result}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+                  <detailedScheduleDate>
+                  ${formatDate(
+                    data.detailedScheduleDate,
+                  )}</detailedScheduleDate>
+                  <detailedScheduleTimeFrom>${
+                    data.detailedScheduleTimeFrom || ''
+                  }</detailedScheduleTimeFrom>
+                  <detailedScheduleTimeTo>${
+                    data.detailedScheduleTimeTo || ''
+                  }</detailedScheduleTimeTo>
+                  <detailedScheduleDelayReason>KAPA</detailedScheduleDelayReason>
+               </planned>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+
       // Weitere Status-Typen können hier leicht hinzugefügt werden
     };
 

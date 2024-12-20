@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SoapService = void 0;
 const common_1 = require("@nestjs/common");
-const nestjs_soap_1 = require("nestjs-soap");
 const decorator_1 = require("../auth/decorator");
 const prisma_service_1 = require("../prisma/prisma.service");
 const user_service_1 = require("../user/user.service");
@@ -22,8 +21,7 @@ const xml2js = require("xml2js");
 const xml2js_1 = require("xml2js");
 const soap_helper_service_1 = require("./soap.helper.service");
 let SoapService = class SoapService {
-    constructor(client, prisma, userService, soapHelperService) {
-        this.client = client;
+    constructor(prisma, userService, soapHelperService) {
         this.prisma = prisma;
         this.userService = userService;
         this.soapHelperService = soapHelperService;
@@ -453,9 +451,7 @@ __decorate([
 ], SoapService.prototype, "getCurrentUser", null);
 SoapService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)('MY_SOAP_CLIENT')),
-    __metadata("design:paramtypes", [nestjs_soap_1.Client,
-        prisma_service_1.PrismaService,
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         user_service_1.UserService,
         soap_helper_service_1.SoapHelperService])
 ], SoapService);
