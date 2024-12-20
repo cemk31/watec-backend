@@ -31,10 +31,10 @@ async function bootstrap() {
     next();
   });
 
-  // app.enableCors({
-  //   allowedHeaders: '*',
-  //   origin: '*',
-  // });
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: '*',
+  });
 
   // app.enableCors({
   //   origin: [
