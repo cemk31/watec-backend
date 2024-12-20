@@ -28,6 +28,10 @@ async function bootstrap() {
         0;
         next();
     });
+    app.enableCors({
+        allowedHeaders: '*',
+        origin: '*',
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
     }));
