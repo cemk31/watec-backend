@@ -36,15 +36,22 @@ async function bootstrap() {
   //   origin: '*',
   // });
 
+  // app.enableCors({
+  //   origin: [
+  //     'http://localhost:4200',
+  //     'https://www.watec-admin-angular-fe.vercel.app',
+  //     'https://www.watec-dashboard-dev.vercel.app',
+  //   ],
+  //   // credentials: true,
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   allowedHeaders: ['Content-Type', 'Authorization'],
+  // });
+
   app.enableCors({
-    origin: [
-      'http://localhost:4200',
-      'https://www.watec-admin-angular-fe.vercel.app',
-      'https://www.watec-dashboard-dev.vercel.app',
-    ],
-    // credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: '*', // oder spezifische URLs wie ['https://deine-vercel-app.com']
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // Falls Cookies oder Authentifizierungsdaten erforderlich sind
   });
 
   app.useGlobalPipes(
