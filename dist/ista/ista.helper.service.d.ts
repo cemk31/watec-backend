@@ -21,12 +21,12 @@ export declare class IstaHelperService {
         id: number;
         street: string;
         streetnumber: string;
-        houseNumber: string;
         postcode: string;
         city: string;
         country: string;
         createdAt: Date;
-        updatedAt: Date;
         customerId: number;
+        updatedAt: Date;
+        houseNumber: string;
     }, unknown, never> & {}>;
 }

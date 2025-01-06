@@ -8,6 +8,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { ContactDto } from './ContactDto';
+import { CustomerContactDto } from './CustomerContactDto';
 
 export class CancelledDto {
   @ApiProperty({ example: 1 })
@@ -41,8 +42,17 @@ export class CancelledDto {
   @Type(() => ContactDto)
   contact: ContactDto[];
 
+  @ApiProperty({ type: () => [CustomerContactDto] })
+  @IsOptional()
+  customerContacts: CustomerContactDto[];
+
   @ApiProperty({ example: 'Cancellation Reason' })
   @IsNotEmpty()
   @IsString()
   cancellationReason: string;
+
+  @ApiProperty({ example: 'Delay Reason' })
+  @IsOptional()
+  @IsString()
+  remarkExternal?: string;
 }

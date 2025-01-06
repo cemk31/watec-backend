@@ -24,23 +24,13 @@ const PostponedDto_1 = require("./dto/PostponedDto");
 const CancelledDto_1 = require("./dto/CancelledDto");
 const NotPossibleDto_1 = require("./dto/NotPossibleDto");
 const ClosedContractPartnerDto_1 = require("./dto/ClosedContractPartnerDto");
-const create_done_dto_1 = require("../auftrag/dto/create-done.dto");
+const DoneDto_1 = require("./dto/DoneDto");
 let IstaController = class IstaController {
     constructor(istaService) {
         this.istaService = istaService;
     }
     createOrder(dto) {
         return this.istaService.createOrder(dto);
-    }
-    createNewOrder(dto) {
-        console.log('createNewOrder');
-        console.log(dto);
-        return this.istaService.orderReceived(dto);
-    }
-    updateOrder(dto) {
-        console.log('updateOrder DTO', dto);
-        const orderId = Number(dto.orderId);
-        return this.istaService.updateOrderReceived(orderId, dto);
     }
     createCustomerAndOrderById(customerId, received) {
         console.log('received', received);
@@ -61,14 +51,16 @@ let IstaController = class IstaController {
         console.log('orderPlanned', dto);
         return this.istaService.orderPlanned(dto.orderId, dto.requestId, dto);
     }
+    orderDone(dto) {
+        console.log('orderDone', dto);
+        return this.istaService.orderDone(dto.orderId, dto);
+    }
     orderClosed(dto) {
         return this.istaService.orderClosedContractPartner(dto.orderId, dto);
     }
     async orderRejected(dto) {
         try {
-            const orderDTO = new dto_1.OrderDto();
-            orderDTO.rejected = [dto];
-            const result = await this.istaService.orderRejected(dto.orderId, dto.requestId, dto);
+            const result = await this.istaService.orderRejected(dto);
             return result;
         }
         catch (error) {
@@ -80,10 +72,21 @@ let IstaController = class IstaController {
         return this.istaService.orderNotPossible(dto.orderId, dto.requestId, dto);
     }
     orderPostponed(dto) {
-        return this.istaService.orderPostponed(dto.orderId, dto.requestId, dto);
+        return this.istaService.orderPostponed(dto);
     }
     orderCancelled(dto) {
         return this.istaService.orderCancelled(dto.orderId, dto.requestId, dto);
+    }
+    async updateOrderToReceived(orderId, dto) {
+        console.log(`Received PUT request for orderId: ${orderId}`);
+        console.log('Received DTO:', dto);
+        if (!orderId || !dto) {
+            throw new common_1.HttpException('Invalid data', common_1.HttpStatus.BAD_REQUEST);
+        }
+        return await this.istaService.updateOrderToReceived(orderId, dto);
+    }
+    orderExecutionOnSiteNotPossible(dto) {
+        return this.istaService.orderExecutionOnSiteNotPossible(dto.orderId, dto);
     }
     getAllOrders() {
         return this.istaService.getAllOrders();
@@ -105,10 +108,6 @@ let IstaController = class IstaController {
             return this.closedContractPartner;
         }
     }
-    done(dto) {
-        console.log('done', dto);
-        return this.istaService.doneOrder(dto.orderId);
-    }
     reportStatusToISTA(dto) {
         console.log('reportStatus', dto);
     }
@@ -121,25 +120,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "createOrder", null);
 __decorate([
-    (0, common_1.Post)('/received'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.CreateCustomerOrderDTO]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "createNewOrder", null);
-__decorate([
-    (0, common_1.Post)('/create-received'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.ReceivedDto]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "updateOrder", null);
-__decorate([
     (0, common_1.Post)('/customerOrder/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, dto_1.ReceivedDto]),
+    __metadata("design:paramtypes", [Number, dto_1.received]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "createCustomerAndOrderById", null);
 __decorate([
@@ -171,6 +156,13 @@ __decorate([
     __metadata("design:paramtypes", [PlannedDto_1.PlannedDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "orderPlanned", null);
+__decorate([
+    (0, common_1.Post)('/Done'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [DoneDto_1.DoneDto]),
+    __metadata("design:returntype", void 0)
+], IstaController.prototype, "orderDone", null);
 __decorate([
     (0, common_1.Post)('/closed'),
     __param(0, (0, common_1.Body)()),
@@ -207,6 +199,21 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "orderCancelled", null);
 __decorate([
+    (0, common_1.Put)('/received/:orderId'),
+    __param(0, (0, common_1.Param)('orderId', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, dto_1.received]),
+    __metadata("design:returntype", Promise)
+], IstaController.prototype, "updateOrderToReceived", null);
+__decorate([
+    (0, common_1.Post)('/executionOnSiteNotPossible'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.ExecutionOnSiteNotPossibleDto]),
+    __metadata("design:returntype", void 0)
+], IstaController.prototype, "orderExecutionOnSiteNotPossible", null);
+__decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -240,13 +247,6 @@ __decorate([
     __metadata("design:paramtypes", [ClosedContractPartnerDto_1.ClosedContractPartnerDto]),
     __metadata("design:returntype", void 0)
 ], IstaController.prototype, "closedContractPartner", null);
-__decorate([
-    (0, common_1.Post)('/done'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_done_dto_1.DoneDto]),
-    __metadata("design:returntype", void 0)
-], IstaController.prototype, "done", null);
 __decorate([
     (0, common_1.Post)('/sync'),
     __param(0, (0, common_1.Body)()),

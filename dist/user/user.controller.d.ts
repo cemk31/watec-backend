@@ -13,8 +13,8 @@ export declare class UserController {
             hash: string;
             firstName: string;
             lastName: string;
-            isConfirmed: boolean;
             confirmationToken: string;
+            isConfirmed: boolean;
         }, unknown, never> & {};
     };
     editUser(userId: number, dto: EditUserDto): Promise<import("@prisma/client/runtime").GetResult<{
@@ -25,7 +25,7 @@ export declare class UserController {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
 }

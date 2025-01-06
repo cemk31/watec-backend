@@ -1,4 +1,4 @@
-import { CreateCustomerOrderDTO, CustomerDTO, OrderDto, ReceivedDto, SyncDto } from './dto';
+import { CustomerDTO, ExecutionOnSiteNotPossibleDto, OrderDto, received, SyncDto } from './dto';
 import { PlannedDto } from './dto/PlannedDto';
 import { IstaService } from './ista.service';
 import { RejectedDto } from './dto/RejectedDto';
@@ -6,7 +6,7 @@ import { PostponedDto } from './dto/PostponedDto';
 import { CancelledDto } from './dto/CancelledDto';
 import { NotPossibleDto } from './dto/NotPossibleDto';
 import { ClosedContractPartnerDto } from './dto/ClosedContractPartnerDto';
-import { DoneDto } from 'src/auftrag/dto/create-done.dto';
+import { DoneDto } from './dto/DoneDto';
 export declare class IstaController {
     private istaService;
     constructor(istaService: IstaService);
@@ -22,12 +22,12 @@ export declare class IstaController {
         }, unknown, never> & {})[];
         Received: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: string;
             setOn: Date;
             requestId: number;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
         Planned: (import("@prisma/client/runtime").GetResult<{
@@ -44,6 +44,17 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
+        Done: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
+        }, unknown, never> & {})[];
         customerContacts: (import("@prisma/client/runtime").GetResult<{
             id: number;
             contactAttemptOn: Date;
@@ -55,92 +66,112 @@ export declare class IstaController {
             plannedId: number;
             receivedId: number;
             statusReportId: number;
+            executionOnSiteNotPossibleId: number;
+            notPossibleId: number;
+            rejectedId: number;
+            postponedId: number;
+            cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
         NotPossible: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Postponed: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             nextContactAttemptOn: Date;
             postponedReason: string;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Cancelled: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             cancellationReason: string;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
-            requestId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
         Rejected: (import("@prisma/client/runtime").GetResult<{
             id: number;
-            statusType: number;
-            setOn: Date;
-            reason: string;
-            reasonText: string;
             requestId: number;
             orderId: number;
+            statusType: number;
+            setOn: Date;
             createdAt: Date;
             updatedAt: Date;
+            rejectionReason: string;
+            rejectionReasonText: string;
             syncDataId: number;
         }, unknown, never> & {})[];
         ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: number;
             setOn: Date;
             deficiencyDescription: string;
             registrationHealthAuthoritiesOn: Date;
             extraordinaryExpenditureReason: string;
-            orderId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
-            addressId: number;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
+            userId: number;
             email: string;
-            country: string;
+            createdAt: Date;
             place: string;
+            updatedAt: Date;
             companyName: string;
             fax: string;
-            propertyNumber: string;
-            userId: number;
-            createdAt: Date;
-            updatedAt: Date;
+            propertyNumber: number;
+            addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
-    createNewOrder(dto: CreateCustomerOrderDTO): Promise<{
+    createCustomerAndOrderById(customerId: number, received: received): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
             id: number;
             type: string;
@@ -152,12 +183,12 @@ export declare class IstaController {
         }, unknown, never> & {})[];
         Received: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: string;
             setOn: Date;
             requestId: number;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
         Planned: (import("@prisma/client/runtime").GetResult<{
@@ -174,144 +205,16 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
-        customerContacts: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            contactAttemptOn: Date;
-            contactPersonCustomer: string;
-            agentCP: string;
-            result: string;
-            remark: string;
-            orderId: number;
-            plannedId: number;
-            receivedId: number;
-            statusReportId: number;
-        }, unknown, never> & {})[];
-        NotPossible: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            statusType: string;
-            setOn: Date;
-            orderId: number;
-            requestId: number;
-            createdAt: Date;
-            updatedAt: Date;
-            syncDataId: number;
-        }, unknown, never> & {})[];
-        Postponed: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            statusType: string;
-            setOn: Date;
-            nextContactAttemptOn: Date;
-            postponedReason: string;
-            orderId: number;
-            requestId: number;
-            createdAt: Date;
-            updatedAt: Date;
-            syncDataId: number;
-        }, unknown, never> & {})[];
-        Cancelled: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            statusType: string;
-            setOn: Date;
-            cancellationReason: string;
-            createdAt: Date;
-            updatedAt: Date;
-            orderId: number;
-            requestId: number;
-            syncDataId: number;
-        }, unknown, never> & {})[];
-        Rejected: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            statusType: number;
-            setOn: Date;
-            reason: string;
-            reasonText: string;
-            requestId: number;
-            orderId: number;
-            createdAt: Date;
-            updatedAt: Date;
-            syncDataId: number;
-        }, unknown, never> & {})[];
-        ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            orderstatusType: number;
-            setOn: Date;
-            deficiencyDescription: string;
-            registrationHealthAuthoritiesOn: Date;
-            extraordinaryExpenditureReason: string;
-            orderId: number;
-            createdAt: Date;
-            updatedAt: Date;
-            syncDataId: number;
-        }, unknown, never> & {})[];
-        Customer: import("@prisma/client/runtime").GetResult<{
-            id: number;
-            firstName: string;
-            lastName: string;
-            addressId: number;
-            phoneNumber: string;
-            street: string;
-            zipCode: string;
-            email: string;
-            country: string;
-            place: string;
-            companyName: string;
-            fax: string;
-            propertyNumber: string;
-            userId: number;
-            createdAt: Date;
-            updatedAt: Date;
-        }, unknown, never> & {};
-    } & import("@prisma/client/runtime").GetResult<{
-        id: number;
-        number: string;
-        remarkExternal: string;
-        createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
-        customerId: number;
-        updatedAt: Date;
-    }, unknown, never> & {}>;
-    updateOrder(dto: ReceivedDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        number: string;
-        remarkExternal: string;
-        createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
-        customerId: number;
-        updatedAt: Date;
-    }, unknown, never> & {}>;
-    createCustomerAndOrderById(customerId: number, received: ReceivedDto): Promise<{
-        status: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            type: string;
-            setOn: Date;
-            executionOnSiteDone: boolean;
-            orderId: number;
-            createdAt: Date;
-            updatedAt: Date;
-        }, unknown, never> & {})[];
-        Received: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            orderstatusType: string;
-            setOn: Date;
-            requestId: number;
-            createdAt: Date;
-            updatedAt: Date;
-            orderId: number;
-            syncDataId: number;
-        }, unknown, never> & {})[];
-        Planned: (import("@prisma/client/runtime").GetResult<{
+        Done: (import("@prisma/client/runtime").GetResult<{
             id: number;
             orderId: number;
             orderstatusType: string;
             setOn: Date;
-            detailedScheduleDate: Date;
-            detailedScheduleTimeFrom: string;
-            detailedScheduleTimeTo: string;
-            detailedScheduleDelayReason: string;
             requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
+            isChecked: boolean;
         }, unknown, never> & {})[];
         customerContacts: (import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -324,154 +227,233 @@ export declare class IstaController {
             plannedId: number;
             receivedId: number;
             statusReportId: number;
+            executionOnSiteNotPossibleId: number;
+            notPossibleId: number;
+            rejectedId: number;
+            postponedId: number;
+            cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
         NotPossible: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Postponed: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             nextContactAttemptOn: Date;
             postponedReason: string;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Cancelled: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             cancellationReason: string;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
-            requestId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
         Rejected: (import("@prisma/client/runtime").GetResult<{
             id: number;
-            statusType: number;
-            setOn: Date;
-            reason: string;
-            reasonText: string;
             requestId: number;
             orderId: number;
+            statusType: number;
+            setOn: Date;
             createdAt: Date;
             updatedAt: Date;
+            rejectionReason: string;
+            rejectionReasonText: string;
             syncDataId: number;
+        }, unknown, never> & {})[];
+        ExecutionOnSiteNotPossible: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            updatedAt: Date;
+            orderId: number;
+            syncDataId: number;
+            nonExecutionReason: string;
         }, unknown, never> & {})[];
         ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: number;
             setOn: Date;
             deficiencyDescription: string;
             registrationHealthAuthoritiesOn: Date;
             extraordinaryExpenditureReason: string;
-            orderId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
-            addressId: number;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
+            userId: number;
             email: string;
-            country: string;
+            createdAt: Date;
             place: string;
+            updatedAt: Date;
             companyName: string;
             fax: string;
-            propertyNumber: string;
-            userId: number;
-            createdAt: Date;
-            updatedAt: Date;
+            propertyNumber: number;
+            addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     createCustomer(dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
-        addressId: number;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
+        userId: number;
         email: string;
-        country: string;
+        createdAt: Date;
         place: string;
+        updatedAt: Date;
         companyName: string;
         fax: string;
-        propertyNumber: string;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
+        propertyNumber: number;
+        addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     updateCustomer(customerId: number, dto: CustomerDTO): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
-        addressId: number;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
+        userId: number;
         email: string;
-        country: string;
+        createdAt: Date;
         place: string;
+        updatedAt: Date;
         companyName: string;
         fax: string;
-        propertyNumber: string;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
+        propertyNumber: number;
+        addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     getCustomerById(customerId: number): Promise<{
         orders: (import("@prisma/client/runtime").GetResult<{
             id: number;
-            number: string;
+            propertyNumber: bigint;
+            orderNumberIsta: bigint;
+            number: bigint;
             remarkExternal: string;
             createdAt: Date;
             actualStatus: import(".prisma/client").Status;
             customerId: number;
             updatedAt: Date;
+            serviceType: string;
+            executionFlag: boolean;
+            releasedOn: Date;
+            drinkingWaterFacilityId: number;
+            propertyId: number;
         }, unknown, never> & {})[];
+        contactPerson: {
+            Property: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                number: bigint;
+                id_HealthAuthorities: bigint;
+                contactPersonId: number;
+                addressId: number;
+                hotwatersupplyType_central: boolean;
+                hotwatersupplyType_decentral: boolean;
+                recordedSystemId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            salutation: string;
+            name: string;
+            forename: string;
+            telephone: string;
+            telephoneMobile: string;
+            role: string;
+            customerId: number;
+        }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
+        istaId: number;
         firstName: string;
         lastName: string;
-        addressId: number;
+        name1: string;
+        name2: string;
+        city: string;
+        postcode: string;
+        country: string;
+        telephone: string;
         phoneNumber: string;
         street: string;
         zipCode: string;
+        userId: number;
         email: string;
-        country: string;
+        createdAt: Date;
         place: string;
+        updatedAt: Date;
         companyName: string;
         fax: string;
-        propertyNumber: string;
-        userId: number;
-        createdAt: Date;
-        updatedAt: Date;
+        propertyNumber: number;
+        addressId: number;
+        contactPersonId: number;
     }, unknown, never> & {}>;
     orderPlanned(dto: PlannedDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -487,14 +469,25 @@ export declare class IstaController {
         updatedAt: Date;
         syncDataId: number;
     }, unknown, never> & {}>;
+    orderDone(dto: DoneDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        orderId: number;
+        orderstatusType: string;
+        setOn: Date;
+        requestId: number;
+        createdAt: Date;
+        updatedAt: Date;
+        syncDataId: number;
+        isChecked: boolean;
+    }, unknown, never> & {}>;
     orderClosed(dto: ClosedContractPartnerDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        orderId: number;
         orderstatusType: number;
         setOn: Date;
         deficiencyDescription: string;
         registrationHealthAuthoritiesOn: Date;
         extraordinaryExpenditureReason: string;
-        orderId: number;
         createdAt: Date;
         updatedAt: Date;
         syncDataId: number;
@@ -502,36 +495,47 @@ export declare class IstaController {
     orderRejected(dto: RejectedDto): Promise<any>;
     orderNotPossible(dto: NotPossibleDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        requestId: number;
+        orderId: number;
         statusType: string;
         setOn: Date;
-        orderId: number;
-        requestId: number;
         createdAt: Date;
         updatedAt: Date;
         syncDataId: number;
     }, unknown, never> & {}>;
     orderPostponed(dto: PostponedDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        requestId: number;
+        orderId: number;
         statusType: string;
         setOn: Date;
         nextContactAttemptOn: Date;
         postponedReason: string;
-        orderId: number;
-        requestId: number;
         createdAt: Date;
         updatedAt: Date;
         syncDataId: number;
     }, unknown, never> & {}>;
     orderCancelled(dto: CancelledDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
+        requestId: number;
+        orderId: number;
         statusType: string;
         setOn: Date;
         cancellationReason: string;
         createdAt: Date;
         updatedAt: Date;
-        orderId: number;
-        requestId: number;
         syncDataId: number;
+    }, unknown, never> & {}>;
+    updateOrderToReceived(orderId: number, dto: received): Promise<void>;
+    orderExecutionOnSiteNotPossible(dto: ExecutionOnSiteNotPossibleDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        orderstatusType: string;
+        setOn: Date;
+        requestId: number;
+        updatedAt: Date;
+        orderId: number;
+        syncDataId: number;
+        nonExecutionReason: string;
     }, unknown, never> & {}>;
     getAllOrders(): Promise<({
         status: (import("@prisma/client/runtime").GetResult<{
@@ -555,27 +559,35 @@ export declare class IstaController {
                 plannedId: number;
                 receivedId: number;
                 statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: string;
             setOn: Date;
             requestId: number;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
         Planned: ({
@@ -590,18 +602,26 @@ export declare class IstaController {
                 plannedId: number;
                 receivedId: number;
                 statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
@@ -617,7 +637,69 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
+        Done: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
+        }, unknown, never> & {})[];
         NotPossible: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
             Contact: (import("@prisma/client/runtime").GetResult<{
                 id: number;
                 contactAttemptOn: Date;
@@ -625,13 +707,13 @@ export declare class IstaController {
                 agentCP: string;
                 result: string;
                 remark: string;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
                 cancelledId: number;
                 closedContractPartnerId: number;
-                notPossibleId: number;
-                postponedId: number;
-                rejectedId: number;
-                receivedId: number;
                 createdAt: Date;
+                receivedId: number;
                 updatedAt: Date;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
@@ -639,183 +721,231 @@ export declare class IstaController {
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Postponed: ({
-            Contact: (import("@prisma/client/runtime").GetResult<{
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
                 id: number;
                 contactAttemptOn: Date;
-                contactPerson: string;
+                contactPersonCustomer: string;
                 agentCP: string;
                 result: string;
                 remark: string;
-                cancelledId: number;
-                closedContractPartnerId: number;
-                notPossibleId: number;
-                postponedId: number;
-                rejectedId: number;
+                orderId: number;
+                plannedId: number;
                 receivedId: number;
-                createdAt: Date;
-                updatedAt: Date;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             nextContactAttemptOn: Date;
             postponedReason: string;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Cancelled: ({
-            Contact: (import("@prisma/client/runtime").GetResult<{
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
                 id: number;
                 contactAttemptOn: Date;
-                contactPerson: string;
+                contactPersonCustomer: string;
                 agentCP: string;
                 result: string;
                 remark: string;
-                cancelledId: number;
-                closedContractPartnerId: number;
-                notPossibleId: number;
-                postponedId: number;
-                rejectedId: number;
+                orderId: number;
+                plannedId: number;
                 receivedId: number;
-                createdAt: Date;
-                updatedAt: Date;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             cancellationReason: string;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
-            requestId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
         Rejected: ({
-            Contact: (import("@prisma/client/runtime").GetResult<{
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
                 id: number;
                 contactAttemptOn: Date;
-                contactPerson: string;
+                contactPersonCustomer: string;
                 agentCP: string;
                 result: string;
                 remark: string;
-                cancelledId: number;
-                closedContractPartnerId: number;
-                notPossibleId: number;
-                postponedId: number;
-                rejectedId: number;
+                orderId: number;
+                plannedId: number;
                 receivedId: number;
-                createdAt: Date;
-                updatedAt: Date;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
-            statusType: number;
-            setOn: Date;
-            reason: string;
-            reasonText: string;
             requestId: number;
             orderId: number;
-            createdAt: Date;
-            updatedAt: Date;
-            syncDataId: number;
-        }, unknown, never> & {})[];
-        ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
-            id: number;
-            orderstatusType: number;
+            statusType: number;
             setOn: Date;
-            deficiencyDescription: string;
-            registrationHealthAuthoritiesOn: Date;
-            extraordinaryExpenditureReason: string;
-            orderId: number;
             createdAt: Date;
             updatedAt: Date;
+            rejectionReason: string;
+            rejectionReasonText: string;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Customer: import("@prisma/client/runtime").GetResult<{
+        Customer: {
+            contactPerson: {
+                Property: (import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    number: bigint;
+                    id_HealthAuthorities: bigint;
+                    contactPersonId: number;
+                    addressId: number;
+                    hotwatersupplyType_central: boolean;
+                    hotwatersupplyType_decentral: boolean;
+                    recordedSystemId: number;
+                }, unknown, never> & {})[];
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                salutation: string;
+                name: string;
+                forename: string;
+                telephone: string;
+                telephoneMobile: string;
+                role: string;
+                customerId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
-            addressId: number;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
+            userId: number;
             email: string;
-            country: string;
+            createdAt: Date;
             place: string;
+            updatedAt: Date;
             companyName: string;
             fax: string;
-            propertyNumber: string;
-            userId: number;
-            createdAt: Date;
-            updatedAt: Date;
+            propertyNumber: number;
+            addressId: number;
+            contactPersonId: number;
+        }, unknown, never> & {};
+        property: import("@prisma/client/runtime").GetResult<{
+            id: number;
+            number: bigint;
+            id_HealthAuthorities: bigint;
+            contactPersonId: number;
+            addressId: number;
+            hotwatersupplyType_central: boolean;
+            hotwatersupplyType_decentral: boolean;
+            recordedSystemId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {})[]>;
     getOrderById(orderId: number): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -839,38 +969,46 @@ export declare class IstaController {
                 plannedId: number;
                 receivedId: number;
                 statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: string;
             setOn: Date;
             requestId: number;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
         customerContacts: ({
             ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
                 id: number;
+                orderId: number;
                 orderstatusType: number;
                 setOn: Date;
                 deficiencyDescription: string;
                 registrationHealthAuthoritiesOn: Date;
                 extraordinaryExpenditureReason: string;
-                orderId: number;
                 createdAt: Date;
                 updatedAt: Date;
                 syncDataId: number;
@@ -891,12 +1029,12 @@ export declare class IstaController {
             }, unknown, never> & {};
             received: import("@prisma/client/runtime").GetResult<{
                 id: number;
+                orderId: number;
                 orderstatusType: string;
                 setOn: Date;
                 requestId: number;
                 createdAt: Date;
                 updatedAt: Date;
-                orderId: number;
                 syncDataId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
@@ -910,8 +1048,47 @@ export declare class IstaController {
             plannedId: number;
             receivedId: number;
             statusReportId: number;
+            executionOnSiteNotPossibleId: number;
+            notPossibleId: number;
+            rejectedId: number;
+            postponedId: number;
+            cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
-        Planned: (import("@prisma/client/runtime").GetResult<{
+        Planned: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             orderId: number;
             orderstatusType: string;
@@ -925,60 +1102,284 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
-        NotPossible: (import("@prisma/client/runtime").GetResult<{
+        Done: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
-            statusType: string;
-            setOn: Date;
             orderId: number;
+            orderstatusType: string;
+            setOn: Date;
             requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
+            isChecked: boolean;
         }, unknown, never> & {})[];
-        Postponed: (import("@prisma/client/runtime").GetResult<{
+        NotPossible: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
+            statusType: string;
+            setOn: Date;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+        }, unknown, never> & {})[];
+        Postponed: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             nextContactAttemptOn: Date;
             postponedReason: string;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Cancelled: (import("@prisma/client/runtime").GetResult<{
+        Cancelled: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             cancellationReason: string;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
-            requestId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Rejected: (import("@prisma/client/runtime").GetResult<{
+        Rejected: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
-            statusType: number;
-            setOn: Date;
-            reason: string;
-            reasonText: string;
             requestId: number;
             orderId: number;
+            statusType: number;
+            setOn: Date;
             createdAt: Date;
             updatedAt: Date;
+            rejectionReason: string;
+            rejectionReasonText: string;
             syncDataId: number;
+        }, unknown, never> & {})[];
+        property: {
+            building: ({
+                address: import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    street: string;
+                    streetnumber: string;
+                    postcode: string;
+                    city: string;
+                    country: string;
+                    createdAt: Date;
+                    customerId: number;
+                    updatedAt: Date;
+                    houseNumber: string;
+                }, unknown, never> & {};
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                addressId: number;
+                street: string;
+                streetnumber: string;
+                postcode: string;
+                city: string;
+                country: string;
+                propertyId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            number: bigint;
+            id_HealthAuthorities: bigint;
+            contactPersonId: number;
+            addressId: number;
+            hotwatersupplyType_central: boolean;
+            hotwatersupplyType_decentral: boolean;
+            recordedSystemId: number;
+        }, unknown, never> & {};
+        ExecutionOnSiteNotPossible: (import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            updatedAt: Date;
+            orderId: number;
+            syncDataId: number;
+            nonExecutionReason: string;
         }, unknown, never> & {})[];
         ClosedContractPartner: ({
             recordedSystem: ({
                 property: import("@prisma/client/runtime").GetResult<{
                     id: number;
+                    number: bigint;
+                    id_HealthAuthorities: bigint;
+                    contactPersonId: number;
+                    addressId: number;
                     hotwatersupplyType_central: boolean;
                     hotwatersupplyType_decentral: boolean;
                     recordedSystemId: number;
                 }, unknown, never> & {};
-                drinkingWaterFacility: (import("@prisma/client/runtime").GetResult<{
+                drinkingWaterFacility: import("@prisma/client/runtime").GetResult<{
                     id: number;
                     consecutiveNumber: number;
                     usageType: string;
@@ -1005,7 +1406,7 @@ export declare class IstaController {
                     heatExchangerSystem_districtheating: boolean;
                     heatExchangerSystem_continuousflowprinciple: boolean;
                     recordedSystemId: number;
-                }, unknown, never> & {})[];
+                }, unknown, never> & {};
             } & import("@prisma/client/runtime").GetResult<{
                 id: number;
                 closedContractPartnerId: number;
@@ -1035,42 +1436,208 @@ export declare class IstaController {
             }, unknown, never> & {})[];
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: number;
             setOn: Date;
             deficiencyDescription: string;
             registrationHealthAuthoritiesOn: Date;
             extraordinaryExpenditureReason: string;
-            orderId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Customer: import("@prisma/client/runtime").GetResult<{
+        drinkingWaterFacility: {
+            samplingPoints: ({
+                unit: {
+                    building: import("@prisma/client/runtime").GetResult<{
+                        id: number;
+                        addressId: number;
+                        street: string;
+                        streetnumber: string;
+                        postcode: string;
+                        city: string;
+                        country: string;
+                        propertyId: number;
+                    }, unknown, never> & {};
+                } & import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    floor: number;
+                    storey: string;
+                    position: number;
+                    userName: string;
+                    generalUnit: boolean;
+                    drinkingWaterHeaterId: number;
+                    buildingId: number;
+                }, unknown, never> & {};
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                consecutiveNumber: number;
+                installationNumber: number;
+                numberObjectInstallationLocation: number;
+                pipingSystemType: string;
+                remoteSamplingPoint: boolean;
+                roomType: string;
+                roomPosition: number;
+                positionDetail: string;
+                unitId: number;
+                drinkingWaterFacilityId: number;
+                samplingPointsId: number;
+                id_healthAuthorities: number;
+            }, unknown, never> & {})[];
+            ascendingPipes: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                consecutiveNumber: number;
+                ascendingPipeTemperatureDisplayPresent: boolean;
+                flowTemperature: number;
+                circulationTemperatureDisplayPresent: boolean;
+                circulationTemperature: number;
+                pipeDiameter: string;
+                pipeMaterialtype: string;
+                drinkingWaterFacilityId: number;
+            }, unknown, never> & {})[];
+            drinkingWaterHeaters: ({
+                unit: {
+                    building: import("@prisma/client/runtime").GetResult<{
+                        id: number;
+                        addressId: number;
+                        street: string;
+                        streetnumber: string;
+                        postcode: string;
+                        city: string;
+                        country: string;
+                        propertyId: number;
+                    }, unknown, never> & {};
+                } & import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    floor: number;
+                    storey: string;
+                    position: number;
+                    userName: string;
+                    generalUnit: boolean;
+                    drinkingWaterHeaterId: number;
+                    buildingId: number;
+                }, unknown, never> & {};
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                consecutiveNumber: number;
+                inletTemperatureDisplayPresent: boolean;
+                inletTemperature: number;
+                outletTemperatureDisplayPresent: boolean;
+                outletTemperature: number;
+                pipeDiameterOutlet: string;
+                pipeMaterialtypeOutlet: string;
+                volumeLitre: number;
+                roomType: string;
+                roomPosition: number;
+                positionDetail: string;
+                drinkingWaterFacilityId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            consecutiveNumber: number;
+            usageType: string;
+            usageTypeOthers: string;
+            numberSuppliedUnits: number;
+            numberDrinkingWaterHeater: number;
+            totalVolumeLitres: number;
+            pipingSystemType_Circulation: boolean;
+            pipingSystemType_Waterbranchline: boolean;
+            pipingSystemType_Pipetraceheater: boolean;
+            pipingVolumeGr3Litres: boolean;
+            deadPipeKnown: boolean;
+            deadPipesPosition: string;
+            numberAscendingPipes: number;
+            aerosolformation: boolean;
+            explanation: string;
+            numberSuppliedPersons: number;
+            pipeworkSchematicsAvailable: boolean;
+            numberColdWaterLegs: number;
+            numberHotWaterLegs: number;
+            temperatureCirculationDWH_A: number;
+            temperatureCirculationDWH_B: number;
+            heatExchangerSystem_central: boolean;
+            heatExchangerSystem_districtheating: boolean;
+            heatExchangerSystem_continuousflowprinciple: boolean;
+            recordedSystemId: number;
+        }, unknown, never> & {};
+        Customer: {
+            orders: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                propertyNumber: bigint;
+                orderNumberIsta: bigint;
+                number: bigint;
+                remarkExternal: string;
+                createdAt: Date;
+                actualStatus: import(".prisma/client").Status;
+                customerId: number;
+                updatedAt: Date;
+                serviceType: string;
+                executionFlag: boolean;
+                releasedOn: Date;
+                drinkingWaterFacilityId: number;
+                propertyId: number;
+            }, unknown, never> & {})[];
+            contactPerson: {
+                Property: (import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    number: bigint;
+                    id_HealthAuthorities: bigint;
+                    contactPersonId: number;
+                    addressId: number;
+                    hotwatersupplyType_central: boolean;
+                    hotwatersupplyType_decentral: boolean;
+                    recordedSystemId: number;
+                }, unknown, never> & {})[];
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                salutation: string;
+                name: string;
+                forename: string;
+                telephone: string;
+                telephoneMobile: string;
+                role: string;
+                customerId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
-            addressId: number;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
+            userId: number;
             email: string;
-            country: string;
+            createdAt: Date;
             place: string;
+            updatedAt: Date;
             companyName: string;
             fax: string;
-            propertyNumber: string;
-            userId: number;
-            createdAt: Date;
-            updatedAt: Date;
+            propertyNumber: number;
+            addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     updateStatus(orderDTO: OrderDto): Promise<{
         status: (import("@prisma/client/runtime").GetResult<{
@@ -1094,30 +1661,71 @@ export declare class IstaController {
                 plannedId: number;
                 receivedId: number;
                 statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
             }, unknown, never> & {})[];
             Request: import("@prisma/client/runtime").GetResult<{
                 id: number;
                 environment: string;
                 language: string;
                 consumer: string;
-                cancelledId: number;
-                notPossibleId: number;
-                plannedId: number;
-                postponedId: number;
-                receivedId: number;
                 rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
             }, unknown, never> & {};
         } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: string;
             setOn: Date;
             requestId: number;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Planned: (import("@prisma/client/runtime").GetResult<{
+        Planned: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             orderId: number;
             orderstatusType: string;
@@ -1131,6 +1739,50 @@ export declare class IstaController {
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
+        Done: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderId: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            createdAt: Date;
+            updatedAt: Date;
+            syncDataId: number;
+            isChecked: boolean;
+        }, unknown, never> & {})[];
         customerContacts: (import("@prisma/client/runtime").GetResult<{
             id: number;
             contactAttemptOn: Date;
@@ -1142,109 +1794,288 @@ export declare class IstaController {
             plannedId: number;
             receivedId: number;
             statusReportId: number;
+            executionOnSiteNotPossibleId: number;
+            notPossibleId: number;
+            rejectedId: number;
+            postponedId: number;
+            cancelledId: number;
+            DoneId: number;
         }, unknown, never> & {})[];
-        NotPossible: (import("@prisma/client/runtime").GetResult<{
+        NotPossible: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Postponed: (import("@prisma/client/runtime").GetResult<{
+        Postponed: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             nextContactAttemptOn: Date;
             postponedReason: string;
-            orderId: number;
-            requestId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Cancelled: (import("@prisma/client/runtime").GetResult<{
+        Cancelled: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
+            requestId: number;
+            orderId: number;
             statusType: string;
             setOn: Date;
             cancellationReason: string;
             createdAt: Date;
             updatedAt: Date;
-            orderId: number;
-            requestId: number;
             syncDataId: number;
         }, unknown, never> & {})[];
-        Rejected: (import("@prisma/client/runtime").GetResult<{
+        Rejected: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+            Request: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                environment: string;
+                language: string;
+                consumer: string;
+                rejectedId: number;
+                notPossibleId: number;
+                postponedId: number;
+                cancelledId: number;
+                plannedId: number;
+                DoneId: number;
+                ExecutionOnSiteNotPossibleId: number;
+                receivedId: number;
+            }, unknown, never> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
-            statusType: number;
-            setOn: Date;
-            reason: string;
-            reasonText: string;
             requestId: number;
             orderId: number;
+            statusType: number;
+            setOn: Date;
             createdAt: Date;
             updatedAt: Date;
+            rejectionReason: string;
+            rejectionReasonText: string;
             syncDataId: number;
+        }, unknown, never> & {})[];
+        ExecutionOnSiteNotPossible: ({
+            customerContacts: (import("@prisma/client/runtime").GetResult<{
+                id: number;
+                contactAttemptOn: Date;
+                contactPersonCustomer: string;
+                agentCP: string;
+                result: string;
+                remark: string;
+                orderId: number;
+                plannedId: number;
+                receivedId: number;
+                statusReportId: number;
+                executionOnSiteNotPossibleId: number;
+                notPossibleId: number;
+                rejectedId: number;
+                postponedId: number;
+                cancelledId: number;
+                DoneId: number;
+            }, unknown, never> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
+            id: number;
+            orderstatusType: string;
+            setOn: Date;
+            requestId: number;
+            updatedAt: Date;
+            orderId: number;
+            syncDataId: number;
+            nonExecutionReason: string;
         }, unknown, never> & {})[];
         ClosedContractPartner: (import("@prisma/client/runtime").GetResult<{
             id: number;
+            orderId: number;
             orderstatusType: number;
             setOn: Date;
             deficiencyDescription: string;
             registrationHealthAuthoritiesOn: Date;
             extraordinaryExpenditureReason: string;
-            orderId: number;
             createdAt: Date;
             updatedAt: Date;
             syncDataId: number;
         }, unknown, never> & {})[];
         Customer: import("@prisma/client/runtime").GetResult<{
             id: number;
+            istaId: number;
             firstName: string;
             lastName: string;
-            addressId: number;
+            name1: string;
+            name2: string;
+            city: string;
+            postcode: string;
+            country: string;
+            telephone: string;
             phoneNumber: string;
             street: string;
             zipCode: string;
+            userId: number;
             email: string;
-            country: string;
+            createdAt: Date;
             place: string;
+            updatedAt: Date;
             companyName: string;
             fax: string;
-            propertyNumber: string;
-            userId: number;
-            createdAt: Date;
-            updatedAt: Date;
+            propertyNumber: number;
+            addressId: number;
+            contactPersonId: number;
         }, unknown, never> & {};
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     deleteOrder(orderId: number): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
-        number: string;
+        propertyNumber: bigint;
+        orderNumberIsta: bigint;
+        number: bigint;
         remarkExternal: string;
         createdAt: Date;
         actualStatus: import(".prisma/client").Status;
         customerId: number;
         updatedAt: Date;
+        serviceType: string;
+        executionFlag: boolean;
+        releasedOn: Date;
+        drinkingWaterFacilityId: number;
+        propertyId: number;
     }, unknown, never> & {}>;
     closedContractPartner(dto: ClosedContractPartnerDto): (dto: ClosedContractPartnerDto) => any;
-    done(dto: DoneDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        number: string;
-        remarkExternal: string;
-        createdAt: Date;
-        actualStatus: import(".prisma/client").Status;
-        customerId: number;
-        updatedAt: Date;
-    }, unknown, never> & {}>;
     reportStatusToISTA(dto: SyncDto): void;
 }

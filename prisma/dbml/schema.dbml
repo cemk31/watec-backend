@@ -10,13 +10,13 @@ Table users {
   hash String [not null]
   firstName String
   lastName String
-  isConfirmed Boolean [not null, default: false]
   confirmationToken String [unique]
+  isConfirmed Boolean [not null, default: false]
   customer Customer [not null]
-  auftraege auftraege [not null]
+  sync Sync [not null]
+  auftraege auftrag [not null]
   auftraggeber auftraggeber [not null]
   bookmarks bookmarks [not null]
-  sync Sync [not null]
 }
 
 Table bookmarks {
@@ -32,50 +32,71 @@ Table bookmarks {
 
 Table Customer {
   id Int [pk, increment]
+  istaId Int
   firstName String
   lastName String
-  addressId Int
-  address Address
+  name1 String
+  name2 String
+  city String
+  postcode String
+  country String
+  telephone String
   phoneNumber String
   street String
   zipCode String
+  userId Int
   email String
-  country String
+  createdAt DateTime [default: `now()`]
   place String
+  updatedAt DateTime
   companyName String
   fax String
-  propertyNumber String
-  userId Int
+  propertyNumber Int
+  addressId Int
+  address Address
   user users
   orders Order [not null]
   objekt objekt [not null]
-  createdAt DateTime [default: `now()`]
-  updatedAt DateTime
+  contactPerson contactPerson
+  contactPersonId Int [unique]
 }
 
-Table auftraege {
+Table contactPerson {
+  id Int [pk, increment]
+  salutation String
+  name String
+  forename String
+  telephone String
+  telephoneMobile String
+  role String
+  Property Property [not null]
+  customerId Int [unique]
+  Customer Customer
+}
+
+Table auftrag {
   id Int [pk, increment]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  userId Int [not null]
-  user users [not null]
   done Boolean
   emailEingang DateTime
   bemerkung String
   vorgemerkt String
   hmName String
   hmTel String
-  mail String
-  emailId Int [unique]
-  email email
-  objektId Int [unique]
-  objekt objekt
+  userId Int [not null]
   auftraggeberId Int
-  auftraggeber auftraggeber
-  vwStatischId Int
-  vwStatisch vw
+  emailId Int [unique]
+  objektId Int [unique]
   vwDynamischId Int
+  vwStatischId Int
+  mail String
+  auftraggeber auftraggeber
+  email email
+  objekt objekt
+  user users [not null]
   vwDynamisch vw
+  vwStatisch vw
   auftragsBestaetigung auftragsbestaetigung
 }
 
@@ -89,7 +110,7 @@ Table email {
   angebotErstellt Boolean
   angebotsnummer String
   angebot String
-  auftrag auftraege
+  auftrag auftrag
 }
 
 Table objekt {
@@ -98,8 +119,8 @@ Table objekt {
   adresseLi String
   plzLi String
   ortLi String
-  auftrag auftraege
   customerId Int
+  auftrag auftrag
   customer Customer
 }
 
@@ -109,8 +130,8 @@ Table vw {
   vwMa String
   mailadresseVw String
   telVw String
-  auftraegeStatisch auftraege [not null]
-  auftraegeDynamisch auftraege [not null]
+  auftraegeDynamisch auftrag [not null]
+  auftraegeStatisch auftrag [not null]
 }
 
 Table auftragsbestaetigung {
@@ -139,7 +160,7 @@ Table auftragsbestaetigung {
   mahnung1 Boolean
   mahnungErhaten Boolean
   auftragId Int [unique]
-  auftrag auftraege
+  auftrag auftrag
 }
 
 Table auftraggeber {
@@ -147,7 +168,6 @@ Table auftraggeber {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   userId Int
-  user users
   ap String
   email String
   ort String
@@ -155,27 +175,39 @@ Table auftraggeber {
   strasse String
   tel String
   auftraggebername String
-  auftraege auftraege [not null]
+  auftraege auftrag [not null]
+  user users
 }
 
 Table Order {
   id Int [pk, increment]
-  number String
+  propertyNumber BigInt
+  orderNumberIsta BigInt
+  number BigInt
   remarkExternal String
   createdAt DateTime [default: `now()`, not null]
   actualStatus Status [not null, default: 'RECEIVED']
   customerId Int [not null]
-  Customer Customer [not null]
+  updatedAt DateTime
   Cancelled Cancelled [not null]
   ClosedContractPartner ClosedContractPartner [not null]
   customerContacts CustomerContact [not null]
+  ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible [not null]
   NotPossible NotPossible [not null]
+  Customer Customer [not null]
   status OrderStatus [not null]
   Planned Planned [not null]
   Postponed Postponed [not null]
   Received Received [not null]
   Rejected Rejected [not null]
-  updatedAt DateTime
+  Done Done [not null]
+  serviceType String
+  executionFlag Boolean
+  releasedOn DateTime
+  drinkingWaterFacility DrinkingWaterFacility
+  drinkingWaterFacilityId Int
+  property Property
+  propertyId Int
 }
 
 Table OrderStatus {
@@ -197,12 +229,24 @@ Table CustomerContact {
   result String
   remark String
   orderId Int
-  order Order
   plannedId Int
-  planned Planned
   receivedId Int
-  received Received
   statusReportId Int
+  executionOnSiteNotPossibleId Int
+  notPossibleId Int
+  rejectedId Int
+  postponedId Int
+  cancelledId Int
+  DoneId Int
+  ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
+  NotPossible NotPossible
+  Cancelled Cancelled
+  Postponed Postponed
+  rejected Rejected
+  order Order
+  planned Planned
+  received Received
+  Done Done
   statusReport StatusReport
   ClosedContractPartner ClosedContractPartner [not null]
 }
@@ -218,30 +262,30 @@ Table ReportOrderStatusRequest {
 
 Table ClosedContractPartner {
   id Int [pk, increment]
+  orderId Int
   orderstatusType Int
   setOn DateTime [default: `now()`]
   deficiencyDescription String
   registrationHealthAuthoritiesOn DateTime [default: `now()`]
   extraordinaryExpenditureReason String
-  orderId Int
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  syncDataId Int [unique]
   order Order
   Contact Contact [not null]
   recordedSystem RecordedSystem [not null]
   ReportOrderStatusRequest ReportOrderStatusRequest [not null]
-  suppliedDocuments SuppliedDocuments [not null]
-  customerContacts CustomerContact [not null]
   services Service [not null]
-  createdAt DateTime [default: `now()`]
-  updatedAt DateTime
-  syncDataId Int [unique]
+  suppliedDocuments SuppliedDocuments [not null]
   syncData Sync
+  customerContacts CustomerContact [not null]
 }
 
 Table SuppliedDocuments {
   id Int [pk, increment]
   closedContractPartnerId Int
-  ClosedContractPartner ClosedContractPartner
   documentId Int
+  ClosedContractPartner ClosedContractPartner
   document Document
 }
 
@@ -255,17 +299,39 @@ Table Document {
 Table RecordedSystem {
   id Int [pk, increment]
   closedContractPartnerId Int [increment]
-  ClosedContractPartner ClosedContractPartner
-  drinkingWaterFacility DrinkingWaterFacility [not null]
+  drinkingWaterFacility DrinkingWaterFacility
   property Property
+  ClosedContractPartner ClosedContractPartner
 }
 
 Table Property {
   id Int [pk, increment]
+  number BigInt
+  id_HealthAuthorities BigInt
+  contactPersonId Int
+  contactPerson contactPerson
+  addressId Int
+  address Address
+  userAddresses UserAddress [not null]
+  building Building [not null]
   hotwatersupplyType_central Boolean
   hotwatersupplyType_decentral Boolean
   recordedSystemId Int [unique]
   recordedSystem RecordedSystem
+  Order Order [not null]
+}
+
+Table UserAddress {
+  id Int [pk, increment]
+  salutation String
+  name String
+  street String
+  streetnumber Int
+  postcode Int
+  city String
+  country String
+  Property Property
+  propertyId Int
 }
 
 Table Service {
@@ -277,8 +343,8 @@ Table Service {
   purchasePrice_ista Float
   warranty Boolean
   addressId Int
-  serviceRenderedIn Address
   closedContractPartnerId Int
+  serviceRenderedIn Address
   ClosedContractPartner ClosedContractPartner
 }
 
@@ -308,11 +374,12 @@ Table DrinkingWaterFacility {
   heatExchangerSystem_central Boolean
   heatExchangerSystem_districtheating Boolean
   heatExchangerSystem_continuousflowprinciple Boolean
-  ascendingPipes AscendingPipe [not null]
-  drinkingWaterHeaters DrinkingWaterHeater [not null]
   recordedSystemId Int [unique]
+  ascendingPipes AscendingPipe [not null]
   RecordedSystem RecordedSystem
+  drinkingWaterHeaters DrinkingWaterHeater [not null]
   samplingPoints SamplingPoint [not null]
+  Order Order [not null]
 }
 
 Table DrinkingWaterHeater {
@@ -330,7 +397,6 @@ Table DrinkingWaterHeater {
   positionDetail String
   drinkingWaterFacilityId Int
   DrinkingWaterFacility DrinkingWaterFacility
-  unitId Int [unique]
   unit Unit
 }
 
@@ -341,7 +407,8 @@ Table Unit {
   position Int
   userName String
   generalUnit Boolean
-  drinkingWaterHeater DrinkingWaterHeater
+  drinkingWaterHeaterId Int [unique]
+  DrinkingWaterHeater DrinkingWaterHeater
   SamplingPoint SamplingPoint [not null]
   buildingId Int [not null]
   building Building [not null]
@@ -378,6 +445,7 @@ Table SamplingPoint {
   unitId Int [not null]
   drinkingWaterFacilityId Int [not null]
   samplingPointsId Int
+  id_healthAuthorities Int
   DrinkingWaterFacility DrinkingWaterFacility [not null]
   SamplingPoints SamplingPoints
   unit Unit [not null]
@@ -388,22 +456,30 @@ Table Building {
   addressId Int [not null]
   address Address [not null]
   Unit Unit [not null]
+  street String
+  streetnumber String
+  postcode String
+  city String
+  country String
+  Property Property
+  propertyId Int
 }
 
 Table Address {
   id Int [pk, increment]
   street String
   streetnumber String
-  houseNumber String
   postcode String
   city String
   country String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
   customerId Int [unique]
+  updatedAt DateTime [not null]
+  houseNumber String
   customer Customer
   building Building [not null]
   Service Service [not null]
+  Property Property [not null]
 }
 
 Table Envelope {
@@ -431,67 +507,74 @@ Table Request {
   environment String [not null]
   language String [not null]
   consumer String [not null]
-  Body Body
-  cancelledId Int
-  Cancelled Cancelled
-  notPossibleId Int
-  NotPossible NotPossible
-  plannedId Int
-  Planned Planned
-  postponedId Int
-  Postponed Postponed
-  receivedId Int
-  Received Received
   rejectedId Int
+  notPossibleId Int
+  postponedId Int
+  cancelledId Int
+  plannedId Int
+  DoneId Int
+  ExecutionOnSiteNotPossibleId Int
+  receivedId Int
+  Body Body
+  Cancelled Cancelled
+  NotPossible NotPossible
+  Planned Planned
+  ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
+  Postponed Postponed
+  Received Received
   Rejected Rejected
+  Done Done
 }
 
 Table Postponed {
   id Int [pk, increment]
+  requestId Int [unique]
+  orderId Int [not null]
   statusType String [not null]
   setOn DateTime [default: `now()`]
   nextContactAttemptOn DateTime [not null]
   postponedReason String [not null]
-  Contact Contact [not null]
-  orderId Int [not null]
-  Order Order [not null]
-  requestId Int [unique]
-  Request Request
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   syncDataId Int [unique]
+  Contact Contact [not null]
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  Request Request
   syncData Sync
 }
 
 Table Rejected {
   id Int [pk, increment]
+  requestId Int [unique]
+  orderId Int [not null]
   statusType Int
   setOn DateTime [default: `now()`]
-  reason String
-  reasonText String
-  Contact Contact [not null]
-  requestId Int [unique]
-  Request Request
-  orderId Int [not null]
-  Order Order [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
+  rejectionReason String
+  rejectionReasonText String
   syncDataId Int [unique]
+  Contact Contact [not null]
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  Request Request
   syncData Sync
 }
 
 Table NotPossible {
   id Int [pk, increment]
+  requestId Int [unique]
+  orderId Int [not null]
   statusType String
   setOn DateTime [default: `now()`]
-  Contact Contact [not null]
-  orderId Int [not null]
-  Order Order [not null]
-  requestId Int [unique]
-  Request Request
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   syncDataId Int [unique]
+  Contact Contact [not null]
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  Request Request
   syncData Sync
 }
 
@@ -502,35 +585,36 @@ Table Contact {
   agentCP String
   result String
   remark String
-  cancelledId Int
-  Cancelled Cancelled
-  closedContractPartnerId Int
-  ClosedContractPartner ClosedContractPartner
   notPossibleId Int
-  NotPossible NotPossible
-  postponedId Int
-  Postponed Postponed
   rejectedId Int
-  Rejected Rejected
-  receivedId Int
-  Received Received
+  postponedId Int
+  cancelledId Int
+  closedContractPartnerId Int
   createdAt DateTime [default: `now()`]
+  receivedId Int
   updatedAt DateTime
+  Cancelled Cancelled
+  ClosedContractPartner ClosedContractPartner
+  NotPossible NotPossible
+  Postponed Postponed
+  Received Received
+  Rejected Rejected
 }
 
 Table Cancelled {
   id Int [pk, increment]
+  requestId Int [unique]
+  orderId Int [not null]
   statusType String
   setOn DateTime [default: `now()`]
   cancellationReason String [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
-  orderId Int [not null]
+  syncDataId Int [unique]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
-  requestId Int [unique]
   Request Request
   Contact Contact [not null]
-  syncDataId Int [unique]
   syncData Sync
 }
 
@@ -544,28 +628,59 @@ Table Planned {
   detailedScheduleTimeTo String
   detailedScheduleDelayReason String
   requestId Int [unique]
-  Request Request
-  customerContacts CustomerContact [not null]
-  Order Order [not null]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
   syncDataId Int [unique]
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  Request Request
+  syncData Sync
+}
+
+Table Done {
+  id Int [pk, increment]
+  orderId Int [not null]
+  orderstatusType String
+  setOn DateTime [default: `now()`]
+  requestId Int [unique]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
+  syncDataId Int [unique]
+  isChecked Boolean [default: false]
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  Request Request
   syncData Sync
 }
 
 Table Received {
   id Int [pk, increment]
+  orderId Int [not null]
   orderstatusType String [not null, default: '007']
   setOn DateTime [default: `now()`]
   requestId Int [unique]
   createdAt DateTime [default: `now()`]
   updatedAt DateTime
-  customerContacts CustomerContact [not null]
+  syncDataId Int [unique]
   Contact Contact [not null]
-  orderId Int [not null]
+  customerContacts CustomerContact [not null]
   Order Order [not null]
   Request Request
+  syncData Sync
+}
+
+Table ExecutionOnSiteNotPossible {
+  id Int [pk, increment]
+  orderstatusType String [not null, default: '003']
+  setOn DateTime [default: `now()`]
+  requestId Int [unique]
+  updatedAt DateTime
+  orderId Int [not null]
   syncDataId Int [unique]
+  nonExecutionReason String
+  customerContacts CustomerContact [not null]
+  Order Order [not null]
+  request Request
   syncData Sync
 }
 
@@ -581,26 +696,30 @@ Table Sync {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   lastSyncTime DateTime [default: `now()`, not null]
-  statusType Status [not null]
-  syncStatus String [not null]
+  statusType String
+  syncStatus String
   syncError String
   userEmail String
-  userId Int [not null]
-  user users [not null]
+  userId Int
   receivedId Int [unique]
-  Received Received
   plannedId Int [unique]
-  Planned Planned
+  DoneId Int [unique]
   postponedId Int [unique]
-  Postponed Postponed
   rejectedId Int [unique]
-  Rejected Rejected
   cancelledId Int [unique]
-  Cancelled Cancelled
   notPossibleId Int [unique]
-  NotPossible NotPossible
   closedContractPartnerId Int [unique]
+  executionOnSiteNotPossibleId Int [unique]
+  Cancelled Cancelled
   ClosedContractPartner ClosedContractPartner
+  ExecutionOnSiteNotPossible ExecutionOnSiteNotPossible
+  NotPossible NotPossible
+  Planned Planned
+  Postponed Postponed
+  Received Received
+  Rejected Rejected
+  Done Done
+  user users
 }
 
 Enum Auftragsstatus {
@@ -625,39 +744,58 @@ Enum Status {
   CANCELLED
   DONE
   CLOSEDCONTRACTPARTNER
+  EXECUTIONONSITENOTPOSSIBLE
 }
 
 Ref: bookmarks.userId > users.id
 
 Ref: Customer.userId > users.id
 
-Ref: auftraege.userId > users.id
+Ref: Customer.contactPersonId - contactPerson.id
 
-Ref: auftraege.emailId - email.id
+Ref: auftrag.auftraggeberId > auftraggeber.id
 
-Ref: auftraege.objektId - objekt.id
+Ref: auftrag.emailId - email.id
 
-Ref: auftraege.auftraggeberId > auftraggeber.id
+Ref: auftrag.objektId - objekt.id
 
-Ref: auftraege.vwStatischId > vw.id
+Ref: auftrag.userId > users.id
 
-Ref: auftraege.vwDynamischId > vw.id
+Ref: auftrag.vwDynamischId > vw.id
+
+Ref: auftrag.vwStatischId > vw.id
 
 Ref: objekt.customerId > Customer.id
 
-Ref: auftragsbestaetigung.auftragId - auftraege.id
+Ref: auftragsbestaetigung.auftragId - auftrag.id
 
 Ref: auftraggeber.userId > users.id
 
 Ref: Order.customerId > Customer.id
 
+Ref: Order.drinkingWaterFacilityId > DrinkingWaterFacility.id
+
+Ref: Order.propertyId > Property.id
+
 Ref: OrderStatus.orderId > Order.id
+
+Ref: CustomerContact.executionOnSiteNotPossibleId > ExecutionOnSiteNotPossible.id
+
+Ref: CustomerContact.notPossibleId > NotPossible.id
+
+Ref: CustomerContact.cancelledId > Cancelled.id
+
+Ref: CustomerContact.postponedId > Postponed.id
+
+Ref: CustomerContact.rejectedId > Rejected.id
 
 Ref: CustomerContact.orderId > Order.id
 
 Ref: CustomerContact.plannedId > Planned.id
 
 Ref: CustomerContact.receivedId > Received.id
+
+Ref: CustomerContact.DoneId > Done.id
 
 Ref: CustomerContact.statusReportId > StatusReport.id
 
@@ -671,17 +809,23 @@ Ref: SuppliedDocuments.documentId > Document.id
 
 Ref: RecordedSystem.closedContractPartnerId > ClosedContractPartner.id
 
+Ref: Property.contactPersonId > contactPerson.id
+
+Ref: Property.addressId > Address.id
+
 Ref: Property.recordedSystemId - RecordedSystem.id
+
+Ref: UserAddress.propertyId > Property.id
 
 Ref: Service.addressId > Address.id
 
 Ref: Service.closedContractPartnerId > ClosedContractPartner.id
 
-Ref: DrinkingWaterFacility.recordedSystemId > RecordedSystem.id
+Ref: DrinkingWaterFacility.recordedSystemId - RecordedSystem.id
 
 Ref: DrinkingWaterHeater.drinkingWaterFacilityId > DrinkingWaterFacility.id
 
-Ref: DrinkingWaterHeater.unitId - Unit.id
+Ref: Unit.drinkingWaterHeaterId - DrinkingWaterHeater.id
 
 Ref: Unit.buildingId > Building.id
 
@@ -695,6 +839,8 @@ Ref: SamplingPoint.unitId > Unit.id
 
 Ref: Building.addressId > Address.id
 
+Ref: Building.propertyId > Property.id
+
 Ref: Address.customerId - Customer.id
 
 Ref: Envelope.bodyId - Body.id
@@ -707,9 +853,9 @@ Ref: Postponed.orderId > Order.id
 
 Ref: Postponed.requestId - Request.id
 
-Ref: Rejected.requestId - Request.id
-
 Ref: Rejected.orderId > Order.id
+
+Ref: Rejected.requestId - Request.id
 
 Ref: NotPossible.orderId > Order.id
 
@@ -723,34 +869,46 @@ Ref: Contact.notPossibleId > NotPossible.id
 
 Ref: Contact.postponedId > Postponed.id
 
-Ref: Contact.rejectedId > Rejected.id
-
 Ref: Contact.receivedId > Received.id
+
+Ref: Contact.rejectedId > Rejected.id
 
 Ref: Cancelled.orderId > Order.id
 
 Ref: Cancelled.requestId - Request.id
 
+Ref: Planned.orderId > Order.id
+
 Ref: Planned.requestId - Request.id
 
-Ref: Planned.orderId > Order.id
+Ref: Done.orderId > Order.id
+
+Ref: Done.requestId - Request.id
 
 Ref: Received.orderId > Order.id
 
 Ref: Received.requestId - Request.id
 
-Ref: Sync.userId > users.id
+Ref: ExecutionOnSiteNotPossible.orderId > Order.id
 
-Ref: Sync.receivedId - Received.id
+Ref: ExecutionOnSiteNotPossible.requestId - Request.id
+
+Ref: Sync.cancelledId - Cancelled.id
+
+Ref: Sync.closedContractPartnerId - ClosedContractPartner.id
+
+Ref: Sync.executionOnSiteNotPossibleId - ExecutionOnSiteNotPossible.id
+
+Ref: Sync.notPossibleId - NotPossible.id
 
 Ref: Sync.plannedId - Planned.id
 
 Ref: Sync.postponedId - Postponed.id
 
+Ref: Sync.receivedId - Received.id
+
 Ref: Sync.rejectedId - Rejected.id
 
-Ref: Sync.cancelledId - Cancelled.id
+Ref: Sync.DoneId - Done.id
 
-Ref: Sync.notPossibleId - NotPossible.id
-
-Ref: Sync.closedContractPartnerId - ClosedContractPartner.id
+Ref: Sync.userId > users.id

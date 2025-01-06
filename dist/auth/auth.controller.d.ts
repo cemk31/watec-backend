@@ -21,8 +21,8 @@ export declare class AuthController {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
     resetPassword(dto: ResetPasswordDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -32,8 +32,8 @@ export declare class AuthController {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
     updateUser(dto: UpdateUserDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -43,7 +43,7 @@ export declare class AuthController {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
 }

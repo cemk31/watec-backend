@@ -1,11 +1,12 @@
-import { ContactDto } from "./ContactDto";
+import { CustomerContact } from '@prisma/client';
 export declare class PostponedDto {
     id: number;
-    requestId: number;
     orderId: number;
+    requestId: number;
     statusType: string;
     setOn: Date;
-    contact: ContactDto[];
+    customerContacts: CustomerContact[];
     nextContactAttemptOn: Date;
     postponedReason: string;
+    remarkExternal?: string;
 }

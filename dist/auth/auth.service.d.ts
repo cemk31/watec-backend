@@ -28,8 +28,8 @@ export declare class AuthService {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
     forgotPassword(email: string): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -39,8 +39,8 @@ export declare class AuthService {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
     resetPassword(email: string, newPassword: string): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -50,8 +50,8 @@ export declare class AuthService {
         hash: string;
         firstName: string;
         lastName: string;
-        isConfirmed: boolean;
         confirmationToken: string;
+        isConfirmed: boolean;
     }, unknown, never> & {}>;
     deleteOrder(orderId: number): Promise<Order | null>;
 }

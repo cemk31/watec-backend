@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AuthModule } from './auth/auth.module';
@@ -16,6 +21,8 @@ import { AdresseModule } from './adresse/adresse.module';
 import { IstaModule } from './ista/ista.module';
 import { HttpModule } from '@nestjs/axios';
 import { XmlToJsonMiddleware } from './middleware/xml-to-json.middleware';
+import { SoapM } from './soap/soap.module';
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -23,6 +30,7 @@ import { XmlToJsonMiddleware } from './middleware/xml-to-json.middleware';
       isGlobal: true, // makes the ConfigService available across the whole project
       envFilePath: getEnvFilePath(), // we'll define this function below
     }),
+    SupportModule,
     AuthModule,
     UserModule,
     BookmarkModule,
@@ -33,18 +41,20 @@ import { XmlToJsonMiddleware } from './middleware/xml-to-json.middleware';
     AuftraggeberModule,
     AdresseModule,
     IstaModule,
-    HttpModule
+    HttpModule,
+    SoapM,
   ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(XmlToJsonMiddleware)
-      .forRoutes({ path: 'soap/reportOrderStatus', method: RequestMethod.POST });
+    consumer.apply(XmlToJsonMiddleware).forRoutes({
+      path: 'soap/reportOrderStatus',
+      method: RequestMethod.POST,
+    });
   }
 }
 
-// This function checks if the environment-specific .env file exists. 
+// This function checks if the environment-specific .env file exists.
 // If it does, it returns the path to that file. If it doesn't, it returns the path to the default .env file.
 function getEnvFilePath() {
   const envFilePath = join(process.cwd(), `.env.${process.env.NODE_ENV}`);
