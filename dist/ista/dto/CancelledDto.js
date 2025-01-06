@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const ContactDto_1 = require("./ContactDto");
+const CustomerContactDto_1 = require("./CustomerContactDto");
 class CancelledDto {
 }
 __decorate([
@@ -54,10 +55,21 @@ __decorate([
     __metadata("design:type", Array)
 ], CancelledDto.prototype, "contact", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ type: () => [CustomerContactDto_1.CustomerContactDto] }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Array)
+], CancelledDto.prototype, "customerContacts", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ example: 'Cancellation Reason' }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CancelledDto.prototype, "cancellationReason", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Delay Reason' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CancelledDto.prototype, "remarkExternal", void 0);
 exports.CancelledDto = CancelledDto;
 //# sourceMappingURL=CancelledDto.js.map

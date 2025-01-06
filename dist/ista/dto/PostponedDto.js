@@ -27,13 +27,13 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], PostponedDto.prototype, "requestId", void 0);
+], PostponedDto.prototype, "orderId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], PostponedDto.prototype, "orderId", void 0);
+], PostponedDto.prototype, "requestId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '020' }),
     (0, class_validator_1.IsOptional)(),
@@ -52,7 +52,7 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Type)(() => ContactDto_1.ContactDto),
     __metadata("design:type", Array)
-], PostponedDto.prototype, "contact", void 0);
+], PostponedDto.prototype, "customerContacts", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '2023-06-17' }),
     (0, class_validator_1.IsOptional)(),
@@ -66,5 +66,11 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], PostponedDto.prototype, "postponedReason", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Remark External' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PostponedDto.prototype, "remarkExternal", void 0);
 exports.PostponedDto = PostponedDto;
 //# sourceMappingURL=PostponedDto.js.map

@@ -1,10 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional, IsEmail, IsArray } from 'class-validator';
-import { CreateObjektDto } from "src/auftrag/dto/create-objekt.dto";
-
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEmail,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+} from 'class-validator';
+import { IsBigInt } from 'class-validator-extended';
+import { CreateObjektDto } from 'src/auftrag/dto/create-objekt.dto';
 
 export class CustomerDTO {
-
   @ApiProperty({ example: 'firstName' })
   @IsOptional()
   @IsString()
@@ -37,9 +43,8 @@ export class CustomerDTO {
 
   @ApiProperty({ example: 'info@muster-firma.de' })
   @IsOptional()
-  @IsString()
+  @IsEmail()
   email?: string;
-
 
   @ApiProperty({ example: 'DE' })
   @IsOptional()
@@ -56,10 +61,10 @@ export class CustomerDTO {
   @IsString()
   companyName?: string; // Hinzugefügt, ersetzt company
 
-  @ApiProperty({ example: 'Liegenschaftsnummer' })
-  @IsOptional()
-  @IsString()
-  propertyNumber?: string;
+  @ApiProperty({ example: 1 })
+  @IsNotEmpty()
+  @IsNumber()
+  propertyNumber?: number;
 
   @ApiProperty({ type: () => [CreateObjektDto] })
   @IsOptional()

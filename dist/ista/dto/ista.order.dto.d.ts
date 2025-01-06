@@ -5,9 +5,10 @@ import { NotPossibleDto } from './NotPossibleDto';
 import { OrderStatusDto } from './OrderStatusDto';
 import { PlannedDto } from './PlannedDto';
 import { PostponedDto } from './PostponedDto';
-import { ReceivedDto } from './ReceivedDto';
 import { RejectedDto } from './RejectedDto';
 import { CustomerDTO } from 'src/customer/dto';
+import { received } from './ReceivedDto';
+import { DoneDto } from './DoneDto';
 export declare class OrderDto {
     id: number;
     number: string;
@@ -21,6 +22,7 @@ export declare class OrderDto {
     rejected: RejectedDto[];
     closedContractPartner: ClosedContractPartnerDto[];
     planned: PlannedDto[];
-    received: ReceivedDto[];
+    Done: DoneDto[];
+    received: received[];
     customer: CustomerDTO;
 }

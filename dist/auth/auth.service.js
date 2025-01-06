@@ -44,8 +44,8 @@ let AuthService = class AuthService {
         let mailOptions = {
             from: '"Spootech", <info@spootech.com>',
             to: email,
-            subject: 'Registrierung erfolgreich!',
-            html: `<b>Registrierung erfolgreich!</b><p>Ihre Registrierung war erfolgreich!</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Support Team</b></p>`,
+            subject: 'WATEC-System Registrierung erfolgreich!',
+            html: `<b>Registrierung erfolgreich!</b><p>Ihre Registrierung war erfolgreich!</p><p>Dies ist eine automatisch generierte E-Mail.</p><p><b>Ihr WATEC Software Team</b></p>`,
         };
         await transporter.sendMail(mailOptions);
     }

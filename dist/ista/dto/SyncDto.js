@@ -23,7 +23,20 @@ __decorate([
     __metadata("design:type", Date)
 ], SyncDto.prototype, "lastSyncTime", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'RECEIVED', default: 'PLANNED' }),
+    (0, swagger_1.ApiProperty)({
+        example: 1,
+        description: 'StatusID of the status to be synchronized',
+    }),
+    (0, class_validator_1.IsInt)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], SyncDto.prototype, "statusId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'RECEIVED',
+        default: 'PLANNED',
+        description: 'StatusType of the status to be synchronized',
+    }),
     (0, class_validator_1.IsString)(),
     (0, class_transformer_1.Type)(() => Text),
     __metadata("design:type", String)

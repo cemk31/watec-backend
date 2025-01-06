@@ -1,4 +1,5 @@
 import { ContactDto } from './ContactDto';
+import { CustomerContactDto } from './CustomerContactDto';
 export declare class CancelledDto {
     id: number;
     requestId: number;
@@ -6,5 +7,7 @@ export declare class CancelledDto {
     statusType: string;
     setOn: Date;
     contact: ContactDto[];
+    customerContacts: CustomerContactDto[];
     cancellationReason: string;
+    remarkExternal?: string;
 }

@@ -14,6 +14,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const ContactDto_1 = require("./ContactDto");
+const CustomerContactDto_1 = require("./CustomerContactDto");
 class RejectedDto {
 }
 __decorate([
@@ -22,12 +23,6 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], RejectedDto.prototype, "id", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 1 }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], RejectedDto.prototype, "requestId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
     (0, class_validator_1.IsOptional)(),
@@ -54,16 +49,27 @@ __decorate([
     __metadata("design:type", Array)
 ], RejectedDto.prototype, "contact", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ type: () => [CustomerContactDto_1.CustomerContactDto] }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Array)
+], RejectedDto.prototype, "customerContacts", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ example: 'Rejection Reason' }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], RejectedDto.prototype, "reason", void 0);
+], RejectedDto.prototype, "rejectionReason", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Rejection Reason Text' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], RejectedDto.prototype, "reasonText", void 0);
+], RejectedDto.prototype, "rejectionReasonText", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Remark External' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], RejectedDto.prototype, "remarkExternal", void 0);
 exports.RejectedDto = RejectedDto;
 //# sourceMappingURL=RejectedDto.js.map
