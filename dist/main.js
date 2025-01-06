@@ -49,8 +49,8 @@ async function bootstrap() {
         .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
         .setLicense('WATEC License', 'https://yourwebsite.com/license')
         .addServer('http://localhost:4000', 'Local Development Server')
-        .addServer('https://watec-backend.vercel.app', 'Production Server')
-        .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
+        .addServer('https://watec-be.vercel.app', 'Production Server')
+        .addServer('https://watec-be-dev.vercel.app', 'Development Server')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
