@@ -37,7 +37,7 @@ import { SupportModule } from './support/support.module';
     PrismaModule,
     IsarModule,
     AuftragModule,
-    // CustomerModule,
+    CustomerModule,
     AuftraggeberModule,
     AdresseModule,
     IstaModule,

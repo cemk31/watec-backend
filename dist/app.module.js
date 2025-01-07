@@ -17,6 +17,7 @@ const isar_module_1 = require("./isar/isar.module");
 const auftrag_module_1 = require("./auftrag/auftrag.module");
 const fs_1 = require("fs");
 const path_1 = require("path");
+const customer_module_1 = require("./customer/customer.module");
 const auftraggeber_module_1 = require("./auftraggeber/auftraggeber.module");
 const adresse_module_1 = require("./adresse/adresse.module");
 const ista_module_1 = require("./ista/ista.module");
@@ -46,6 +47,7 @@ AppModule = __decorate([
             prisma_module_1.PrismaModule,
             isar_module_1.IsarModule,
             auftrag_module_1.AuftragModule,
+            customer_module_1.CustomerModule,
             auftraggeber_module_1.AuftraggeberModule,
             adresse_module_1.AdresseModule,
             ista_module_1.IstaModule,
