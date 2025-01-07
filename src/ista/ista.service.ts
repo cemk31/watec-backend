@@ -294,6 +294,7 @@ export class IstaService {
         property: true,
       },
     });
+    console.log('order:', order);
     return order;
   }
 
