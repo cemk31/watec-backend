@@ -2,55 +2,40 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as bodyParser from 'body-parser';
-import * as xml2js from 'xml2js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'https://www.watec-admin-angular-fe.vercel.app',
+        'https://www.watec-dashboard-dev.vercel.app',
+        'http://localhost:4200',
+        'https://watec-admin-angular-fe.vercel.app',
+        'https://watec-dashboard-dev.vercel.app',
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    // credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  // JSON Body Parser
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.text({ type: 'text/xml' }));
-  app.use(bodyParser.text({ type: 'application/soap+xml' }));
-  // XML Body Parser
-  app.use(bodyParser.text({ type: 'application/xml' }));
-  app.use((req, res, next) => {
-    if (req.headers['content-type'] === 'application/xml') {
-      xml2js.parseString(req.body, (err, result) => {
-        if (err) {
-          return res.status(400).send('Invalid XML');
-        }
-        req.body = result;
-      });
-    }
-    console.log(`Request received: ${req.method} ${req.url}`);
-    0;
-    next();
-  });
-
-  // app.enableCors({
-  //   allowedHeaders: '*',
-  //   origin: '*',
-  //   credentials: true,
-  // });
-
-  // app.enableCors({
-  //   origin: '*', // oder spezifische URLs wie ['https://deine-vercel-app.com']
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  //   allowedHeaders: ['Content-Type', 'Authorization'],
-  //   credentials: true, // Falls Cookies oder Authentifizierungsdaten erforderlich sind
-  // });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
     }),
   );
 
+  const port = process.env.PORT || 3000;
+
   const config = new DocumentBuilder()
-    .setTitle('WATEC-Backend API')
+    .setTitle('WATEC Backend')
     .setDescription(
       'WATEC-Backend API Description - Documentation generated on 05-10-2023',
     )
@@ -62,20 +47,15 @@ async function bootstrap() {
     )
     .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
     .setLicense('WATEC License', 'https://yourwebsite.com/license')
-    .addServer('http://localhost:4000', 'Local Development Server')
-    .addServer('https://watec-be.vercel.app', 'Production Server')
-    .addServer('https://watec-be-dev.vercel.app', 'Development Server')
+    .addServer('http://localhost:3000', 'Local Development Server')
+    .addServer('https://watec-backend.vercel.app', 'Production Server')
+    .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 4000;
-  await app.listen(port, '0.0.0.0');
-
-  (BigInt.prototype as any).toJSON = function () {
-    return this.toString();
-  };
+  await app.listen(port);
 }
 
 bootstrap();
