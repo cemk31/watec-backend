@@ -17,11 +17,11 @@ const common_1 = require("@nestjs/common");
 const soap_service_1 = require("./soap.service");
 const swagger_1 = require("@nestjs/swagger");
 const guard_1 = require("../auth/guard");
-const soapReceveidDTO_1 = require("../ista/dto/soapReceveidDTO");
 const decorator_1 = require("../auth/decorator");
 const axios_1 = require("axios");
 const dotenv = require("dotenv");
 const SyncDto_1 = require("./dto/SyncDto");
+const SoapEnvelopeDto_1 = require("./dto/SoapEnvelopeDto");
 dotenv.config();
 let SoapController = class SoapController {
     constructor(soapService) {
@@ -666,7 +666,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [soapReceveidDTO_1.SoapEnvelopeDto, Object]),
+    __metadata("design:paramtypes", [SoapEnvelopeDto_1.SoapEnvelopeDto, Object]),
     __metadata("design:returntype", Promise)
 ], SoapController.prototype, "polling", null);
 __decorate([
