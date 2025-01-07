@@ -31,11 +31,11 @@ async function bootstrap() {
     next();
   });
 
-  app.enableCors({
-    allowedHeaders: '*',
-    origin: '*',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   allowedHeaders: '*',
+  //   origin: '*',
+  //   credentials: true,
+  // });
 
   // app.enableCors({
   //   origin: '*', // oder spezifische URLs wie ['https://deine-vercel-app.com']
