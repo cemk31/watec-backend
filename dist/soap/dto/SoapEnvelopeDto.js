@@ -9,30 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PrismaService = void 0;
-const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
-const client_1 = require("@prisma/client");
-let PrismaService = class PrismaService extends client_1.PrismaClient {
-    constructor(config) {
-        super({
-            datasources: {
-                db: {
-                    url: config.get('DATABASE_URL'),
-                },
-            },
-        });
-    }
-    cleanDb() {
-        return this.$transaction([
-            this.bookmark.deleteMany(),
-            this.user.deleteMany(),
-        ]);
-    }
-};
-PrismaService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService])
-], PrismaService);
-exports.PrismaService = PrismaService;
-//# sourceMappingURL=prisma.service.js.map
+exports.SoapEnvelopeDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
+const ReportOrderStatusRequestDto_1 = require("./ReportOrderStatusRequestDto");
+class SoapEnvelopeDto {
+}
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        type: Object,
+        description: 'SOAP Envelope header',
+        required: false,
+    }),
+    __metadata("design:type", Object)
+], SoapEnvelopeDto.prototype, "soapenv:Header", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        type: ReportOrderStatusRequestDto_1.ReportOrderStatusRequestDto,
+        description: 'SOAP Body containing the request data',
+    }),
+    __metadata("design:type", Object)
+], SoapEnvelopeDto.prototype, "soapenv:Body", void 0);
+exports.SoapEnvelopeDto = SoapEnvelopeDto;
+//# sourceMappingURL=SoapEnvelopeDto.js.map
