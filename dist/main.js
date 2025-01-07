@@ -7,23 +7,11 @@ const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
-        origin: (origin, callback) => {
-            const allowedOrigins = [
-                'https://www.watec-admin-angular-fe.vercel.app',
-                'https://www.watec-dashboard-dev.vercel.app',
-                'http://localhost:4200',
-                'https://watec-admin-angular-fe.vercel.app',
-                'https://watec-dashboard-dev.vercel.app',
-            ];
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            }
-            else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        origin: '*',
+        methods: '*',
+        allowedHeaders: '*',
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
