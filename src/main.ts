@@ -2,12 +2,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as bodyParser from 'body-parser';
-import * as xml2js from 'xml2js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: '*',
+    methods: '*',
+    allowedHeaders: '*',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   // JSON Body Parser
@@ -48,8 +52,10 @@ async function bootstrap() {
     }),
   );
 
+  const port = process.env.PORT || 3000;
+
   const config = new DocumentBuilder()
-    .setTitle('WATEC-Backend API')
+    .setTitle('WATEC Backend')
     .setDescription(
       'WATEC-Backend API Description - Documentation generated on 05-10-2023',
     )
@@ -61,7 +67,7 @@ async function bootstrap() {
     )
     .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
     .setLicense('WATEC License', 'https://yourwebsite.com/license')
-    .addServer('http://localhost:4000', 'Local Development Server')
+    .addServer('http://localhost:3000', 'Local Development Server')
     .addServer('https://watec-backend.vercel.app', 'Production Server')
     .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
     .build();
@@ -69,12 +75,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 4000;
-  await app.listen(port, '0.0.0.0');
-
-  (BigInt.prototype as any).toJSON = function () {
-    return this.toString();
-  };
+  await app.listen(port);
 }
 
 bootstrap();

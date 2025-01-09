@@ -71,4 +71,9 @@ export class CustomerDTO {
   @IsArray()
   @IsOptional()
   objekt?: CreateObjektDto[];
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({ example: 'name' })
+  name?: string;
 }

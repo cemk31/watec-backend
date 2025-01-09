@@ -88,5 +88,11 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
 ], CustomerDTO.prototype, "objekt", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, swagger_1.ApiProperty)({ example: 'name' }),
+    __metadata("design:type", String)
+], CustomerDTO.prototype, "name", void 0);
 exports.CustomerDTO = CustomerDTO;
 //# sourceMappingURL=CustomerDTO.js.map

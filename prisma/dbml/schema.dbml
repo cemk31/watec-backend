@@ -722,6 +722,10 @@ Table Sync {
   user users
 }
 
+Table Test {
+  id Int [pk, increment]
+}
+
 Enum Auftragsstatus {
   Eingegangen
   Kundenkontakt_nicht_moeglich

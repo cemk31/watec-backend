@@ -179,6 +179,7 @@ let IstaService = class IstaService {
                 property: true,
             },
         });
+        console.log('order:', order);
         return order;
     }
     async getOrderById(orderId) {

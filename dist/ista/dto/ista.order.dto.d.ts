@@ -6,9 +6,9 @@ import { OrderStatusDto } from './OrderStatusDto';
 import { PlannedDto } from './PlannedDto';
 import { PostponedDto } from './PostponedDto';
 import { RejectedDto } from './RejectedDto';
-import { CustomerDTO } from 'src/customer/dto';
 import { received } from './ReceivedDto';
 import { DoneDto } from './DoneDto';
+import { CustomerDTO } from './CustomerDTO';
 export declare class OrderDto {
     id: number;
     number: string;

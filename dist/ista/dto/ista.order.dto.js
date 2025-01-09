@@ -21,9 +21,9 @@ const OrderStatusDto_1 = require("./OrderStatusDto");
 const PlannedDto_1 = require("./PlannedDto");
 const PostponedDto_1 = require("./PostponedDto");
 const RejectedDto_1 = require("./RejectedDto");
-const dto_1 = require("../../customer/dto");
 const ReceivedDto_1 = require("./ReceivedDto");
 const DoneDto_1 = require("./DoneDto");
+const CustomerDTO_1 = require("./CustomerDTO");
 class OrderDto {
 }
 __decorate([
@@ -111,9 +111,9 @@ __decorate([
     __metadata("design:type", Array)
 ], OrderDto.prototype, "received", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ type: () => dto_1.CustomerDTO }),
+    (0, swagger_1.ApiProperty)({ type: () => CustomerDTO_1.CustomerDTO }),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", dto_1.CustomerDTO)
+    __metadata("design:type", CustomerDTO_1.CustomerDTO)
 ], OrderDto.prototype, "customer", void 0);
 exports.OrderDto = OrderDto;
 //# sourceMappingURL=ista.order.dto.js.map

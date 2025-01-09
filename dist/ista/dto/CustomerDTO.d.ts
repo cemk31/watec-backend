@@ -12,4 +12,5 @@ export declare class CustomerDTO {
     companyName?: string;
     propertyNumber?: number;
     objekt?: CreateObjektDto[];
+    name?: string;
 }

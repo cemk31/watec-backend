@@ -25,12 +25,12 @@ import {
 } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/guard';
 import * as xml2js from 'xml2js';
-import { Received, SoapEnvelopeDto } from 'src/ista/dto/soapReceveidDTO';
 import { Sync, User } from '@prisma/client';
 import { GetUser } from 'src/auth/decorator';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 import { SyncDto } from './dto/SyncDto';
+import { SoapEnvelopeDto } from './dto/SoapEnvelopeDto';
 
 dotenv.config();
 

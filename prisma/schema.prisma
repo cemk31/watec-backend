@@ -791,3 +791,7 @@ enum Status {
   CLOSEDCONTRACTPARTNER
   EXECUTIONONSITENOTPOSSIBLE
 }
+
+model Test {
+  id Int @id @default(autoincrement())
+}
