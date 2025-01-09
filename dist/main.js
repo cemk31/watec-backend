@@ -28,6 +28,15 @@ async function bootstrap() {
         0;
         next();
     });
+    app.enableCors({
+        origin: [
+            'http://localhost:4200',
+            'https://www.watec-admin-angular-fe.vercel.app',
+            'https://www.watec-dashboard-dev.vercel.app',
+        ],
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
     }));
