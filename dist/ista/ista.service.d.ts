@@ -1993,21 +1993,12 @@ export declare class IstaService {
     orderDone(orderId: number, dto: DoneDto): Promise<Done | null>;
     getStatusById(statusId: number, type: string): Promise<(import("@prisma/client/runtime").GetResult<{
         id: number;
-        requestId: number;
         orderId: number;
-        statusType: number;
+        orderstatusType: number;
         setOn: Date;
-        createdAt: Date;
-        updatedAt: Date;
-        rejectionReason: string;
-        rejectionReasonText: string;
-        syncDataId: number;
-    }, unknown, never> & {}) | (import("@prisma/client/runtime").GetResult<{
-        id: number;
-        orderId: number;
-        orderstatusType: string;
-        setOn: Date;
-        requestId: number;
+        deficiencyDescription: string;
+        registrationHealthAuthoritiesOn: Date;
+        extraordinaryExpenditureReason: string;
         createdAt: Date;
         updatedAt: Date;
         syncDataId: number;
@@ -2023,13 +2014,22 @@ export declare class IstaService {
     }, unknown, never> & {}) | (import("@prisma/client/runtime").GetResult<{
         id: number;
         orderId: number;
-        orderstatusType: number;
+        orderstatusType: string;
         setOn: Date;
-        deficiencyDescription: string;
-        registrationHealthAuthoritiesOn: Date;
-        extraordinaryExpenditureReason: string;
+        requestId: number;
         createdAt: Date;
         updatedAt: Date;
+        syncDataId: number;
+    }, unknown, never> & {}) | (import("@prisma/client/runtime").GetResult<{
+        id: number;
+        requestId: number;
+        orderId: number;
+        statusType: number;
+        setOn: Date;
+        createdAt: Date;
+        updatedAt: Date;
+        rejectionReason: string;
+        rejectionReasonText: string;
         syncDataId: number;
     }, unknown, never> & {})>;
     synchroniseWithIsta(status: any, type: string): Promise<void>;
