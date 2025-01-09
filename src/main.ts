@@ -2,17 +2,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
+import * as xml2js from 'xml2js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  app.enableCors({
-    origin: '*',
-    methods: '*',
-    allowedHeaders: '*',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  });
 
   // JSON Body Parser
   app.use(bodyParser.json());
@@ -30,19 +24,26 @@ async function bootstrap() {
         req.body = result;
       });
     }
-    console.log(`Request received: ${req.method} ${req.url}`);
-    0;
     next();
   });
 
   app.enableCors({
-    origin: [
-      'http://localhost:4200',
-      'https://www.watec-admin-angular-fe.vercel.app',
-      'https://www.watec-dashboard-dev.vercel.app',
-    ],
-    // credentials: true,
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'https://www.watec-admin-angular-fe.vercel.app',
+        'https://www.watec-dashboard-dev.vercel.app',
+        'http://localhost:4200',
+        'https://watec-admin-angular-fe.vercel.app',
+        'https://watec-dashboard-dev.vercel.app',
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    // credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
@@ -52,10 +53,8 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT || 3000;
-
   const config = new DocumentBuilder()
-    .setTitle('WATEC Backend')
+    .setTitle('WATEC-Backend API')
     .setDescription(
       'WATEC-Backend API Description - Documentation generated on 05-10-2023',
     )
@@ -75,7 +74,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  const port = process.env.PORT || 3000;
   await app.listen(port);
+
+  (BigInt.prototype as any).toJSON = function () {
+    return this.toString();
+  };
 }
 
 bootstrap();
