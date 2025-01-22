@@ -66,24 +66,39 @@ let SoapHelperService = class SoapHelperService {
         };
         const templates = {
             RECEIVED: (data) => `
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <ins:reportOrderStatusRequest>
-                 <com:environment>Development</com:environment>
-                 <com:language>DE</com:language>
-                 <com:consumer>soapUI</com:consumer>
-                 <received>
-                    <order>
-                       <number>${orderNumberIsta}</number>
-                    </order>
-                    <orderstatusType>007</orderstatusType>
-                    <setOn>${formatDate(data.setOn)}</setOn>
-                 </received>
-              </ins:reportOrderStatusRequest>
-           </soapenv:Body>
-        </soapenv:Envelope>
-      `,
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <received>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                  </order>
+                  <orderstatusType>007</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn || ''}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer || ''}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+               </received>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
             PLANNED: (data) => `
       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
          <soapenv:Header/>
@@ -120,6 +135,221 @@ let SoapHelperService = class SoapHelperService {
                   <detailedScheduleTimeTo>${data.detailedScheduleTimeTo || ''}</detailedScheduleTimeTo>
                   <detailedScheduleDelayReason>KAPA</detailedScheduleDelayReason>
                </planned>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+            POSTPONED: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <postponed>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
+                  </order>
+                  <orderstatusType>013</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn || ''}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer || ''}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+                  <postponedReason>${data.postponedReason || ''}</postponedReason>
+               </postponed>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+            EXECUTION_ON_SITE_DONE: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <executionOnSiteDone>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
+                  </order>
+                  <orderstatusType>030</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn || ''}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer || ''}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+               </executionOnSiteDone>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+            REJECTED: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <rejected>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
+                  </order>
+                  <orderstatusType>200</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn || ''}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer || ''}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+                  <rejectionReason>${data.rejectionReason || ''}</rejectionReason>
+                  <rejectionReasonText>${data.rejectionReasonText || ''}</rejectionReasonText>
+               </rejected>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+            CUSTOMER_CONTACT_NOT_POSSIBLE: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <customerContactNotPossible>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
+                  </order>
+                  <orderstatusType>011</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn || ''}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer || ''}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+               </customerContactNotPossible>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+            CANCELLED: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <cancelled>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
+                  </order>
+                  <orderstatusType>300</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn || ''}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer || ''}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+                  <cancellationReason>${data.cancellationReason || ''}</cancellationReason>
+               </cancelled>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+            EXECUTION_ON_SITE_NOT_POSSIBLE: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <executionOnSiteNotPossible>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${data.remarkExternal || ''}</remarkExternal>
+                  </order>
+                  <orderstatusType>031</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${data.customerContacts && data.customerContacts.length > 0
+                ? data.customerContacts
+                    .map((contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${contact.customerContactAttemptOn || ''}</customerContactAttemptOn>
+                        <contactPersonCustomer>${contact.contactPersonCustomer || ''}</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `)
+                    .join('')
+                : ''}
+                  </customerContacts>
+                  <nonExecutionReason>${data.nonExecutionReason || ''}</nonExecutionReason>
+               </executionOnSiteNotPossible>
             </ins:reportOrderStatusRequest>
          </soapenv:Body>
       </soapenv:Envelope>
