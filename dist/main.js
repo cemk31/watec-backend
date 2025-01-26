@@ -25,35 +25,29 @@ async function bootstrap() {
         next();
     });
     app.enableCors({
-        origin: (origin, callback) => {
-            const allowedOrigins = [
-                'https://www.watec-admin-angular-fe.vercel.app',
-                'https://www.watec-dashboard-dev.vercel.app',
-                'http://localhost:4200',
-                'https://watec-admin-angular-fe.vercel.app',
-                'https://watec-dashboard-dev.vercel.app',
-            ];
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            }
-            else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+        origin: [
+            'https://www.watec-admin-angular-fe.vercel.app',
+            'https://www.watec-dashboard-dev.vercel.app',
+            'http://localhost:4200',
+        ],
+        credentials: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'X-Requested-With',
+            'Accept',
+        ],
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
     }));
     const config = new swagger_1.DocumentBuilder()
         .setTitle('WATEC-Backend API')
-        .setDescription('WATEC-Backend API Description - Documentation generated on 05-10-2023')
-        .setVersion('1.0.0.')
-        .addTag('WATEC', 'Endpoints related to the WATEC Backend Services')
+        .setDescription('WATEC-Backend API Documentation')
+        .setVersion('1.0.0')
         .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
         .setContact('WATEC Support', 'https://spootech.com', 'cem@spootech.com')
-        .setLicense('WATEC License', 'https://yourwebsite.com/license')
         .addServer('http://localhost:3000', 'Local Development Server')
         .addServer('https://watec-backend.vercel.app', 'Production Server')
         .addServer('https://watec-backend-dev.vercel.app', 'Development Server')
