@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import axios from 'axios';
+import { ClosedContractPartnerDto } from 'src/ista/dto/ClosedContractPartnerDto';
 
 @Injectable()
 export class SoapHelperService {
@@ -84,24 +85,48 @@ export class SoapHelperService {
     // Templates für die Payload
     const templates: Record<string, (data: any) => string> = {
       RECEIVED: (data) => `
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
-           <soapenv:Header/>
-           <soapenv:Body>
-              <ins:reportOrderStatusRequest>
-                 <com:environment>Development</com:environment>
-                 <com:language>DE</com:language>
-                 <com:consumer>soapUI</com:consumer>
-                 <received>
-                    <order>
-                       <number>${orderNumberIsta}</number>
-                    </order>
-                    <orderstatusType>007</orderstatusType>
-                    <setOn>${formatDate(data.setOn)}</setOn>
-                 </received>
-              </ins:reportOrderStatusRequest>
-           </soapenv:Body>
-        </soapenv:Envelope>
-      `,
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <received>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                  </order>
+                  <orderstatusType>007</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn || ''
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer || ''
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+               </received>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+
       PLANNED: (data) => `
       <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
          <soapenv:Header/>
@@ -158,6 +183,665 @@ export class SoapHelperService {
          </soapenv:Body>
       </soapenv:Envelope>
     `,
+      POSTPONED: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <postponed>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${
+                       data.remarkExternal || ''
+                     }</remarkExternal>
+                  </order>
+                  <orderstatusType>013</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn || ''
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer || ''
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+                  <postponedReason>${
+                    data.postponedReason || ''
+                  }</postponedReason>
+               </postponed>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+      EXECUTION_ON_SITE_DONE: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <executionOnSiteDone>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${
+                       data.remarkExternal || ''
+                     }</remarkExternal>
+                  </order>
+                  <orderstatusType>030</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn || ''
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer || ''
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+               </executionOnSiteDone>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+      REJECTED: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <rejected>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${
+                       data.remarkExternal || ''
+                     }</remarkExternal>
+                  </order>
+                  <orderstatusType>200</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn || ''
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer || ''
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+                  <rejectionReason>${
+                    data.rejectionReason || ''
+                  }</rejectionReason>
+                  <rejectionReasonText>${
+                    data.rejectionReasonText || ''
+                  }</rejectionReasonText>
+               </rejected>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+      CUSTOMER_CONTACT_NOT_POSSIBLE: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <customerContactNotPossible>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${
+                       data.remarkExternal || ''
+                     }</remarkExternal>
+                  </order>
+                  <orderstatusType>011</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn || ''
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer || ''
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+               </customerContactNotPossible>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+      CANCELLED: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <cancelled>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${
+                       data.remarkExternal || ''
+                     }</remarkExternal>
+                  </order>
+                  <orderstatusType>300</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn || ''
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer || ''
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+                  <cancellationReason>${
+                    data.cancellationReason || ''
+                  }</cancellationReason>
+               </cancelled>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+      EXECUTION_ON_SITE_NOT_POSSIBLE: (data) => `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.CommonTypes">
+         <soapenv:Header/>
+         <soapenv:Body>
+            <ins:reportOrderStatusRequest>
+               <com:environment>Development</com:environment>
+               <com:language>DE</com:language>
+               <com:consumer>soapUI</com:consumer>
+               <executionOnSiteNotPossible>
+                  <order>
+                     <number>${data.orderNumberIsta || 'UNDEFINED'}</number>
+                     <remarkExternal>${
+                       data.remarkExternal || ''
+                     }</remarkExternal>
+                  </order>
+                  <orderstatusType>031</orderstatusType>
+                  <setOn>${formatDate(data.setOn)}</setOn>
+                  <customerContacts>
+                    ${
+                      data.customerContacts && data.customerContacts.length > 0
+                        ? data.customerContacts
+                            .map(
+                              (contact) => `
+                      <customerContact>
+                        <customerContactAttemptOn>${
+                          contact.customerContactAttemptOn || ''
+                        }</customerContactAttemptOn>
+                        <contactPersonCustomer>${
+                          contact.contactPersonCustomer || ''
+                        }</contactPersonCustomer>
+                        <agentCP>${contact.agentCP || ''}</agentCP>
+                        <result>${contact.result || ''}</result>
+                        <remark>${contact.remark || ''}</remark>
+                      </customerContact>
+                      `,
+                            )
+                            .join('')
+                        : ''
+                    }
+                  </customerContacts>
+                  <nonExecutionReason>${
+                    data.nonExecutionReason || ''
+                  }</nonExecutionReason>
+               </executionOnSiteNotPossible>
+            </ins:reportOrderStatusRequest>
+         </soapenv:Body>
+      </soapenv:Envelope>
+    `,
+      CLOSED_CONTRACT_PARTNER: (data) => `
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ins:reportOrderStatusRequest>
+         <com:environment>${data.environment || 'Development'}</com:environment>
+         <com:language>${data.language || 'DE'}</com:language>
+         <com:consumer>${data.consumer || 'soapUI'}</com:consumer>
+         <closedContractPartner>
+            <order>
+               <number>${data.order.number || ''}</number>
+               <remarkExternal>${
+                 data.order.remarkExternal || ''
+               }</remarkExternal>
+            </order>
+            <orderstatusType>${data.orderstatusType || ''}</orderstatusType>
+            <setOn>${data.setOn || ''}</setOn>
+            <customerContacts>
+               ${
+                 data.customerContacts
+                   ?.map(
+                     (contact) => `
+                  <customerContact>
+                     <customerContactAttemptOn>${
+                       contact.customerContactAttemptOn || ''
+                     }</customerContactAttemptOn>
+                     <contactPersonCustomer>${
+                       contact.contactPersonCustomer || ''
+                     }</contactPersonCustomer>
+                     <agentCP>${contact.agentCP || ''}</agentCP>
+                     <result>${contact.result || ''}</result>
+                     <remark>${contact.remark || ''}</remark>
+                  </customerContact>
+               `,
+                   )
+                   .join('') || ''
+               }
+            </customerContacts>
+            <deficiencyDescription>${
+              data.deficiencyDescription || ''
+            }</deficiencyDescription>
+            <extraordinaryExpenditureReason>${
+              data.extraordinaryExpenditureReason || ''
+            }</extraordinaryExpenditureReason>
+            <suppliedDocuments>
+               ${
+                 data.suppliedDocuments
+                   ?.map(
+                     (doc) => `
+                  <document>
+                     <type>${doc.type || ''}</type>
+                     <content>${doc.content || ''}</content>
+                  </document>
+               `,
+                   )
+                   .join('') || ''
+               }
+            </suppliedDocuments>
+            <recordedSystem>
+               ${
+                 data.recordedSystem
+                   ?.map(
+                     (system) => `
+                  <drinkingWaterFacility>
+                     <consecutiveNumber>${
+                       system.consecutiveNumber || ''
+                     }</consecutiveNumber>
+                     <usageType>${system.usageType || ''}</usageType>
+                     <usageTypeOthers>${
+                       system.usageTypeOthers || ''
+                     }</usageTypeOthers>
+                     <numberSuppliedUnits>${
+                       system.numberSuppliedUnits || ''
+                     }</numberSuppliedUnits>
+                     <numberDrinkingWaterHeater>${
+                       system.numberDrinkingWaterHeater || ''
+                     }</numberDrinkingWaterHeater>
+                     <totalVolumeLitres>${
+                       system.totalVolumeLitres || ''
+                     }</totalVolumeLitres>
+                     <pipingSystemType_Circulation>${
+                       system.pipingSystemType_Circulation || ''
+                     }</pipingSystemType_Circulation>
+                     <pipingSystemType_Waterbranchline>${
+                       system.pipingSystemType_Waterbranchline || ''
+                     }</pipingSystemType_Waterbranchline>
+                     <pipingSystemType_Pipetraceheater>${
+                       system.pipingSystemType_Pipetraceheater || ''
+                     }</pipingSystemType_Pipetraceheater>
+                     <pipingVolumeGr3Litres>${
+                       system.pipingVolumeGr3Litres || ''
+                     }</pipingVolumeGr3Litres>
+                     <deadPipeKnown>${
+                       system.deadPipeKnown || ''
+                     }</deadPipeKnown>
+                     <deadPipesPosition>${
+                       system.deadPipesPosition || ''
+                     }</deadPipesPosition>
+                     <numberAscendingPipes>${
+                       system.numberAscendingPipes || ''
+                     }</numberAscendingPipes>
+                     <aerosolformation>${
+                       system.aerosolformation || ''
+                     }</aerosolformation>
+                     <explanation>${system.explanation || ''}</explanation>
+                     <numberSuppliedPersons>${
+                       system.numberSuppliedPersons || ''
+                     }</numberSuppliedPersons>
+                     <pipeworkSchematicsAvailable>${
+                       system.pipeworkSchematicsAvailable || ''
+                     }</pipeworkSchematicsAvailable>
+                     <numberColdWaterLegs>${
+                       system.numberColdWaterLegs || ''
+                     }</numberColdWaterLegs>
+                     <numberHotWaterLegs>${
+                       system.numberHotWaterLegs || ''
+                     }</numberHotWaterLegs>
+                     <temperatureCirculationDWH_A>${
+                       system.temperatureCirculationDWH_A || ''
+                     }</temperatureCirculationDWH_A>
+                     <temperatureCirculationDWH_B>${
+                       system.temperatureCirculationDWH_B || ''
+                     }</temperatureCirculationDWH_B>
+                     <heatExchangerSystem_central>${
+                       system.heatExchangerSystem_central || ''
+                     }</heatExchangerSystem_central>
+                     <heatExchangerSystem_districtheating>${
+                       system.heatExchangerSystem_districtheating || ''
+                     }</heatExchangerSystem_districtheating>
+                     <heatExchangerSystem_continuousflowprinciple>${
+                       system.heatExchangerSystem_continuousflowprinciple || ''
+                     }</heatExchangerSystem_continuousflowprinciple>
+                     <drinkingWaterHeaters>
+                        ${
+                          system.drinkingWaterHeaters
+                            ?.map(
+                              (heater) => `
+                           <drinkingWaterHeater>
+                              <consecutiveNumber>${
+                                heater.consecutiveNumber || ''
+                              }</consecutiveNumber>
+                              <inletTemperatureDisplayPresent>${
+                                heater.inletTemperatureDisplayPresent || ''
+                              }</inletTemperatureDisplayPresent>
+                              <inletTemperature>${
+                                heater.inletTemperature || ''
+                              }</inletTemperature>
+                              <outletTemperatureDisplayPresent>${
+                                heater.outletTemperatureDisplayPresent || ''
+                              }</outletTemperatureDisplayPresent>
+                              <outletTemperature>${
+                                heater.outletTemperature || ''
+                              }</outletTemperature>
+                              <pipeDiameterOutlet>${
+                                heater.pipeDiameterOutlet || ''
+                              }</pipeDiameterOutlet>
+                              <pipeMaterialtypeOutlet>${
+                                heater.pipeMaterialtypeOutlet || ''
+                              }</pipeMaterialtypeOutlet>
+                              <volumeLitre>${
+                                heater.volumeLitre || ''
+                              }</volumeLitre>
+                              <roomType>${heater.roomType || ''}</roomType>
+                              <roomPosition>${
+                                heater.roomPosition || ''
+                              }</roomPosition>
+                              <positionDetail>${
+                                heater.positionDetail || ''
+                              }</positionDetail>
+                              <unit>
+                                 <floor>${heater.unit.floor || ''}</floor>
+                                 <storey>${heater.unit.storey || ''}</storey>
+                                 <positon>${heater.unit.positon || ''}</positon>
+                                 <userName>${
+                                   heater.unit.userName || ''
+                                 }</userName>
+                                 <generalUnit>${
+                                   heater.unit.generalUnit || ''
+                                 }</generalUnit>
+                                 <building>
+                                    <address>
+                                       <street>${
+                                         heater.unit.building.address.street ||
+                                         ''
+                                       }</street>
+                                       <streetnumber>${
+                                         heater.unit.building.address
+                                           .streetnumber || ''
+                                       }</streetnumber>
+                                       <postcode>${
+                                         heater.unit.building.address
+                                           .postcode || ''
+                                       }</postcode>
+                                       <city>${
+                                         heater.unit.building.address.city || ''
+                                       }</city>
+                                       <country>${
+                                         heater.unit.building.address.country ||
+                                         ''
+                                       }</country>
+                                    </address>
+                                 </building>
+                              </unit>
+                           </drinkingWaterHeater>
+                        `,
+                            )
+                            .join('') || ''
+                        }
+                     </drinkingWaterHeaters>
+                     <ascendingPipes>
+                        ${
+                          system.ascendingPipes
+                            ?.map(
+                              (pipe) => `
+                           <ascendingPipe>
+                              <consecutiveNumber>${
+                                pipe.consecutiveNumber || ''
+                              }</consecutiveNumber>
+                              <ascendingPipeTemperatureDisplayPresent>${
+                                pipe.ascendingPipeTemperatureDisplayPresent ||
+                                ''
+                              }</ascendingPipeTemperatureDisplayPresent>
+                              <flowTemperature>${
+                                pipe.flowTemperature || ''
+                              }</flowTemperature>
+                              <circulationTemperatureDisplayPresent>${
+                                pipe.circulationTemperatureDisplayPresent || ''
+                              }</circulationTemperatureDisplayPresent>
+                              <circulationTemperature>${
+                                pipe.circulationTemperature || ''
+                              }</circulationTemperature>
+                              <pipeDiameter>${
+                                pipe.pipeDiameter || ''
+                              }</pipeDiameter>
+                              <pipeMaterialtype>${
+                                pipe.pipeMaterialtype || ''
+                              }</pipeMaterialtype>
+                           </ascendingPipe>
+                        `,
+                            )
+                            .join('') || ''
+                        }
+                     </ascendingPipes>
+                     <samplingPoints>
+                        ${
+                          system.samplingPoints
+                            ?.map(
+                              (point) => `
+                           <samplingPoint>
+                              <consecutiveNumber>${
+                                point.consecutiveNumber || ''
+                              }</consecutiveNumber>
+                              <installationNumber>${
+                                point.installationNumber || ''
+                              }</installationNumber>
+                              <numberObjectInstallationLocation>${
+                                point.numberObjectInstallationLocation || ''
+                              }</numberObjectInstallationLocation>
+                              <pipingSystemType>${
+                                point.pipingSystemType || ''
+                              }</pipingSystemType>
+                              <remoteSamplingPoint>${
+                                point.remoteSamplingPoint || ''
+                              }</remoteSamplingPoint>
+                              <roomType>${point.roomType || ''}</roomType>
+                              <roomPosition>${
+                                point.roomPosition || ''
+                              }</roomPosition>
+                              <positionDetail>${
+                                point.positionDetail || ''
+                              }</positionDetail>
+                              <unit>
+                                 <floor>${point.unit.floor || ''}</floor>
+                                 <storey>${point.unit.storey || ''}</storey>
+                                 <positon>${point.unit.positon || ''}</positon>
+                                 <userName>${
+                                   point.unit.userName || ''
+                                 }</userName>
+                                 <generalUnit>${
+                                   point.unit.generalUnit || ''
+                                 }</generalUnit>
+                                 <building>
+                                    <address>
+                                       <street>${
+                                         point.unit.building.address.street ||
+                                         ''
+                                       }</street>
+                                       <streetnumber>${
+                                         point.unit.building.address
+                                           .streetnumber || ''
+                                       }</streetnumber>
+                                       <postcode>${
+                                         point.unit.building.address.postcode ||
+                                         ''
+                                       }</postcode>
+                                       <city>${
+                                         point.unit.building.address.city || ''
+                                       }</city>
+                                       <country>${
+                                         point.unit.building.address.country ||
+                                         ''
+                                       }</country>
+                                    </address>
+                                 </building>
+                              </unit>
+                           </samplingPoint>
+                        `,
+                            )
+                            .join('') || ''
+                        }
+                     </samplingPoints>
+                  </drinkingWaterFacility>
+               `,
+                   )
+                   .join('') || ''
+               }
+            </recordedSystem>
+            <property>
+               <hotwatersupplyType_central>${
+                 data.property?.hotwatersupplyType_central || ''
+               }</hotwatersupplyType_central>
+               <hotwatersupplyType_decentral>${
+                 data.property?.hotwatersupplyType_decentral || ''
+               }</hotwatersupplyType_decentral>
+            </property>
+            <services>
+               ${
+                 data.services
+                   ?.map(
+                     (service) => `
+                  <service>
+                     <articleNumber_ista>${
+                       service.articleNumber_ista || ''
+                     }</articleNumber_ista>
+                     <quantity>${service.quantity || ''}</quantity>
+                     <unit>${service.unit || ''}</unit>
+                     <extraordinaryExpenditure>${
+                       service.extraordinaryExpenditure || ''
+                     }</extraordinaryExpenditure>
+                     <purchasePrice_ista>${
+                       service.purchasePrice_ista || ''
+                     }</purchasePrice_ista>
+                     <warranty>${service.warranty || ''}</warranty>
+                     <serviceRenderedIn>
+                        <address>
+                           <street>${
+                             service.serviceRenderedIn?.address?.street || ''
+                           }</street>
+                           <streetnumber>${
+                             service.serviceRenderedIn?.address?.streetnumber ||
+                             ''
+                           }</streetnumber>
+                           <postcode>${
+                             service.serviceRenderedIn?.address?.postcode || ''
+                           }</postcode>
+                           <city>${
+                             service.serviceRenderedIn?.address?.city || ''
+                           }</city>
+                           <country>${
+                             service.serviceRenderedIn?.address?.country || ''
+                           }</country>
+                        </address>
+                     </serviceRenderedIn>
+                  </service>
+               `,
+                   )
+                   .join('') || ''
+               }
+            </services>
+         </closedContractPartner>
+      </ins:reportOrderStatusRequest>
+   </soapenv:Body>
+</soapenv:Envelope> 
+`,
 
       // Weitere Status-Typen können hier leicht hinzugefügt werden
     };

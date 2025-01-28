@@ -6,6 +6,6 @@ export declare class SoapController {
     private readonly soapService;
     constructor(soapService: SoapService);
     polling(body: SoapEnvelopeDto, user: User): Promise<void>;
-    pollingWithMockData(res: Response): Promise<void>;
+    pollingWithMockData(res: Response): Promise<any>;
     updateStatus(syncDTO: SyncDto, user: User): Promise<void>;
 }
