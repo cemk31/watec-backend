@@ -31,6 +31,7 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 import { SyncDto } from './dto/SyncDto';
 import { SoapEnvelopeDto } from './dto/SoapEnvelopeDto';
+import { Response } from 'express';
 
 dotenv.config();
 
