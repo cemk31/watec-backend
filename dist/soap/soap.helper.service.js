@@ -354,7 +354,7 @@ let SoapHelperService = class SoapHelperService {
          </soapenv:Body>
       </soapenv:Envelope>
     `,
-            REPORT_ORDER_STATUS_REQUEST: (data) => {
+            CLOSED_CONTRACT_PARTNER: (data) => {
                 var _a, _b, _c, _d, _e, _f;
                 return `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ins="http://www.ista.com/DrinkingWaterSystem/InstallationService" xmlns:com="http://www.ista.com/CommonTypes">

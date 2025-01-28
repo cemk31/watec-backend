@@ -126,7 +126,8 @@ export class SoapController {
         config,
       );
       this.soapService.polling(response.data);
-      console.log(response.data); // Verarbeite die SOAP-Antwort
+      console.log(response.data);
+      // Verarbeite die SOAP-Antwort
     } catch (error) {
       console.error('Fehler beim Senden des SOAP-Requests:', error);
     }
@@ -744,9 +745,7 @@ export class SoapController {
     // Übergabe an den Service, um den Response zu verarbeiten
     await this.soapService.polling(mockSoapResponse);
 
-    // return res
-    //   .status(200)
-    //   .send({ message: 'Mock SOAP response processed successfully' });
+    return res.status(HttpStatus.CREATED).send();
   }
 
   @Post('/sync')

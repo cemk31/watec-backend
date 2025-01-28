@@ -651,6 +651,7 @@ let SoapController = class SoapController {
       </soap:Body>
     </soap:Envelope>`;
         await this.soapService.polling(mockSoapResponse);
+        return res.status(common_1.HttpStatus.CREATED).send();
     }
     async updateStatus(syncDTO, user) {
         this.soapService.syncStatus(syncDTO, user);
