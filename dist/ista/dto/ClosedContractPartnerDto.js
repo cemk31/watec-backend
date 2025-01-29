@@ -21,7 +21,6 @@ const CustomerContactDto_1 = require("./CustomerContactDto");
 const ServiceDto_1 = require("./ServiceDto");
 class ClosedContractPartnerDto {
     constructor() {
-        this.orderstatusType = 40;
         this.setOn = new Date();
     }
 }
@@ -39,8 +38,8 @@ __decorate([
 ], ClosedContractPartnerDto.prototype, "orderId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 40 }),
-    (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], ClosedContractPartnerDto.prototype, "orderstatusType", void 0);
 __decorate([

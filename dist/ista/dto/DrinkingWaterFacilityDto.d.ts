@@ -1,6 +1,6 @@
-import { AscendingPipeDto } from "./AscendingPipeDto";
-import { DrinkingWaterHeaterDto } from "./DrinkingWaterHeaterDto";
-import { SamplingPointDto } from "./SamplingPointDto";
+import { AscendingPipeDto } from './AscendingPipeDto';
+import { DrinkingWaterHeaterDto } from './DrinkingWaterHeaterDto';
+import { SamplingPointDto } from './SamplingPointDto';
 export declare class DrinkingWaterFacilityDto {
     id: number;
     consecutiveNumber: number;

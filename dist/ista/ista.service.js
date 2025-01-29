@@ -13,9 +13,6 @@ exports.IstaService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
-const DrinkingWaterFacilityDto_1 = require("./dto/DrinkingWaterFacilityDto");
-const AscendingPipeDto_1 = require("./dto/AscendingPipeDto");
-const SamplingPointDto_1 = require("./dto/SamplingPointDto");
 let IstaService = class IstaService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -165,6 +162,11 @@ let IstaService = class IstaService {
                     include: {
                         customerContacts: true,
                         Request: true,
+                    },
+                },
+                ClosedContractPartner: {
+                    include: {
+                        customerContacts: true,
                     },
                 },
                 Customer: {
@@ -395,7 +397,11 @@ let IstaService = class IstaService {
                         customerContacts: true,
                     },
                 },
-                ClosedContractPartner: true,
+                ClosedContractPartner: {
+                    include: {
+                        customerContacts: true,
+                    },
+                },
                 Customer: true,
             },
         });
@@ -758,8 +764,10 @@ let IstaService = class IstaService {
         }
     }
     async orderClosedContractPartner(orderId, dto) {
-        var _a, _b, _c, _d, _e, _f;
         try {
+            if (!orderId) {
+                throw new Error('Order ID is required for creating ClosedContractPartner.');
+            }
             await this.prisma.order.update({
                 where: { id: orderId },
                 data: {
@@ -770,131 +778,129 @@ let IstaService = class IstaService {
             const closedContractPartnerEntry = await this.prisma.closedContractPartner.create({
                 data: {
                     order: {
-                        connect: {
-                            id: orderId,
-                        },
+                        connect: { id: orderId },
                     },
-                    orderstatusType: (dto === null || dto === void 0 ? void 0 : dto.orderstatusType) || null,
-                    setOn: (dto === null || dto === void 0 ? void 0 : dto.setOn) || new Date(),
-                    deficiencyDescription: (dto === null || dto === void 0 ? void 0 : dto.deficiencyDescription) || null,
-                    registrationHealthAuthoritiesOn: (dto === null || dto === void 0 ? void 0 : dto.registrationHealthAuthoritiesOn) || new Date(),
-                    extraordinaryExpenditureReason: (dto === null || dto === void 0 ? void 0 : dto.extraordinaryExpenditureReason) || null,
+                    orderstatusType: dto.orderstatusType || null,
+                    setOn: dto.setOn || new Date(),
+                    deficiencyDescription: dto.deficiencyDescription || null,
+                    registrationHealthAuthoritiesOn: dto.registrationHealthAuthoritiesOn || null,
+                    extraordinaryExpenditureReason: dto.extraordinaryExpenditureReason || null,
                     customerContacts: {
-                        create: (_b = (_a = dto.customerContacts) === null || _a === void 0 ? void 0 : _a.map((contact) => ({
-                            contactAttemptOn: (contact === null || contact === void 0 ? void 0 : contact.contactAttemptOn) || new Date(),
-                            contactPersonCustomer: (contact === null || contact === void 0 ? void 0 : contact.contactPersonCustomer) || null,
-                            agentCP: (contact === null || contact === void 0 ? void 0 : contact.agentCP) || null,
-                            result: (contact === null || contact === void 0 ? void 0 : contact.result) || null,
-                            remark: (contact === null || contact === void 0 ? void 0 : contact.remark) || null,
-                        }))) !== null && _b !== void 0 ? _b : [],
+                        create: Array.isArray(dto.customerContacts)
+                            ? dto.customerContacts.map((contact) => ({
+                                contactAttemptOn: contact.contactAttemptOn || new Date(),
+                                contactPersonCustomer: contact.contactPersonCustomer || null,
+                                agentCP: contact.agentCP || null,
+                                result: contact.result || null,
+                                remark: contact.remark || null,
+                            }))
+                            : [],
                     },
                     recordedSystem: {
-                        create: (_d = (_c = dto.recordedSystem) === null || _c === void 0 ? void 0 : _c.map((rs) => {
-                            var _a, _b, _c, _d;
-                            return ({
+                        create: Array.isArray(dto.recordedSystem)
+                            ? dto.recordedSystem.map((rs) => ({
                                 drinkingWaterFacility: {
-                                    create: (_b = (_a = rs.drinkingWaterFacility) === null || _a === void 0 ? void 0 : _a.map((dwf) => {
-                                        var _a, _b, _c, _d, _e;
-                                        return ({
-                                            consecutiveNumber: (dwf === null || dwf === void 0 ? void 0 : dwf.consecutiveNumber) || null,
-                                            usageType: (dwf === null || dwf === void 0 ? void 0 : dwf.usageType) || null,
-                                            usageTypeOthers: (dwf === null || dwf === void 0 ? void 0 : dwf.usageTypeOthers) || null,
-                                            numberSuppliedUnits: (dwf === null || dwf === void 0 ? void 0 : dwf.numberSuppliedUnits) || null,
-                                            numberDrinkingWaterHeater: (dwf === null || dwf === void 0 ? void 0 : dwf.numberDrinkingWaterHeater) || null,
-                                            totalVolumeLitres: (dwf === null || dwf === void 0 ? void 0 : dwf.totalVolumeLitres) || null,
-                                            pipingSystemType_Circulation: (dwf === null || dwf === void 0 ? void 0 : dwf.pipingSystemType_Circulation) || null,
-                                            pipingSystemType_Waterbranchline: (dwf === null || dwf === void 0 ? void 0 : dwf.pipingSystemType_Waterbranchline) || null,
-                                            pipingSystemType_Pipetraceheater: (dwf === null || dwf === void 0 ? void 0 : dwf.pipingSystemType_Pipetraceheater) || null,
-                                            pipingVolumeGr3Litres: dwf === null || dwf === void 0 ? void 0 : dwf.pipingVolumeGr3Litres,
-                                            deadPipeKnown: (dwf === null || dwf === void 0 ? void 0 : dwf.deadPipeKnown) || null,
-                                            deadPipesPosition: (dwf === null || dwf === void 0 ? void 0 : dwf.deadPipesPosition) || null,
-                                            numberAscendingPipes: (dwf === null || dwf === void 0 ? void 0 : dwf.numberAscendingPipes) || null,
-                                            explanation: (dwf === null || dwf === void 0 ? void 0 : dwf.explanation) || null,
-                                            numberSuppliedPersons: (dwf === null || dwf === void 0 ? void 0 : dwf.numberSuppliedPersons) || null,
-                                            aerosolformation: (dwf === null || dwf === void 0 ? void 0 : dwf.aerosolformation) || null,
-                                            pipeworkSchematicsAvailable: (dwf === null || dwf === void 0 ? void 0 : dwf.pipeworkSchematicsAvailable) || null,
-                                            numberColdWaterLegs: (dwf === null || dwf === void 0 ? void 0 : dwf.numberColdWaterLegs) || null,
-                                            numberHotWaterLegs: (dwf === null || dwf === void 0 ? void 0 : dwf.numberHotWaterLegs) || null,
-                                            temperatureCirculationDWH_A: (dwf === null || dwf === void 0 ? void 0 : dwf.temperatureCirculationDWH_A) || null,
-                                            temperatureCirculationDWH_B: (dwf === null || dwf === void 0 ? void 0 : dwf.temperatureCirculationDWH_B) || null,
-                                            heatExchangerSystem_central: (dwf === null || dwf === void 0 ? void 0 : dwf.heatExchangerSystem_central) || null,
-                                            heatExchangerSystem_districtheating: (dwf === null || dwf === void 0 ? void 0 : dwf.heatExchangerSystem_districtheating) || null,
-                                            heatExchangerSystem_continuousflowprinciple: (dwf === null || dwf === void 0 ? void 0 : dwf.heatExchangerSystem_continuousflowprinciple) || null,
+                                    create: Array.isArray(rs.drinkingWaterFacility)
+                                        ? rs.drinkingWaterFacility.map((dwf) => ({
+                                            consecutiveNumber: dwf.consecutiveNumber || null,
+                                            usageType: dwf.usageType || null,
+                                            numberSuppliedUnits: dwf.numberSuppliedUnits || null,
+                                            numberDrinkingWaterHeater: dwf.numberDrinkingWaterHeater || null,
+                                            totalVolumeLitres: dwf.totalVolumeLitres || null,
+                                            pipingSystemType_Circulation: dwf.pipingSystemType_Circulation || false,
+                                            pipingSystemType_Waterbranchline: dwf.pipingSystemType_Waterbranchline || false,
+                                            pipingSystemType_Pipetraceheater: dwf.pipingSystemType_Pipetraceheater || false,
+                                            pipingVolumeGr3Litres: dwf.pipingVolumeGr3Litres || false,
+                                            deadPipeKnown: dwf.deadPipeKnown || false,
+                                            deadPipesPosition: dwf.deadPipesPosition || null,
+                                            numberAscendingPipes: dwf.numberAscendingPipes || null,
+                                            aerosolformation: dwf.aerosolformation || false,
+                                            explanation: dwf.explanation || null,
+                                            numberSuppliedPersons: dwf.numberSuppliedPersons || null,
+                                            pipeworkSchematicsAvailable: dwf.pipeworkSchematicsAvailable || false,
+                                            numberColdWaterLegs: dwf.numberColdWaterLegs || null,
+                                            numberHotWaterLegs: dwf.numberHotWaterLegs || null,
+                                            temperatureCirculationDWH_A: dwf.temperatureCirculationDWH_A || null,
+                                            temperatureCirculationDWH_B: dwf.temperatureCirculationDWH_B || null,
+                                            heatExchangerSystem_central: dwf.heatExchangerSystem_central || false,
+                                            heatExchangerSystem_districtheating: dwf.heatExchangerSystem_districtheating || false,
+                                            heatExchangerSystem_continuousflowprinciple: dwf.heatExchangerSystem_continuousflowprinciple ||
+                                                false,
                                             samplingPoints: {
-                                                create: (_b = (_a = dwf === null || dwf === void 0 ? void 0 : dwf.samplingPoints) === null || _a === void 0 ? void 0 : _a.map((sp) => ({
-                                                    consecutiveNumber: (sp === null || sp === void 0 ? void 0 : sp.consecutiveNumber) || null,
-                                                    installationNumber: (sp === null || sp === void 0 ? void 0 : sp.installationNumber) || null,
-                                                    numberObjectInstallationLocation: (sp === null || sp === void 0 ? void 0 : sp.numberObjectInstallationLocation) || null,
-                                                    pipingSystemType: (sp === null || sp === void 0 ? void 0 : sp.pipingSystemType) || null,
-                                                    remoteSamplingPoint: (sp === null || sp === void 0 ? void 0 : sp.remoteSamplingPoint) || null,
-                                                    roomType: (sp === null || sp === void 0 ? void 0 : sp.roomType) || null,
-                                                    roomPosition: (sp === null || sp === void 0 ? void 0 : sp.roomPosition) || null,
-                                                    positionDetail: (sp === null || sp === void 0 ? void 0 : sp.positionDetail) || null,
-                                                }))) !== null && _b !== void 0 ? _b : [SamplingPointDto_1.SamplingPointDto],
+                                                create: Array.isArray(dwf.samplingPoints)
+                                                    ? dwf.samplingPoints.map((sp) => ({
+                                                        consecutiveNumber: sp.consecutiveNumber || null,
+                                                        pipingSystemType: sp.pipingSystemType || null,
+                                                        installationNumber: sp.installationNumber || null,
+                                                        numberObjectInstallationLocation: sp.numberObjectInstallationLocation ||
+                                                            null,
+                                                        roomType: sp.roomType || null,
+                                                        roomPosition: sp.roomPosition || null,
+                                                        positionDetail: sp.positionDetail || null,
+                                                        remoteSamplingPoint: sp.remoteSamplingPoint || false,
+                                                    }))
+                                                    : [],
                                             },
                                             ascendingPipes: {
-                                                create: (_d = (_c = dwf === null || dwf === void 0 ? void 0 : dwf.ascendingPipes) === null || _c === void 0 ? void 0 : _c.map((ap) => ({
-                                                    consecutiveNumber: (ap === null || ap === void 0 ? void 0 : ap.consecutiveNumber) || null,
-                                                    ascendingPipeTemperatureDisplayPresent: (ap === null || ap === void 0 ? void 0 : ap.ascendingPipeTemperatureDisplayPresent) || null,
-                                                    flowTemperature: (ap === null || ap === void 0 ? void 0 : ap.flowTemperature) || null,
-                                                    circulationTemperatureDisplayPresent: (ap === null || ap === void 0 ? void 0 : ap.circulationTemperatureDisplayPresent) || null,
-                                                    circulationTemperature: (ap === null || ap === void 0 ? void 0 : ap.circulationTemperature) || null,
-                                                    pipeDiameter: (ap === null || ap === void 0 ? void 0 : ap.pipeDiameter) || null,
-                                                    pipeMaterialtype: (ap === null || ap === void 0 ? void 0 : ap.pipeMaterialtype) || null,
-                                                }))) !== null && _d !== void 0 ? _d : [AscendingPipeDto_1.AscendingPipeDto],
+                                                create: Array.isArray(dwf.ascendingPipes)
+                                                    ? dwf.ascendingPipes.map((ap) => ({
+                                                        consecutiveNumber: ap.consecutiveNumber || null,
+                                                        flowTemperature: ap.flowTemperature || null,
+                                                        circulationTemperature: ap.circulationTemperature || null,
+                                                        pipeDiameter: ap.pipeDiameter || null,
+                                                        pipeMaterialtype: ap.pipeMaterialtype || null,
+                                                    }))
+                                                    : [],
                                             },
                                             drinkingWaterHeaters: {
-                                                create: (_e = dwf === null || dwf === void 0 ? void 0 : dwf.drinkingWaterHeaters) === null || _e === void 0 ? void 0 : _e.map((dwh) => {
-                                                    var _a;
-                                                    return ({
-                                                        consecutiveNumber: (dwh === null || dwh === void 0 ? void 0 : dwh.consecutiveNumber) || null,
-                                                        inletTemperatureDisplayPresent: (dwh === null || dwh === void 0 ? void 0 : dwh.inletTemperatureDisplayPresent) || null,
-                                                        inletTemperature: (dwh === null || dwh === void 0 ? void 0 : dwh.inletTemperature) || null,
-                                                        outletTemperatureDisplayPresent: (dwh === null || dwh === void 0 ? void 0 : dwh.outletTemperatureDisplayPresent) || null,
-                                                        outletTemperature: (dwh === null || dwh === void 0 ? void 0 : dwh.outletTemperature) || null,
-                                                        pipeDiameterOutlet: (dwh === null || dwh === void 0 ? void 0 : dwh.pipeDiameterOutlet) || null,
-                                                        pipeMaterialtypeOutlet: (dwh === null || dwh === void 0 ? void 0 : dwh.pipeMaterialtypeOutlet) || null,
-                                                        volumeLitre: (dwh === null || dwh === void 0 ? void 0 : dwh.volumeLitre) || null,
-                                                        roomType: (dwh === null || dwh === void 0 ? void 0 : dwh.roomType) || null,
-                                                        roomPosition: (dwh === null || dwh === void 0 ? void 0 : dwh.roomPosition) || null,
-                                                        positionDetail: (dwh === null || dwh === void 0 ? void 0 : dwh.positionDetail) || null,
-                                                        unit: {
-                                                            create: (_a = dwh === null || dwh === void 0 ? void 0 : dwh.unit) !== null && _a !== void 0 ? _a : undefined,
-                                                        },
-                                                    });
-                                                }),
+                                                create: Array.isArray(dwf.drinkingWaterHeaters)
+                                                    ? dwf.drinkingWaterHeaters.map((dwh) => ({
+                                                        consecutiveNumber: dwh.consecutiveNumber || null,
+                                                        inletTemperature: dwh.inletTemperature || null,
+                                                        outletTemperature: dwh.outletTemperature || null,
+                                                        pipeDiameterOutlet: dwh.pipeDiameterOutlet || null,
+                                                        pipeMaterialtypeOutlet: dwh.pipeMaterialtypeOutlet || null,
+                                                        volumeLitre: dwh.volumeLitre || null,
+                                                        roomType: dwh.roomType || null,
+                                                        roomPosition: dwh.roomPosition || null,
+                                                        positionDetail: dwh.positionDetail || null,
+                                                    }))
+                                                    : [],
                                             },
-                                        });
-                                    })) !== null && _b !== void 0 ? _b : [DrinkingWaterFacilityDto_1.DrinkingWaterFacilityDto],
+                                        }))
+                                        : [],
                                 },
-                                property: {
-                                    create: {
-                                        hotwatersupplyType_central: ((_c = rs === null || rs === void 0 ? void 0 : rs.property) === null || _c === void 0 ? void 0 : _c.hotwatersupplyType_central) || false,
-                                        hotwatersupplyType_decentral: ((_d = rs === null || rs === void 0 ? void 0 : rs.property) === null || _d === void 0 ? void 0 : _d.hotwatersupplyType_decentral) || false,
-                                    },
-                                },
-                            });
-                        })) !== null && _d !== void 0 ? _d : [undefined],
+                                property: rs.property
+                                    ? {
+                                        create: {
+                                            hotwatersupplyType_central: rs.property.hotwatersupplyType_central || false,
+                                            hotwatersupplyType_decentral: rs.property.hotwatersupplyType_decentral || false,
+                                        },
+                                    }
+                                    : undefined,
+                            }))
+                            : [],
                     },
                     services: {
-                        create: (_f = (_e = dto.services) === null || _e === void 0 ? void 0 : _e.map((service) => ({
-                            articleNumber_ista: service.articleNumber_ista || null,
-                            quantity: service.quantity || null,
-                            unit: service.unit || null,
-                            extraordinaryExpenditure: service.extraordinaryExpenditure || null,
-                            purchasePrice_ista: service.purchasePrice_ista || null,
-                            warranty: service.warranty || null,
-                            serviceRenderedIn: {
-                                create: {
-                                    street: service.serviceRenderedIn.street || null,
-                                    zipCode: service.serviceRenderedIn.postcode || null,
-                                    place: service.serviceRenderedIn.city || null,
-                                    country: service.serviceRenderedIn.country || null,
-                                }
-                                    ? service.serviceRenderedIn
-                                    : null,
-                            },
-                        }))) !== null && _f !== void 0 ? _f : [],
+                        create: Array.isArray(dto.services)
+                            ? dto.services.map((service) => ({
+                                articleNumber_ista: service.articleNumber_ista || null,
+                                quantity: service.quantity || null,
+                                unit: service.unit || null,
+                                extraordinaryExpenditure: service.extraordinaryExpenditure || null,
+                                serviceRenderedIn: service.serviceRenderedIn
+                                    ? {
+                                        create: {
+                                            street: service.serviceRenderedIn.street || null,
+                                            streetnumber: service.serviceRenderedIn.streetnumber || null,
+                                            postcode: service.serviceRenderedIn.postcode || null,
+                                            city: service.serviceRenderedIn.city || null,
+                                            country: service.serviceRenderedIn.country || null,
+                                        },
+                                    }
+                                    : undefined,
+                            }))
+                            : [],
                     },
                 },
             });
@@ -967,6 +973,9 @@ let IstaService = class IstaService {
             });
             await this.prisma.notPossible.deleteMany({ where: { orderId } });
             await this.prisma.planned.deleteMany({ where: { orderId } });
+            await this.prisma.closedContractPartner.deleteMany({
+                where: { orderId },
+            });
             await this.prisma.done.deleteMany({ where: { orderId } });
             await this.prisma.postponed.deleteMany({ where: { orderId } });
             await this.prisma.received.deleteMany({ where: { orderId } });
